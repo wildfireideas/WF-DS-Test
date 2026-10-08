@@ -1,6 +1,7 @@
 /*
  * Homepage Intro — copy module with a primary button.
- * Figma: "Homepage Intro / Desktop" and "Homepage Intro / Mobile"
+ * Figma frames: "Homepage Intro / Desktop 1440", "Desktop 1280", "Desktop 1024"
+ * and "Mobile 390"
  * (page "Homepage Intro", file Wildfire-DS-Claude-test).
  */
 .homepage-intro {
@@ -42,7 +43,7 @@
 
 @media (min-width: 1024px) {
   .homepage-intro {
-    padding: var(--spacing-xl) var(--spacing-2xl);
+    padding: var(--spacing-xl) var(--spacing-lg);
   }
 
   .homepage-intro__inner {
@@ -53,5 +54,11 @@
   .homepage-intro__headline,
   .homepage-intro__copy {
     flex: 1 1 0;
+  }
+}
+
+@media (min-width: 1280px) {
+  .homepage-intro {
+    padding-inline: var(--spacing-2xl);
   }
 }
