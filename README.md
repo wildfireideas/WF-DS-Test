@@ -1,2 +1,2 @@
 # WF-DS-Test
-Test for UX/UI/Dev/Claude workflow
+Test for UXDesign/Dev/Claude workflow
