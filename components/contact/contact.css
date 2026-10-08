@@ -1,0 +1,161 @@
+/*
+ * Contact page — Figma frames "Desktop / 02 Contact", "Mobile / 02 Contact"
+ * and the "03 Thank you" confirmation screens.
+ */
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-md);
+  background: var(--surface-primary);
+  color: var(--typography-color-primary);
+  font-family: var(--font-family-body-copy);
+}
+
+.contact__intro {
+  display: contents;
+}
+
+.contact__heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 28px;
+  color: var(--typography-color-brand);
+}
+
+.contact__title {
+  margin: 0;
+  font-family: var(--font-family-headline);
+  font-size: var(--text-h1-size);
+  font-weight: var(--text-h1-weight);
+  line-height: var(--text-h1-line-height);
+}
+
+.contact__lede {
+  margin: 0;
+  font-size: var(--text-paragraph-size);
+  font-weight: var(--text-paragraph-weight);
+  line-height: var(--text-paragraph-line-height);
+}
+
+.contact__details {
+  order: 3;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin: 0;
+}
+
+.contact__details dt {
+  margin-bottom: 4px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--typography-color-secondary);
+}
+
+.contact__details dd {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 24px;
+}
+
+.contact__details a {
+  color: inherit;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-minimal);
+  background: var(--surface-secondary);
+}
+
+.contact-form__title {
+  margin: 0;
+  font-size: var(--text-h2-size);
+  font-weight: 300;
+  line-height: var(--text-h2-line-height);
+}
+
+.contact-form__row {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.contact-form .wf-btn {
+  align-self: flex-start;
+}
+
+@media (min-width: 1024px) {
+  .contact {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--spacing-xl);
+    padding: var(--spacing-xl) var(--spacing-lg);
+  }
+
+  .contact__intro {
+    display: flex;
+    flex: 0 0 480px;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+
+  .contact__heading {
+    gap: var(--spacing-md);
+  }
+
+  .contact__details {
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-color-secondary);
+  }
+
+  .contact-form {
+    flex: 1 1 0;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-rounded);
+  }
+
+  .contact-form__row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1280px) {
+  .contact {
+    padding-inline: var(--spacing-2xl);
+  }
+}
+
+/* Thank-you confirmation */
+.confirmation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-md);
+  background: var(--surface-primary);
+  color: var(--typography-color-primary);
+  font-family: var(--font-family-body-copy);
+  text-align: center;
+}
+
+.confirmation > * {
+  max-width: 880px;
+}
+
+@media (min-width: 1024px) {
+  .confirmation {
+    padding: var(--spacing-2xl);
+  }
+}

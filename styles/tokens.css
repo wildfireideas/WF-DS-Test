@@ -3,13 +3,16 @@
  * Names mirror the Figma variables (Primitives + Global Tokens collections)
  * and text styles (Desktop/* and Mobile/*).
  */
-@import url("https://fonts.googleapis.com/css2?family=Onest:wght@200;300;400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Onest:wght@200;300;400;500;700&display=swap");
 
 :root {
   /* Primitives / color */
   --color-neutrals-0: #ffffff;
   --color-neutrals-100: #fffff8;
   --color-neutrals-200: #f1f0e9;
+  --color-neutrals-300: #e3e0da;
+  --color-neutrals-400: #c7c1ba;
+  --color-neutrals-600: #66615d;
   --color-neutrals-800: #050000;
   --color-brand-blaze: #d83e00;
   --color-brand-burnt: #4e0e1c;
@@ -25,7 +28,15 @@
   --surface-brand-flame: var(--color-flame-400);
   --surface-brand-burnt: var(--color-brand-burnt);
   --typography-color-primary: var(--color-neutrals-800);
+  --typography-color-secondary: var(--color-neutrals-600);
+  --typography-color-invert: var(--color-neutrals-0);
+  --typography-color-brand: var(--color-brand-blaze);
   --border-color-primary: var(--color-neutrals-800);
+  --border-color-secondary: var(--color-neutrals-400);
+
+  /* Global Tokens / radius */
+  --radius-minimal: 20px;
+  --radius-rounded: 36px;
 
   /* Global Tokens / spacing */
   --spacing-none: 0;
@@ -46,6 +57,10 @@
   --text-h1-line-height: 1.1;
   --text-h1-weight: 300;
 
+  /* Text styles: Mobile/H2 (default), Desktop/H2 at >= 1024px */
+  --text-h2-size: 24px;
+  --text-h2-line-height: 1.2;
+
   /* Text styles: Desktop/paragraph (default), Desktop/Paragraph-large at >= 1024px */
   --text-paragraph-size: 16px;
   --text-paragraph-line-height: 24px;
@@ -57,6 +72,9 @@
     --text-h1-size: 58px;
     --text-h1-line-height: 68px;
     --text-h1-weight: 200;
+
+    --text-h2-size: 34px;
+    --text-h2-line-height: 40px;
 
     --text-paragraph-size: 18px;
     --text-paragraph-line-height: 1.5;

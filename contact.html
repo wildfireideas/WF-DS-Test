@@ -3,12 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Wildfire — Homepage</title>
+  <title>Contact — Wildfire</title>
   <link rel="stylesheet" href="styles/tokens.css">
   <link rel="stylesheet" href="components/button/button.css">
   <link rel="stylesheet" href="components/header/header.css">
   <link rel="stylesheet" href="components/footer/footer.css">
-  <link rel="stylesheet" href="components/homepage-intro/homepage-intro.css">
+  <link rel="stylesheet" href="components/form/field.css">
+  <link rel="stylesheet" href="components/contact/contact.css">
   <style>body { margin: 0; background: var(--surface-primary); }</style>
 </head>
 <body>
@@ -33,23 +34,74 @@
     </div>
   </header>
   <main>
-    <section class="homepage-intro" aria-labelledby="homepage-intro-title">
-      <div class="homepage-intro__inner">
-        <h1 class="homepage-intro__headline" id="homepage-intro-title">
-          We spark ideas that move people and grow brands.
-        </h1>
-        <div class="homepage-intro__copy">
-          <p class="homepage-intro__body">
-            Wildfire is an independent creative agency that blends strategy, design and
-            technology to build brands people love. From first insight to final launch, we
-            partner with you to turn bold thinking into measurable results.
-          </p>
-          <a class="wf-btn" href="contact.html">
-            Let’s talk
-            <span class="wf-btn__icon" aria-hidden="true"></span>
-          </a>
+    <section class="contact" aria-labelledby="contact-title">
+      <div class="contact__intro">
+        <div class="contact__heading">
+          <p class="eyebrow">Contact</p>
+          <h1 class="contact__title" id="contact-title">Let’s talk.</h1>
+          <p class="contact__lede">Have a project in mind, a question about our work or just want to say hello? Tell us a little about what you’re after and we’ll get back to you within one business day.</p>
         </div>
+        <dl class="contact__details">
+          <div>
+            <dt>New business</dt>
+            <dd><a href="mailto:hello@wildfireideas.com">hello@wildfireideas.com</a></dd>
+          </div>
+          <div>
+            <dt>Winston-Salem</dt>
+            <dd>709 N Main Street<br>Winston-Salem, NC 27101</dd>
+          </div>
+          <div>
+            <dt>Richmond</dt>
+            <dd>3200 Rockbridge Street, Suite 105<br>Richmond, VA 23230</dd>
+          </div>
+        </dl>
       </div>
+      <form class="contact-form" action="thank-you.html" novalidate>
+        <h2 class="contact-form__title">Tell us about your project</h2>
+        <div class="contact-form__row">
+          <label class="wf-field">
+            <span class="wf-field__label">First name</span>
+            <input class="wf-field__control" name="first-name" autocomplete="given-name" placeholder="Jane" required>
+          </label>
+          <label class="wf-field">
+            <span class="wf-field__label">Last name</span>
+            <input class="wf-field__control" name="last-name" autocomplete="family-name" placeholder="Smith" required>
+          </label>
+        </div>
+        <div class="contact-form__row">
+          <label class="wf-field">
+            <span class="wf-field__label">Email</span>
+            <input class="wf-field__control" type="email" name="email" autocomplete="email" placeholder="jane@company.com" required>
+          </label>
+          <label class="wf-field">
+            <span class="wf-field__label">Phone (optional)</span>
+            <input class="wf-field__control" type="tel" name="phone" autocomplete="tel" placeholder="(555) 555-0123">
+          </label>
+        </div>
+        <label class="wf-field">
+          <span class="wf-field__label">Company</span>
+          <input class="wf-field__control" name="company" autocomplete="organization" placeholder="Company name">
+        </label>
+        <label class="wf-field">
+          <span class="wf-field__label">What can we help with?</span>
+          <select class="wf-field__control" name="topic" required>
+            <option value="" disabled selected>Select</option>
+            <option>Brand strategy</option>
+            <option>Creative &amp; campaigns</option>
+            <option>Website &amp; digital</option>
+            <option>Media &amp; performance</option>
+            <option>Something else</option>
+          </select>
+        </label>
+        <label class="wf-field">
+          <span class="wf-field__label">Message</span>
+          <textarea class="wf-field__control" name="message" placeholder="Tell us about your goals, timeline and budget" required></textarea>
+        </label>
+        <button class="wf-btn" type="submit">
+          Send message
+          <span class="wf-btn__icon" aria-hidden="true"></span>
+        </button>
+      </form>
     </section>
   </main>
   <footer class="site-footer">

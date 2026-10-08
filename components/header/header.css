@@ -1,0 +1,126 @@
+/*
+ * Site header — Figma components "Main Menu -1440" (Mode=Light-Filled)
+ * and "Main Menu - Mobile" (Mode=Light-FIlled).
+ */
+.site-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 15px;
+  background: var(--surface-primary);
+  color: var(--typography-color-primary);
+  font-family: var(--font-family-buttons);
+}
+
+.site-header__logo {
+  display: block;
+  line-height: 0;
+}
+
+.site-header__logo img {
+  width: 86px;
+  height: auto;
+}
+
+.site-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 56px;
+}
+
+.site-header__nav ul {
+  display: flex;
+  gap: 56px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-header__nav a,
+.site-header__talk {
+  color: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.site-header__nav a:hover,
+.site-header__talk:hover {
+  color: var(--color-blaze-600);
+}
+
+.site-header__mobile {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.site-header__toggle {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.site-header__actions {
+  display: none;
+}
+
+/* Mobile menu panel */
+.site-header.is-open .site-header__actions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) 15px var(--spacing-lg);
+  background: var(--surface-primary);
+}
+
+.site-header.is-open .site-header__nav ul {
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.site-header.is-open .site-header__nav a {
+  font-size: 24px;
+}
+
+@media (min-width: 1024px) {
+  .site-header {
+    padding: 40px var(--spacing-xl) 24px;
+  }
+
+  .site-header__logo img {
+    width: 144px;
+  }
+
+  .site-header__mobile {
+    display: none;
+  }
+
+  .site-header__actions,
+  .site-header.is-open .site-header__actions {
+    position: static;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0;
+  }
+
+  .site-header.is-open .site-header__nav ul {
+    flex-direction: row;
+    gap: 56px;
+  }
+
+  .site-header.is-open .site-header__nav a {
+    font-size: 16px;
+  }
+}
