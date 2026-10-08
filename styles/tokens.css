@@ -1,0 +1,64 @@
+/*
+ * Design tokens from the Figma library "Wildfire DS-Claude test".
+ * Names mirror the Figma variables (Primitives + Global Tokens collections)
+ * and text styles (Desktop/* and Mobile/*).
+ */
+@import url("https://fonts.googleapis.com/css2?family=Onest:wght@200;300;400;500&display=swap");
+
+:root {
+  /* Primitives / color */
+  --color-neutrals-0: #ffffff;
+  --color-neutrals-100: #fffff8;
+  --color-neutrals-200: #f1f0e9;
+  --color-neutrals-800: #050000;
+  --color-brand-blaze: #d83e00;
+  --color-brand-burnt: #4e0e1c;
+  --color-flame-400: #fc802d;
+  --color-blaze-600: #b22f0f;
+
+  /* Global Tokens / color */
+  --surface-primary: var(--color-neutrals-100);
+  --surface-secondary: var(--color-neutrals-0);
+  --surface-tertiary: var(--color-neutrals-200);
+  --surface-invert: var(--color-neutrals-800);
+  --surface-brand-blaze: var(--color-brand-blaze);
+  --surface-brand-flame: var(--color-flame-400);
+  --surface-brand-burnt: var(--color-brand-burnt);
+  --typography-color-primary: var(--color-neutrals-800);
+  --border-color-primary: var(--color-neutrals-800);
+
+  /* Global Tokens / spacing */
+  --spacing-none: 0;
+  --spacing-xs: 2px;
+  --spacing-sm: 12px;
+  --spacing-md: 32px;
+  --spacing-lg: 64px;
+  --spacing-xl: 88px;
+  --spacing-2xl: 104px;
+
+  /* Primitives / font-family */
+  --font-family-headline: "Onest", system-ui, sans-serif;
+  --font-family-body-copy: "Onest", system-ui, sans-serif;
+  --font-family-buttons: "Onest", system-ui, sans-serif;
+
+  /* Text styles: Mobile/H1 (default), Desktop/H1 applied at >= 1024px */
+  --text-h1-size: 40px;
+  --text-h1-line-height: 1.1;
+  --text-h1-weight: 300;
+
+  /* Text styles: Desktop/paragraph (default), Desktop/Paragraph-large at >= 1024px */
+  --text-paragraph-size: 16px;
+  --text-paragraph-line-height: 24px;
+  --text-paragraph-weight: 300;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --text-h1-size: 58px;
+    --text-h1-line-height: 68px;
+    --text-h1-weight: 200;
+
+    --text-paragraph-size: 18px;
+    --text-paragraph-line-height: 1.5;
+  }
+}

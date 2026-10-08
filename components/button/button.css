@@ -1,0 +1,78 @@
+/*
+ * Button — Figma component set "Buttons" (Wildfire DS-Claude test).
+ * Implements Type=Primary in Mode=Light (default) and Mode=Dark (.wf-btn--dark)
+ * across State=Default / Hover / Focused / Pressed / Disabled.
+ */
+.wf-btn {
+  --wf-btn-color: var(--color-neutrals-800);
+  --wf-btn-border: var(--border-color-primary);
+  --wf-btn-surface: var(--surface-primary);
+  --wf-btn-gradient: linear-gradient(288deg, #d53e15 0%, #000000 100%);
+  --wf-btn-focus: var(--color-blaze-600);
+  --wf-btn-pressed: var(--color-blaze-600);
+
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 45px;
+  padding: 0 30px;
+  border: 2.25px solid var(--wf-btn-border);
+  border-radius: 22.5px;
+  background: transparent;
+  color: var(--wf-btn-color);
+  font-family: var(--font-family-buttons);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 150ms ease;
+}
+
+.wf-btn--dark {
+  --wf-btn-color: var(--color-neutrals-100);
+  --wf-btn-border: var(--color-neutrals-100);
+  --wf-btn-surface: var(--surface-invert);
+  --wf-btn-gradient: linear-gradient(288deg, #d53e15 0%, #f3a86f 100%);
+  --wf-btn-focus: #e9854c;
+  --wf-btn-pressed: #e9854c;
+}
+
+/* Hover & Pressed: gradient stroke */
+.wf-btn:hover,
+.wf-btn:active {
+  border-color: transparent;
+  background:
+    linear-gradient(var(--wf-btn-surface), var(--wf-btn-surface)) padding-box,
+    var(--wf-btn-gradient) border-box;
+}
+
+.wf-btn:active {
+  color: var(--wf-btn-pressed);
+}
+
+/* Focused */
+.wf-btn:focus-visible {
+  outline: none;
+  border-color: var(--wf-btn-focus);
+  background: transparent;
+}
+
+/* Disabled */
+.wf-btn:disabled,
+.wf-btn[aria-disabled="true"] {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Leading / trailing icon (send.svg from the library), tinted to text color */
+.wf-btn__icon {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  background-color: currentColor;
+  -webkit-mask: url("../../assets/icons/send.svg") center / contain no-repeat;
+  mask: url("../../assets/icons/send.svg") center / contain no-repeat;
+}

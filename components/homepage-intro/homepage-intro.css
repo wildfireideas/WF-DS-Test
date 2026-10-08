@@ -1,0 +1,57 @@
+/*
+ * Homepage Intro — copy module with a primary button.
+ * Figma: "Homepage Intro / Desktop" and "Homepage Intro / Mobile"
+ * (page "Homepage Intro", file Wildfire-DS-Claude-test).
+ */
+.homepage-intro {
+  background: var(--surface-primary);
+  color: var(--typography-color-primary);
+  padding: var(--spacing-lg) var(--spacing-md);
+}
+
+.homepage-intro__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  max-width: 1232px;
+  margin: 0 auto;
+}
+
+.homepage-intro__headline {
+  margin: 0;
+  font-family: var(--font-family-headline);
+  font-size: var(--text-h1-size);
+  font-weight: var(--text-h1-weight);
+  line-height: var(--text-h1-line-height);
+}
+
+.homepage-intro__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+}
+
+.homepage-intro__body {
+  margin: 0;
+  font-family: var(--font-family-body-copy);
+  font-size: var(--text-paragraph-size);
+  font-weight: var(--text-paragraph-weight);
+  line-height: var(--text-paragraph-line-height);
+}
+
+@media (min-width: 1024px) {
+  .homepage-intro {
+    padding: var(--spacing-xl) var(--spacing-2xl);
+  }
+
+  .homepage-intro__inner {
+    flex-direction: row;
+    gap: var(--spacing-lg);
+  }
+
+  .homepage-intro__headline,
+  .homepage-intro__copy {
+    flex: 1 1 0;
+  }
+}
