@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 3,
+  "slug": "section-inverse",
+  "title": "Section · Inverse",
+  "blockTypes": [
+    "core/group",
+    "core/columns",
+    "core/cover"
+  ],
+  "styles": {
+    "color": {
+      "background": "#545b63",
+      "text": "#ffffff"
+    },
+    "elements": {
+      "link": {
+        "color": {
+          "text": "#ffffff"
+        }
+      },
+      "button": {
+        "color": {
+          "background": "#ffffff",
+          "text": "#16191d"
+        },
+        "border": {
+          "color": "#ffffff"
+        }
+      }
+    }
+  }
+}
