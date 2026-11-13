@@ -1,0 +1,338 @@
+<title>Wireframe UX Review</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: single reading column, a status summary up top, then findings grouped by severity as ruled rows (number | finding | status). */
+:root {
+  --bg: #f6f7f8; --surface: #ffffff; --fg: #16191d; --muted: #545b63; --line: #dfe2e6;
+  --accent: #2f62d6;
+  --fixed: #2d7a4a; --confirm: #8a5a00; --partly: #6b4fbb; --decision: #b3261e;
+  --crit: #b3261e; --high: #c2570c; --med: #8a5a00; --low: #6b737c;
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121417; --surface: #1b1e22; --fg: #eceef1; --muted: #a3abb4; --line: #30353b; --accent: #7fa2f0;
+  --fixed: #5cc285; --confirm: #e0b04f; --partly: #b19cf0; --decision: #f2867f;
+  --crit: #f2867f; --high: #f0a066; --med: #e0b04f; --low: #9aa3ad; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121417; --surface: #1b1e22; --fg: #eceef1; --muted: #a3abb4; --line: #30353b; --accent: #7fa2f0;
+  --fixed: #5cc285; --confirm: #e0b04f; --partly: #b19cf0; --decision: #f2867f;
+  --crit: #f2867f; --high: #f0a066; --med: #e0b04f; --low: #9aa3ad; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15.5px; line-height: 1.55; margin: 0; }
+.page { max-width: 980px; margin: 0 auto; padding-block: 48px 72px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+a { color: var(--accent); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+h1 { font-size: clamp(30px, 5vw, 42px); line-height: 1.1; letter-spacing: -.02em; margin: 0; text-wrap: balance; }
+.lede { color: var(--muted); font-size: 17px; max-width: 64ch; margin: 14px 0 0; }
+.meta-row { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 18px; font-size: 14px; color: var(--muted); }
+.meta-row b { color: var(--fg); font-weight: 600; }
+.cta { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; background: var(--fg); color: var(--bg); text-decoration: none; font-weight: 650; padding: 11px 18px; border-radius: 4px; min-height: 44px; }
+.summary { margin-top: 36px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 22px; display: grid; gap: 16px; }
+.bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; gap: 2px; }
+.bar .seg { display: block; }
+.seg.st-fixed { background: var(--fixed); } .seg.st-confirm { background: var(--confirm); } .seg.st-partly { background: var(--partly); } .seg.st-decision { background: var(--decision); }
+.legend { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; }
+.legend button { text-align: left; background: none; border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; cursor: pointer; color: var(--fg); font: inherit; display: grid; gap: 2px; min-height: 44px; }
+.legend button[aria-pressed="true"] { border-color: var(--fg); box-shadow: inset 0 0 0 1px var(--fg); }
+.legend b { font-size: 26px; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.legend span { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.legend i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+@media (max-width: 640px) { .legend { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+.hint { font-size: 13px; color: var(--muted); margin: 0; }
+.decisions { margin-top: 28px; border-left: 3px solid var(--decision); padding: 4px 0 4px 18px; }
+.decisions h2 { font-size: 18px; margin: 0 0 8px; }
+.decisions ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+.sev { margin-top: 44px; }
+.sev h2 { font-size: 13px; font-family: var(--mono); letter-spacing: .1em; text-transform: uppercase; margin: 0 0 4px; display: flex; align-items: center; gap: 10px; padding-bottom: 10px; border-bottom: 2px solid var(--fg); }
+.sev h2 .c { color: var(--muted); font-weight: 400; }
+.sevdot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.sev-critical { background: var(--crit); } .sev-high { background: var(--high); } .sev-medium { background: var(--med); } .sev-low { background: var(--low); }
+.item { display: grid; grid-template-columns: 52px minmax(0,1fr) 190px; gap: 18px; padding: 20px 0; border-bottom: 1px solid var(--line); }
+.item[hidden] { display: none; }
+.num { font-family: var(--mono); font-size: 14px; color: var(--muted); padding-top: 2px; font-variant-numeric: tabular-nums; }
+.item h3 { font-size: 17px; margin: 0 0 8px; line-height: 1.3; }
+.item dl { margin: 0; display: grid; gap: 8px; }
+.item dt { font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.item dd { margin: 2px 0 0; max-width: 64ch; }
+.meta { display: grid; gap: 10px; align-content: start; justify-items: start; }
+.st { font-family: var(--mono); font-size: 12px; font-weight: 600; padding: 4px 9px; border-radius: 3px; border: 1.5px solid currentColor; }
+.st-fixed { color: var(--fixed); } .st-confirm { color: var(--confirm); } .st-partly { color: var(--partly); } .st-decision { color: var(--decision); }
+.see { font-size: 14px; font-weight: 600; }
+.see::after { content: " ↗"; font-weight: 400; }
+@media (max-width: 720px) { .item { grid-template-columns: 40px minmax(0,1fr); } .meta { grid-column: 2; display: flex; flex-wrap: wrap; align-items: center; } }
+footer { margin-top: 48px; font-size: 13.5px; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+<main class="page">
+  <p class="eyebrow">Jackson Supply Company · Website redesign</p>
+  <h1>Wireframe UX review</h1>
+  <p class="lede">An expert UX and information-architecture review of the v1 clickable wireframe, with what changed in v2 for each of the 36 findings. Every finding links to the matching page in the v2 prototype.</p>
+  <div class="meta-row"><span>Reviewed: <b>v1 wireframe prototype</b></span><span>Updated to: <b>v2</b></span><span>Date: <b>Nov 13, 2026</b></span><span>Sitemap: <b>09/09/2026 “no ecomm”</b></span></div>
+  <a class="cta" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky" target="_blank" rel="noopener">Open the v2 prototype ↗<span class="sr"> (opens in a new tab)</span></a>
+
+  <section class="summary" aria-label="Status summary">
+    <div class="bar" aria-hidden="true"><span class="seg st-fixed" style="flex:31" title="Fixed in v2: 31"></span><span class="seg st-confirm" style="flex:2" title="Fixed · client to confirm: 2"></span><span class="seg st-partly" style="flex:1" title="Partly fixed: 1"></span><span class="seg st-decision" style="flex:2" title="Needs client decision: 2"></span></div>
+    <div class="legend" role="group" aria-label="Filter findings by status">
+      <button type="button" data-f="fixed" aria-pressed="false"><b>31</b><span><i style="background:var(--fixed)"></i>Fixed in v2</span></button>
+      <button type="button" data-f="confirm" aria-pressed="false"><b>2</b><span><i style="background:var(--confirm)"></i>Fixed · client to confirm</span></button>
+      <button type="button" data-f="partly" aria-pressed="false"><b>1</b><span><i style="background:var(--partly)"></i>Partly fixed</span></button>
+      <button type="button" data-f="decision" aria-pressed="false"><b>2</b><span><i style="background:var(--decision)"></i>Needs client decision</span></button>
+    </div>
+    <p class="hint" id="fhint">Showing all 36 findings. Select a status to filter.</p>
+  </section>
+
+  <section class="decisions" aria-labelledby="dec">
+    <h2 id="dec">Decisions needed from the client</h2>
+    <ol>
+      <li><b>Online ordering or not.</b> v2 uses a Quote List as the default. If Shopify B2B is chosen, Quote List becomes cart, checkout and order history, and My Account grows to match.</li>
+      <li><b>Connection to the inventory and pricing system.</b> Public stock and gated pricing both depend on it, whichever platform wins.</li>
+      <li><b>Confirm:</b> the efficiency minimums (#7), the credit application's guarantor and consent wording (#19), the real branch list, HQ address, inventory count and any ownership messaging.</li>
+    </ol>
+  </section>
+
+  <section class="sev" id="sev-critical"><h2><span class="sevdot sev-critical" aria-hidden="true"></span>Critical <span class="c">7</span></h2><article class="item" data-status="fixed">
+  <div class="num">#1</div>
+  <div class="body"><h3>Account terms were mixed up</h3>
+    <dl><div><dt>Problem in v1</dt><dd>“Register,” “Open an Account,” “Create Account” and “Apply for Credit” blurred two different things: online access for existing customers and a credit account for new ones.</dd></div><div><dt>What v2 does</dt><dd>One “Become a Customer” page asks how you buy today, then branches to the online-access form or the credit application. The same labels are used everywhere.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#register" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="decision">
+  <div class="num">#2</div>
+  <div class="body"><h3>Ordering buttons in a sitemap without ordering</h3>
+    <dl><div><dt>Problem in v1</dt><dd>“Add to Order” and an “Account” tab existed, but there was no cart, checkout or account page.</dd></div><div><dt>What v2 does</dt><dd>“Add to Order” became “Add to Quote List,” and a My Account page was added (quote lists, invoices, company users). If Shopify B2B is approved, this becomes cart, checkout and order history.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-decision">Needs client decision</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#account" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#3</div>
+  <div class="body"><h3>No search results or product pages</h3>
+    <dl><div><dt>Problem in v1</dt><dd>Parts search is a top task, but search had no results page and product titles linked nowhere.</dd></div><div><dt>What v2 does</dt><dd>New Search Results template (exact part and cross-reference matches, no-results help) and Product Detail template (specs, documents, stock at nearby branches).</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#search" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#4</div>
+  <div class="body"><h3>Guests couldn&#x27;t see stock</h3>
+    <dl><div><dt>Problem in v1</dt><dd>Locking availability behind login works against the brief&#x27;s “verify stock” need.</dd></div><div><dt>What v2 does</dt><dd>Availability is public (In stock / Limited / Out at my branch, plus the 3 nearest on product pages). Only price and quantity need a login.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#supplies" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#5</div>
+  <div class="body"><h3>Menus failed on iPad and for screen readers</h3>
+    <dl><div><dt>Problem in v1</dt><dd>Hover/focus-only dropdowns don&#x27;t open on iOS Safari taps and didn&#x27;t report open or closed.</dd></div><div><dt>What v2 does</dt><dd>Menus open on click or tap, report their state to screen readers, and close with Esc or an outside click.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#home" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#6</div>
+  <div class="body"><h3>ZIP search found nothing</h3>
+    <dl><div><dt>Problem in v1</dt><dd>Every ZIP code returned “No branches match.”</dd></div><div><dt>What v2 does</dt><dd>Search by ZIP, city, state or location. Results sort by distance with miles shown, and out-of-area ZIPs get a clear message. The prototype approximates ZIP locations; production needs a geocoding API.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#locations" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="confirm">
+  <div class="num">#7</div>
+  <div class="body"><h3>An efficiency option that&#x27;s illegal to install</h3>
+    <dl><div><dt>Problem in v1</dt><dd>“13.4 SEER2” is below the 2023 regional minimum in all seven states.</dd></div><div><dt>What v2 does</dt><dd>System Builder and filters start at 14.3 SEER2, with a short note explaining the rule.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-confirm">Fixed · client to confirm</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#system-builder" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article></section>
+<section class="sev" id="sev-high"><h2><span class="sevdot sev-high" aria-hidden="true"></span>High <span class="c">15</span></h2><article class="item" data-status="fixed">
+  <div class="num">#8</div>
+  <div class="body"><h3>Brands shared one page</h3>
+    <dl><div><dt>Problem in v1</dt><dd>Daikin, Goodman and Amana sat together on one Vendors page, which weakens their search value.</dd></div><div><dt>What v2 does</dt><dd>Brand page template with its own URL per brand (/brands/daikin). Brands &amp; Vendors moved under Products.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#brand" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#9</div>
+  <div class="body"><h3>Products menu mixed different things</h3>
+    <dl><div><dt>Problem in v1</dt><dd>Categories, a brand line and a tool sat side by side.</dd></div><div><dt>What v2 does</dt><dd>Products menu regrouped into Shop, Brands, and Tools &amp; deals. Private Label now lives under Equipment.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#home" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#10</div>
+  <div class="body"><h3>Careers was footer-only</h3>
+    <dl><div><dt>Problem in v1</dt><dd>Job applications are a KPI.</dd></div><div><dt>What v2 does</dt><dd>Careers added to the Company menu.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#careers" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#11</div>
+  <div class="body"><h3>Contact was buried</h3>
+    <dl><div><dt>Problem in v1</dt><dd>No quick way to call the branch from the field.</dd></div><div><dt>What v2 does</dt><dd>My branch and a tap-to-call number sit in the top bar. Contact Us is in Resources and the top bar, the mobile menu has a Call button, and the mobile bottom bar opens My Branch.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#branch" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#12</div>
+  <div class="body"><h3>Promos under “Support Center”</h3>
+    <dl><div><dt>Problem in v1</dt><dd>Promos are marketing, and the nav and footer used different labels.</dd></div><div><dt>What v2 does</dt><dd>“Resources” now holds Technical Resources and Contact Us. Promos &amp; Rebates moved to Products.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#promos" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#13</div>
+  <div class="body"><h3>No state pages for 27 branches</h3>
+    <dl><div><dt>Problem in v1</dt><dd>No middle level, and missed searches for “HVAC supply [state].”</dd></div><div><dt>What v2 does</dt><dd>State page template (×7). Branch breadcrumbs go Locations › State › City.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#state" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#14</div>
+  <div class="body"><h3>Breadcrumbs pointed to pages that don&#x27;t exist</h3>
+    <dl><div><dt>Problem in v1</dt><dd>“Company” linked to About Us; “Products” linked to Supplies.</dd></div><div><dt>What v2 does</dt><dd>Parents without a landing page now show as plain text.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#about" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#15</div>
+  <div class="body"><h3>Footer groups and legal links</h3>
+    <dl><div><dt>Problem in v1</dt><dd>The Account column held Locations; legal links went to the homepage.</dd></div><div><dt>What v2 does</dt><dd>Footer regrouped (Products, Locations by state, Resources, Company, Account), plus a Legal page template.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#legal" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#16</div>
+  <div class="body"><h3>Too much fixed chrome on phones</h3>
+    <dl><div><dt>Problem in v1</dt><dd>About 215px of header before any content.</dd></div><div><dt>What v2 does</dt><dd>Top bar hidden on phones (its contents moved to the menu and bottom bar), a 64px header and a compact search bar.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#locations" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#17</div>
+  <div class="body"><h3>Everyone defaulted to the Jackson, MS branch</h3>
+    <dl><div><dt>Problem in v1</dt><dd>An Arizona contractor would see Mississippi stock.</dd></div><div><dt>What v2 does</dt><dd>No branch until the user chooses one, with “Choose your branch” prompts wherever stock appears. Set as My Branch also clears.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#locations" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#18</div>
+  <div class="body"><h3>Two search bars on the homepage</h3>
+    <dl><div><dt>Problem in v1</dt><dd>The site search and the hero search were stacked.</dd></div><div><dt>What v2 does</dt><dd>Hero search removed.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#home" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="confirm">
+  <div class="num">#19</div>
+  <div class="body"><h3>Credit application missing key information</h3>
+    <dl><div><dt>Problem in v1</dt><dd>No guarantor home address, SSN or consent; the tax upload always showed; no way to resume.</dd></div><div><dt>What v2 does</dt><dd>Added guarantor address, SSN (masked) and credit-check consent. The tax-exempt upload only appears when needed. Save &amp; Finish Later emails a link.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-confirm">Fixed · client to confirm</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#credit-app" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#20</div>
+  <div class="body"><h3>Drawing was the only way to sign</h3>
+    <dl><div><dt>Problem in v1</dt><dd>Fails keyboard and motor-impaired users.</dd></div><div><dt>What v2 does</dt><dd>Type your name (the default) or draw.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#credit-app" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#21</div>
+  <div class="body"><h3>No error or empty states</h3>
+    <dl><div><dt>Problem in v1</dt><dd>Forms could be submitted blank; nothing showed for no results.</dd></div><div><dt>What v2 does</dt><dd>Required markers, inline errors and an error summary on every form. Empty states for search, filters, branch finder and promos.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#contact" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#22</div>
+  <div class="body"><h3>Radio groups had no group label</h3>
+    <dl><div><dt>Problem in v1</dt><dd>Screen readers didn&#x27;t announce the question.</dd></div><div><dt>What v2 does</dt><dd>Every radio group has a proper group label, including the Become a Customer choice cards.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#apply" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article></section>
+<section class="sev" id="sev-medium"><h2><span class="sevdot sev-medium" aria-hidden="true"></span>Medium <span class="c">9</span></h2><article class="item" data-status="fixed">
+  <div class="num">#23</div>
+  <div class="body"><h3>Gated pricing said the same thing 7 times</h3>
+    <dl><div><dt>Problem in v1</dt><dd>A banner plus a login box on every product row.</dd></div><div><dt>What v2 does</dt><dd>One banner and a small “Log in for your price” link per row.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#supplies" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#24</div>
+  <div class="body"><h3>Controls that looked clickable but weren&#x27;t</h3>
+    <dl><div><dt>Problem in v1</dt><dd>Chips, filters and pagination did nothing.</dd></div><div><dt>What v2 does</dt><dd>Brand, tonnage and in-stock filters work, with removable chips, Clear all and a live count. Promo and news chips are real buttons. Pagination became Load More. (Secondary checkbox groups such as voltage are still visual only.)</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#equipment" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#25</div>
+  <div class="body"><h3>Branch cards behaved ambiguously</h3>
+    <dl><div><dt>Problem in v1</dt><dd>Clicking the card did something different from the links inside it.</dd></div><div><dt>What v2 does</dt><dd>The city name is the main link, the card is no longer a click target, and actions are 40px buttons.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#locations" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#26</div>
+  <div class="body"><h3>Branch page buttons didn&#x27;t work</h3>
+    <dl><div><dt>Problem in v1</dt><dd>Directions and Call did nothing; hours weren&#x27;t a table.</dd></div><div><dt>What v2 does</dt><dd>Directions opens Google Maps in a new tab, phone numbers are tap-to-call, hours are a real table, and the time zone is stated (Arizona on MST).</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#branch" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#27</div>
+  <div class="body"><h3>Map wasted space; pins not keyboard-reachable</h3>
+    <dl><div><dt>Problem in v1</dt><dd>Arizona stretched the map; pins couldn&#x27;t be focused.</dd></div><div><dt>What v2 does</dt><dd>Arizona shown as an inset. Pins are a mouse shortcut; the list is the accessible version.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#locations" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#28</div>
+  <div class="body"><h3>Small tap targets and text</h3>
+    <dl><div><dt>Problem in v1</dt><dd>About 28px chips and 11–13px text for gloved use in bright sun.</dd></div><div><dt>What v2 does</dt><dd>44px chips and buttons (40px for small ones) and 14px minimum text.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#promos" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#29</div>
+  <div class="body"><h3>Weak heading structure</h3>
+    <dl><div><dt>Problem in v1</dt><dd>Card titles were bold text, not headings.</dd></div><div><dt>What v2 does</dt><dd>Card titles are real headings.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#home" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#30</div>
+  <div class="body"><h3>Missing accessibility basics</h3>
+    <dl><div><dt>Problem in v1</dt><dd>No skip link, no focus management, two banner landmarks.</dd></div><div><dt>What v2 does</dt><dd>Skip link added, focus moves to the page heading on navigation, and the site has a single banner.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#home" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#31</div>
+  <div class="body"><h3>Long, repetitive homepage</h3>
+    <dl><div><dt>Problem in v1</dt><dd>11 sections with repeated account prompts.</dd></div><div><dt>What v2 does</dt><dd>Stats folded into the hero, one account band (hidden when logged in), 9 sections.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#home" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article></section>
+<section class="sev" id="sev-low"><h2><span class="sevdot sev-low" aria-hidden="true"></span>Low <span class="c">5</span></h2><article class="item" data-status="fixed">
+  <div class="num">#32</div>
+  <div class="body"><h3>Copy bug</h3>
+    <dl><div><dt>Problem in v1</dt><dd>“Match a matched system from the truck.”</dd></div><div><dt>What v2 does</dt><dd>Now “Spec a matched system from the truck.”</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#home" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="partly">
+  <div class="num">#33</div>
+  <div class="body"><h3>Tone too generic for the brief</h3>
+    <dl><div><dt>Problem in v1</dt><dd>The “Willie Nelson of HVAC” voice wasn&#x27;t coming through.</dd></div><div><dt>What v2 does</dt><dd>Headlines rewritten (“Parts on the shelf. Folks who know your name.”). A full copywriter pass is still needed.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-partly">Partly fixed</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#home" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#34</div>
+  <div class="body"><h3>Assumptions presented as facts</h3>
+    <dl><div><dt>Problem in v1</dt><dd>HQ city, ownership news, inventory count, sample branches.</dd></div><div><dt>What v2 does</dt><dd>Flagged in [brackets] and in the annotations, and listed under Open decisions.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#contact" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="fixed">
+  <div class="num">#35</div>
+  <div class="body"><h3>No analytics plan</h3>
+    <dl><div><dt>Problem in v1</dt><dd>KPIs had no tracking events defined.</dd></div><div><dt>What v2 does</dt><dd>GA4 events are listed for each page in the annotations panel.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#credit-app" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article><article class="item" data-status="decision">
+  <div class="num">#36</div>
+  <div class="body"><h3>Fonts and inventory integration not addressed</h3>
+    <dl><div><dt>Problem in v1</dt><dd>Shared fonts for email signatures; live stock and pricing need the client&#x27;s inventory system.</dd></div><div><dt>What v2 does</dt><dd>Inventory connection listed as an open decision. Font pairing moves to the Stylescape / hi-fi stage.</dd></div></dl>
+  </div>
+  <div class="meta"><span class="st st-decision">Needs client decision</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#sitemap" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+</article></section>
+
+  <footer>Severity reflects impact on the brief's KPIs (branch searches, account registration, credit applications, orders, job applications) and on WCAG 2.2 AA. Sample branch cities and 555-01xx phone numbers in the prototype are placeholders.</footer>
+</main>
+<script>
+(() => {
+  const btns = [...document.querySelectorAll(".legend button")];
+  const items = [...document.querySelectorAll(".item")];
+  const hint = document.getElementById("fhint");
+  const labels = { fixed:"Fixed in v2", confirm:"Fixed · client to confirm", partly:"Partly fixed", decision:"Needs client decision" };
+  btns.forEach(b => b.addEventListener("click", () => {
+    const on = b.getAttribute("aria-pressed") !== "true";
+    btns.forEach(x => x.setAttribute("aria-pressed", "false"));
+    if (on) b.setAttribute("aria-pressed", "true");
+    const f = on ? b.dataset.f : null;
+    let n = 0;
+    items.forEach(it => { const show = !f || it.dataset.status === f; it.hidden = !show; if (show) n++; });
+    document.querySelectorAll(".sev").forEach(s => s.hidden = !s.querySelector(".item:not([hidden])"));
+    hint.textContent = f ? `Showing ${n} finding${n===1?"":"s"}: ${labels[f]}. Select it again to show all.` : "Showing all 36 findings. Select a status to filter.";
+  }));
+})();
+</script>
