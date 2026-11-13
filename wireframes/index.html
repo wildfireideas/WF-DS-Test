@@ -1,0 +1,951 @@
+<title>Jackson Supply Wireframes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: prototype chrome (toolbar + notes rail) around a resizable "site" frame; the site uses container queries so the Mobile toggle shows true small-screen layouts. Single light theme on purpose: wireframes read as paper. */
+:root {
+  --paper: #ffffff;
+  --desk: #e9ebee;
+  --ink: #16191d;
+  --g1: #f3f4f6;
+  --g2: #e2e5e9;
+  --g3: #c4c9cf;
+  --g4: #8a929b;
+  --g5: #545b63;
+  --note: #2f62d6;
+  --note-bg: #eaf0fd;
+  --ok: #2d7a4a;
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { background: var(--desk); color: var(--ink); }
+body { font-family: var(--font); font-size: 15px; line-height: 1.5; margin: 0; }
+a { color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--note); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+
+/* ---------- Prototype chrome ---------- */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 60; background: var(--ink); }
+.proto-bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; background: var(--ink); color: #fff; font-family: var(--mono); font-size: 12.5px;
+  padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
+.proto-bar .name { font-weight: 600; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+.proto-bar .name small { color: #9aa3ad; font-weight: 400; text-transform: none; letter-spacing: 0; margin-left: 6px; }
+.proto-bar label { display: inline-flex; align-items: center; gap: 8px; color: #c8cdd3; }
+.proto-bar select { background: #2a2f36; color: #fff; border: 1px solid #3c434c; border-radius: 4px; padding: 5px 8px; max-width: 62vw; }
+.seg { display: inline-flex; border: 1px solid #3c434c; border-radius: 4px; overflow: hidden; }
+.seg button { background: transparent; border: 0; color: #c8cdd3; padding: 5px 10px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: #fff; color: var(--ink); }
+.proto-bar .spacer { flex: 1; }
+
+.proto { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: start;
+  padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.proto.no-notes { grid-template-columns: minmax(0, 1fr); }
+.proto.no-notes .rail { display: none; }
+@media (max-width: 1080px) { .proto { grid-template-columns: minmax(0, 1fr); } }
+.stage { min-width: 0; display: flex; justify-content: center; }
+.device { width: 100%; max-width: 1280px; transition: max-width .25s ease; }
+.device.mobile { max-width: 390px; }
+.device-label { font-family: var(--mono); font-size: 11.5px; color: var(--g5); display: flex; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.site { container-type: inline-size; container-name: site; background: var(--paper); border: 1px solid var(--g3); box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 12px 32px rgba(20,30,40,.08); position: relative; overflow: hidden; }
+.device.mobile .site { border-radius: 28px; border-width: 8px; border-color: var(--ink); }
+
+.rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 64px); font-size: 13.5px; min-width: 0; }
+.rail h2 { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--g5); margin: 0 0 4px; font-weight: 600; }
+.rail .pg { font-size: 18px; font-weight: 700; margin: 0 0 4px; }
+.rail .tpl { font-family: var(--mono); font-size: 11.5px; color: var(--g5); margin: 0 0 14px; }
+.rail ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.rail li { display: grid; grid-template-columns: 22px minmax(0,1fr); gap: 10px; background: var(--paper); border: 1px solid var(--g2); border-radius: 6px; padding: 10px 12px; }
+.rail li b { display: block; font-size: 13px; }
+.rail li > div > span { color: var(--g5); display: block; }
+.rail .legend { margin-top: 16px; font-family: var(--mono); font-size: 11.5px; color: var(--g5); line-height: 1.6; }
+
+.pin { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--note); color: #fff;
+  font: 600 11.5px/1 var(--mono); flex: none; vertical-align: middle; box-shadow: 0 0 0 3px rgba(47,98,214,.18); }
+.pin-abs { position: absolute; top: 10px; right: 10px; z-index: 3; }
+.no-pins .site .pin { display: none; }
+
+/* ---------- Wireframe primitives ---------- */
+.site { font-size: 15px; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: 32px; padding-right: 32px; }
+@container site (max-width: 760px) { .wrap { padding-left: 16px; padding-right: 16px; } }
+.sec { padding-block: 56px; position: relative; }
+.sec.tight { padding-block: 32px; }
+.sec.tint { background: var(--g1); }
+.sec.dark { background: var(--g5); color: #fff; }
+@container site (max-width: 760px) { .sec { padding-block: 36px; } }
+.eyebrow { font-family: var(--mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: .1em; color: var(--g5); margin: 0 0 8px; font-weight: 500; }
+.dark .eyebrow { color: #dfe3e7; }
+h1, h2, h3, h4 { margin: 0; line-height: 1.15; text-wrap: balance; letter-spacing: -.01em; }
+.h1 { font-size: 46px; font-weight: 800; }
+.h2 { font-size: 30px; font-weight: 750; }
+.h3 { font-size: 19px; font-weight: 700; }
+.h4 { font-size: 15px; font-weight: 700; }
+@container site (max-width: 760px) { .h1 { font-size: 31px; } .h2 { font-size: 24px; } .h3 { font-size: 17px; } }
+.lede { font-size: 17px; color: var(--g5); max-width: 62ch; margin: 12px 0 0; }
+.dark .lede { color: #e7eaed; }
+p { margin: 0; }
+.muted { color: var(--g5); }
+.small { font-size: 13px; }
+.mono { font-family: var(--mono); }
+.stack { display: grid; gap: 12px; }
+.stack-lg { display: grid; gap: 24px; }
+.row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.between { justify-content: space-between; }
+.sec-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 28px; }
+.g2, .g3, .g4, .g5, .g6 { display: grid; gap: 20px; }
+.g2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+.g3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+.g4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
+.g5 { grid-template-columns: repeat(5, minmax(0,1fr)); }
+.g6 { grid-template-columns: repeat(6, minmax(0,1fr)); }
+.split { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 40px; align-items: center; }
+.side { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 32px; align-items: start; }
+@container site (max-width: 1000px) { .g4, .g5, .g6 { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+@container site (max-width: 760px) {
+  .g2, .g3, .split, .side { grid-template-columns: minmax(0,1fr); gap: 16px; }
+  .g4, .g5, .g6 { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+}
+
+.ph { position: relative; background:
+  linear-gradient(to top right, transparent calc(50% - .6px), var(--g3) calc(50% - .6px), var(--g3) calc(50% + .6px), transparent calc(50% + .6px)),
+  linear-gradient(to bottom right, transparent calc(50% - .6px), var(--g3) calc(50% - .6px), var(--g3) calc(50% + .6px), transparent calc(50% + .6px)),
+  var(--g1);
+  border: 1px solid var(--g3); display: flex; align-items: center; justify-content: center; text-align: center; min-height: 120px; max-width: 100%; }
+.ph > span { background: var(--paper); border: 1px solid var(--g3); font-family: var(--mono); font-size: 11.5px; color: var(--g5); padding: 4px 8px; max-width: 86%; }
+.ar-16x9 { aspect-ratio: 16/9; min-height: 0; }
+.ar-4x3 { aspect-ratio: 4/3; min-height: 0; }
+.ar-1 { aspect-ratio: 1; min-height: 0; }
+.ar-3x1 { aspect-ratio: 3/1; min-height: 0; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px; border: 2px solid var(--ink); background: var(--paper);
+  color: var(--ink); font-weight: 650; font-size: 14.5px; text-decoration: none; border-radius: 4px; cursor: pointer; white-space: nowrap; }
+.btn.primary { background: var(--ink); color: #fff; }
+.btn.ghost { border-color: var(--g3); }
+.btn.sm { min-height: 36px; padding: 0 12px; font-size: 13.5px; }
+.btn.block { width: 100%; }
+.dark .btn { background: transparent; color: #fff; border-color: #fff; }
+.dark .btn.primary { background: #fff; color: var(--ink); }
+.link { font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--g3); border-radius: 999px; padding: 4px 12px; font-size: 13px; background: var(--paper); cursor: pointer; white-space: nowrap; }
+.chip[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+.tag { display: inline-block; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; border: 1px solid var(--g3); padding: 2px 7px; border-radius: 3px; color: var(--g5); background: var(--paper); }
+.tag.ok { color: var(--ok); border-color: var(--ok); }
+.tag.solid { background: var(--ink); color: #fff; border-color: var(--ink); }
+.card { border: 1px solid var(--g3); background: var(--paper); padding: 20px; position: relative; min-width: 0; }
+.card.flat { border-color: var(--g2); }
+.line { height: 10px; background: var(--g2); border-radius: 2px; }
+.line.w60 { width: 60%; } .line.w80 { width: 80%; } .line.w40 { width: 40%; }
+.lines { display: grid; gap: 8px; }
+hr.rule { border: 0; border-top: 1px solid var(--g2); margin: 0; }
+.ext::after { content: " ↗"; font-weight: 400; }
+.pdf::before { content: "PDF"; font-family: var(--mono); font-size: 10.5px; font-weight: 600; border: 1px solid currentColor; padding: 1px 4px; margin-right: 8px; border-radius: 2px; }
+
+/* Forms */
+.field { display: grid; gap: 6px; min-width: 0; }
+.field label, .lbl { font-size: 13px; font-weight: 600; }
+.field .hint { font-size: 12.5px; color: var(--g5); }
+.input, .select, .textarea { width: 100%; min-height: 44px; border: 1.5px solid var(--g3); background: var(--paper); padding: 9px 12px; border-radius: 4px; }
+.textarea { min-height: 110px; resize: vertical; }
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
+.check input { width: 18px; height: 18px; margin-top: 2px; flex: none; }
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 20px; }
+.form-grid .full { grid-column: 1 / -1; }
+@container site (max-width: 760px) { .form-grid { grid-template-columns: minmax(0,1fr); } }
+.searchbar { display: flex; border: 2px solid var(--ink); border-radius: 4px; background: var(--paper); overflow: hidden; min-width: 0; }
+.searchbar input { flex: 1; min-width: 0; border: 0; padding: 0 14px; min-height: 48px; background: transparent; }
+.searchbar select { border: 0; border-right: 1px solid var(--g3); padding: 0 10px; background: var(--g1); max-width: 40%; }
+@container site (max-width: 760px) { .searchbar select { display: none; } }
+.searchbar button { border: 0; background: var(--ink); color: #fff; padding: 0 18px; font-weight: 650; cursor: pointer; }
+.success { border: 2px solid var(--ok); background: #eef7f1; padding: 20px; border-radius: 4px; }
+
+/* ---------- Header ---------- */
+.util { background: var(--g5); color: #fff; font-size: 13px; }
+.util .wrap { display: flex; justify-content: space-between; gap: 16px; align-items: center; min-height: 38px; flex-wrap: wrap; }
+.util a { text-decoration: none; }
+.util .row { gap: 20px; }
+.hdr { border-bottom: 1px solid var(--g3); background: var(--paper); position: relative; z-index: 20; }
+.hdr .wrap { display: flex; align-items: center; gap: 28px; min-height: 84px; }
+.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex: none; }
+.logo .mark { width: 58px; height: 52px; border: 2px dashed var(--g4); display: grid; place-items: center; font: 700 15px var(--mono); color: var(--g5); background: var(--g1); }
+.logo .wm { line-height: 1.1; }
+.logo .wm b { display: block; font-size: 15px; letter-spacing: .02em; }
+.logo .wm i { font-size: 12.5px; color: var(--g5); }
+.nav { display: flex; gap: 2px; align-items: center; flex: 1; }
+.nav > .item { position: relative; }
+.nav > .item > a, .nav > .item > button { display: inline-flex; align-items: center; gap: 6px; padding: 10px 12px; font-weight: 650; font-size: 14.5px; text-decoration: none; background: none; border: 0; cursor: pointer; border-radius: 4px; }
+.nav > .item > a:hover, .nav > .item > button:hover { background: var(--g1); }
+.nav > .item > button::after { content: ""; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg) translateY(-2px); }
+.nav .menu { display: none; position: absolute; top: 100%; left: 0; min-width: 270px; background: var(--paper); border: 1px solid var(--g3); box-shadow: 0 14px 30px rgba(0,0,0,.12); padding: 10px; z-index: 30; }
+.nav .item:hover .menu, .nav .item:focus-within .menu { display: grid; gap: 2px; }
+.nav .menu a { padding: 10px 12px; text-decoration: none; border-radius: 3px; display: grid; }
+.nav .menu a small { color: var(--g5); font-size: 12.5px; }
+.nav .menu a:hover { background: var(--g1); }
+.nav .menu a b { font-size: 14px; }
+.hdr-actions { display: flex; gap: 10px; align-items: center; flex: none; }
+.acct-pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--g3); border-radius: 999px; padding: 6px 12px 6px 6px; font-size: 13px; }
+.acct-pill .av { width: 26px; height: 26px; border-radius: 50%; background: var(--g2); display: grid; place-items: center; font-weight: 700; font-size: 11px; }
+.hamb { display: none; width: 44px; height: 44px; border: 1.5px solid var(--g3); background: var(--paper); border-radius: 4px; cursor: pointer; align-items: center; justify-content: center; }
+.hamb i { display: block; width: 20px; height: 2px; background: var(--ink); box-shadow: 0 -6px 0 var(--ink), 0 6px 0 var(--ink); }
+.subsearch { border-bottom: 1px solid var(--g2); background: var(--g1); }
+.subsearch .wrap { padding-block: 12px; display: flex; gap: 16px; align-items: center; }
+.subsearch .searchbar { flex: 1; }
+.subsearch .branch-sel { font-size: 13px; white-space: nowrap; }
+.mnav { display: none; }
+@container site (max-width: 1000px) {
+  .nav, .hdr-actions .hide-m { display: none; }
+  .hamb { display: inline-flex; }
+  .hdr .wrap { justify-content: space-between; min-height: 68px; }
+  .logo .mark { width: 46px; height: 42px; font-size: 13px; }
+  .util .hide-m { display: none; }
+  .subsearch .branch-sel { display: none; }
+  .menu-open .mnav { display: block; border-bottom: 1px solid var(--g3); background: var(--paper); }
+}
+.mnav details { border-top: 1px solid var(--g2); }
+.mnav summary, .mnav > .wrap > a { display: flex; justify-content: space-between; padding: 14px 0; font-weight: 650; cursor: pointer; text-decoration: none; list-style: none; }
+.mnav summary::-webkit-details-marker { display: none; }
+.mnav summary::after { content: "+"; font-weight: 400; }
+.mnav details[open] summary::after { content: "–"; }
+.mnav details a { display: block; padding: 10px 0 10px 14px; text-decoration: none; color: var(--g5); }
+.mnav > .wrap > a { border-top: 1px solid var(--g2); }
+.mnav .row { padding-block: 16px; }
+
+/* Mobile action dock */
+.dock { display: none; }
+@container site (max-width: 760px) {
+  .dock { display: grid; grid-template-columns: repeat(4, 1fr); position: sticky; bottom: 0; z-index: 25; background: var(--paper); border-top: 1px solid var(--g3); }
+  .dock a { display: grid; justify-items: center; gap: 2px; padding: 8px 2px 10px; text-decoration: none; font-size: 11.5px; font-weight: 600; }
+  .dock a i { width: 22px; height: 22px; border: 2px solid var(--g5); border-radius: 5px; display: block; }
+  .dock a.on i { background: var(--ink); border-color: var(--ink); }
+}
+
+/* ---------- Footer ---------- */
+.ftr { background: var(--g5); color: #fff; }
+.ftr .top { display: grid; grid-template-columns: 1.3fr repeat(4, minmax(0,1fr)); gap: 32px; padding-block: 48px 32px; }
+.ftr h4 { font-size: 13px; font-family: var(--mono); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 12px; color: #e3e6ea; }
+.ftr ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.ftr a { text-decoration: none; }
+.ftr a:hover { text-decoration: underline; }
+.ftr .logo .mark { border-color: #c9ced4; color: #fff; background: transparent; }
+.ftr .bottom { border-top: 1px solid rgba(255,255,255,.25); padding-block: 18px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 12.5px; color: #e3e6ea; }
+.ftr .btn { background: transparent; color: #fff; border-color: #fff; }
+@container site (max-width: 1000px) { .ftr .top { grid-template-columns: repeat(2, minmax(0,1fr)); } .ftr .top > :first-child { grid-column: 1 / -1; } }
+
+/* ---------- Page-specific ---------- */
+.hero { padding-block: 56px; border-bottom: 1px solid var(--g2); position: relative; }
+.hero .split { gap: 48px; }
+.quick { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 0; border: 1px solid var(--g3); background: var(--paper); }
+.quick a { padding: 20px; text-decoration: none; display: grid; gap: 6px; border-right: 1px solid var(--g3); min-width: 0; }
+.quick a:last-child { border-right: 0; }
+.quick a:hover { background: var(--g1); }
+.quick .ico { width: 34px; height: 34px; border: 2px solid var(--ink); border-radius: 6px; }
+@container site (max-width: 760px) {
+  .quick { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .quick a:nth-child(2) { border-right: 0; }
+  .quick a:nth-child(-n+2) { border-bottom: 1px solid var(--g3); }
+}
+.stat b { display: block; font-size: 40px; font-weight: 800; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 13.5px; color: var(--g5); }
+.dark .stat span { color: #e3e6ea; }
+@container site (max-width: 760px) { .stat b { font-size: 30px; } }
+.brandtile { border: 1px solid var(--g3); min-height: 88px; display: grid; place-items: center; font-family: var(--mono); font-size: 13px; color: var(--g5); background: var(--paper); text-decoration: none; padding: 8px; text-align: center; }
+.cat { border: 1px solid var(--g3); padding: 16px; text-decoration: none; display: grid; gap: 10px; background: var(--paper); min-width: 0; }
+.cat:hover { border-color: var(--ink); }
+.cat .ph { min-height: 0; aspect-ratio: 4/3; }
+
+.crumbs { font-size: 13px; color: var(--g5); padding-block: 16px 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.crumbs a { text-decoration: none; }
+.pagehead { padding-block: 24px 40px; border-bottom: 1px solid var(--g2); position: relative; }
+
+.filters { display: grid; gap: 22px; }
+.filters fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; }
+.filters legend { font-weight: 700; font-size: 13.5px; margin-bottom: 6px; padding: 0; }
+@container site (max-width: 760px) { .filters { display: none; } .filters.open { display: grid; } }
+.mfilter { display: none; }
+@container site (max-width: 760px) { .mfilter { display: inline-flex; } }
+
+.plist { display: grid; gap: 0; border-top: 1px solid var(--g3); }
+.prow { display: grid; grid-template-columns: 120px minmax(0, 1fr) 220px; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--g3); align-items: center; }
+.prow .ph { min-height: 0; aspect-ratio: 1; }
+.price { display: grid; gap: 6px; justify-items: start; }
+.price b { font-size: 21px; font-variant-numeric: tabular-nums; }
+.gate { border: 1.5px dashed var(--g4); padding: 10px 12px; font-size: 13px; display: grid; gap: 6px; width: 100%; background: var(--g1); }
+@container site (max-width: 760px) { .prow { grid-template-columns: 84px minmax(0, 1fr); } .prow .price { grid-column: 1 / -1; } }
+
+.loc { display: grid; grid-template-columns: 400px minmax(0, 1fr); border: 1px solid var(--g3); height: 640px; }
+.loc .list { overflow-y: auto; border-right: 1px solid var(--g3); }
+.loc .map { position: relative; background: var(--g1); min-height: 0; }
+.loc .map svg { width: 100%; height: 100%; display: block; }
+.bcard { padding: 16px 18px; border-bottom: 1px solid var(--g2); display: grid; gap: 4px; cursor: pointer; }
+.bcard:hover, .bcard.on { background: var(--g1); }
+.bcard .t { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+@container site (max-width: 900px) { .loc { grid-template-columns: minmax(0,1fr); height: auto; } .loc .map { height: 260px; order: -1; border-bottom: 1px solid var(--g3); } .loc .list { border-right: 0; max-height: 520px; } }
+.mapsvg .dot { fill: var(--g5); stroke: #fff; stroke-width: 2; cursor: pointer; }
+.mapsvg .dot.on { fill: var(--note); r: 9; }
+.mapsvg text { font-family: var(--mono); font-size: 11px; fill: var(--g5); }
+
+.hours { display: grid; grid-template-columns: auto 1fr; gap: 4px 20px; font-size: 14px; font-variant-numeric: tabular-nums; }
+.kv { display: grid; gap: 2px; margin: 0; }
+.kv dt { font-size: 12px; font-family: var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--g5); }
+.kv dd { margin: 0; font-weight: 600; }
+
+.steps { display: flex; gap: 0; border: 1px solid var(--g3); counter-reset: s; overflow-x: auto; }
+.steps li { list-style: none; flex: 1; padding: 12px 14px; border-right: 1px solid var(--g3); font-size: 13px; color: var(--g5); min-width: 120px; display: grid; gap: 2px; }
+.steps li:last-child { border-right: 0; }
+.steps li b { font-family: var(--mono); font-size: 11px; }
+.steps li.on { background: var(--ink); color: #fff; }
+.steps li.done { background: var(--g1); color: var(--ink); }
+.opt { border: 1.5px solid var(--g3); padding: 16px; display: grid; gap: 6px; cursor: pointer; text-align: left; background: var(--paper); border-radius: 4px; min-width: 0; }
+.opt[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); background: var(--g1); }
+.opt b { font-size: 15px; }
+.opt span { font-size: 13px; color: var(--g5); }
+.sig { border: 1.5px dashed var(--g4); height: 150px; width: 100%; background: var(--g1); touch-action: none; display: block; cursor: crosshair; }
+
+.doc { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--g2); }
+.article { max-width: 70ch; display: grid; gap: 16px; }
+.faq details { border-bottom: 1px solid var(--g3); padding: 14px 0; }
+.faq summary { font-weight: 650; cursor: pointer; }
+.faq details p { margin-top: 8px; color: var(--g5); }
+
+.smap { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
+.smap .col { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.smap .col > b { font-family: var(--mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--g5); }
+.node { display: block; text-decoration: none; padding: 9px 12px; font-size: 13.5px; font-weight: 600; background: var(--ink); color: #fff; border: 2px solid var(--ink); border-radius: 3px; }
+.node.form { background: var(--paper); color: var(--ink); }
+.node.ext { background: var(--g2); color: var(--ink); border-color: var(--g2); }
+.node.ext::after { content: " ↗"; }
+.node.child { margin-left: 16px; }
+@container site (max-width: 1000px) { .smap { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+@container site (max-width: 560px) { .smap { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+.banner { border: 1.5px dashed var(--g4); padding: 14px 18px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: space-between; background: var(--g1); }
+</style>
+
+<header class="proto-bar" role="banner">
+  <span class="name">JSC · Wireframe Prototype <small>v1 · mid-fi · Nov 2026</small></span>
+  <label for="pagePick">Page
+    <select id="pagePick" aria-label="Jump to page"></select>
+  </label>
+  <span class="seg" role="group" aria-label="Viewport">
+    <button type="button" id="vDesk" aria-pressed="true">Desktop</button>
+    <button type="button" id="vMob" aria-pressed="false">Mobile</button>
+  </span>
+  <span class="seg" role="group" aria-label="Account state">
+    <button type="button" id="sOut" aria-pressed="true">Guest</button>
+    <button type="button" id="sIn" aria-pressed="false">Logged in</button>
+  </span>
+  <span class="spacer"></span>
+  <label><input type="checkbox" id="notesTog" checked> Annotations</label>
+</header>
+
+<div class="proto" id="proto">
+  <div class="stage">
+    <div class="device" id="device">
+      <div class="device-label"><span id="devName">Desktop · 1280</span><span id="devRoute">#home</span></div>
+      <div class="site" id="site"></div>
+    </div>
+  </div>
+  <aside class="rail" id="rail" aria-label="Annotations"></aside>
+</div>
+
+<script>
+(() => {
+/* ---------------- Data ---------------- */
+// SAMPLE branch data for wireframing only: cities are placeholders until the client supplies the real 27-branch list.
+const BRANCHES = [
+  ["Jackson","MS",32.30,-90.18,true],["Hattiesburg","MS",31.33,-89.29],["Gulfport","MS",30.37,-89.09],["Tupelo","MS",34.26,-88.70],["Meridian","MS",32.36,-88.70],
+  ["Baton Rouge","LA",30.45,-91.15],["Shreveport","LA",32.52,-93.75],["Monroe","LA",32.51,-92.12],["Lafayette","LA",30.22,-92.02],["New Orleans","LA",29.95,-90.07],
+  ["Tyler","TX",32.35,-95.30],["Longview","TX",32.50,-94.74],["Texarkana","TX",33.43,-94.05],["Lufkin","TX",31.34,-94.73],["Dallas","TX",32.78,-96.80],
+  ["Mobile","AL",30.69,-88.04],["Birmingham","AL",33.52,-86.80],["Huntsville","AL",34.73,-86.59],["Montgomery","AL",32.37,-86.30],
+  ["Memphis","TN",35.15,-90.05],["Jackson","TN",35.61,-88.81],["Nashville","TN",36.16,-86.78],
+  ["Oklahoma City","OK",35.47,-97.52],["Tulsa","OK",36.15,-95.99],
+  ["Phoenix","AZ",33.45,-112.07],["Tucson","AZ",32.22,-110.97],["Mesa","AZ",33.42,-111.83]
+].map((b,i)=>({ i, city:b[0], st:b[1], lat:b[2], lon:b[3], hq:!!b[4] }));
+const STATES = { TX:"Texas", LA:"Louisiana", MS:"Mississippi", AL:"Alabama", TN:"Tennessee", OK:"Oklahoma", AZ:"Arizona" };
+
+const SUPPLY_CATS = ["Refrigerants","Copper & Line Sets","Ductwork & Fittings","Motors & Blowers","Capacitors & Contactors","Thermostats & Controls","Filters & IAQ","Drain & Condensate","Electrical & Wire","Tools & Test Instruments","Insulation & Tape","Grilles & Registers"];
+const EQUIP_CATS = ["Split Systems","Heat Pumps","Gas Furnaces","Packaged Units","Ductless Mini-Splits","Evaporator Coils","Air Handlers","Commercial Rooftop"];
+
+const PAGES = [
+  ["Overview", [["sitemap","Sitemap index"]]],
+  ["Primary", [["home","Homepage"]]],
+  ["Company", [["about","About Us"],["vendors","Vendors & Partners"],["news","News"],["news-detail","News Detail"],["careers","Careers"],["apply","Employment Application"]]],
+  ["Products & Supplies", [["equipment","HVAC Equipment"],["supplies","Wholesale Supplies & Parts"],["private-label","Private Label Equipment"],["system-builder","System Builder"]]],
+  ["Locations", [["locations","Locations"],["branch","Branch Location (template)"]]],
+  ["Support Center", [["resources","Technical Resources"],["resource-detail","Technical Resource Detail"],["promos","Promos"],["promo-detail","Promo Detail"],["contact","Contact Us"]]],
+  ["Account", [["register","Register"],["credit-app","Credit Application"],["login","Login"]]]
+];
+const LABEL = Object.fromEntries(PAGES.flatMap(g => g[1]));
+
+/* ---------------- State ---------------- */
+const S = { route: "home", loggedIn: false, my: 0, view: 0, stateFilter: "All", locQuery: "", sb: { step: 0, a: {} }, ca: 0, menu: false, filterOpen: false, sent: {} };
+const store = { get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch(e){} } };
+
+/* ---------------- Helpers ---------------- */
+const $ = (s, r=document) => r.querySelector(s);
+const pin = n => `<span class="pin" aria-label="Annotation ${n}">${n}</span>`;
+const ph = (label, cls="") => `<div class="ph ${cls}"><span>${label}</span></div>`;
+const lines = (n=3) => `<div class="lines">${Array.from({length:n},(_,i)=>`<div class="line ${i===n-1?'w60':''}"></div>`).join("")}</div>`;
+const bname = b => `${b.city}, ${b.st}`;
+const crumbs = (...parts) => `<nav class="crumbs wrap" aria-label="Breadcrumb"><a href="#home">Home</a>${parts.map(p => ` / ${Array.isArray(p) ? `<a href="#${p[1]}">${p[0]}</a>` : `<span>${p}</span>`}`).join("")}</nav>`;
+const pagehead = (eyebrow, title, lede, extra="", n) => `<section class="pagehead wrap">${n?`<div class="pin-abs">${pin(n)}</div>`:""}<p class="eyebrow">${eyebrow}</p><h1 class="h1">${title}</h1>${lede?`<p class="lede">${lede}</p>`:""}${extra}</section>`;
+const formOk = (key, title, body) => S.sent[key] ? `<div class="success" role="status"><p class="h3">${title}</p><p class="muted" style="margin-top:6px">${body}</p></div>` : null;
+
+function mapSVG(sel, list) {
+  const W=640, H=320;
+  const x = lon => 30 + (lon + 113.5) / 28 * (W - 60);
+  const y = lat => 24 + (36.6 - lat) / 7 * (H - 60);
+  const ids = new Set(list.map(b=>b.i));
+  const grid = Array.from({length:9},(_,i)=>`<line x1="${i*80}" y1="0" x2="${i*80}" y2="${H}" stroke="#dde1e5"/>`).join("") + Array.from({length:5},(_,i)=>`<line x1="0" y1="${i*80}" x2="${W}" y2="${i*80}" stroke="#dde1e5"/>`).join("");
+  const dots = BRANCHES.filter(b=>ids.has(b.i)).map(b=>`<circle class="dot ${b.i===sel?'on':''}" cx="${x(b.lon).toFixed(1)}" cy="${y(b.lat).toFixed(1)}" r="6" data-pick="${b.i}"><title>${bname(b)}</title></circle>`).join("");
+  const labels = Object.keys(STATES).map(st => { const bs = BRANCHES.filter(b=>b.st===st); const ax = bs.reduce((s,b)=>s+x(b.lon),0)/bs.length; const ay = Math.max(...bs.map(b=>y(b.lat))) + 22; return `<text x="${ax.toFixed(0)}" y="${Math.min(ay,H-8).toFixed(0)}" text-anchor="middle">${st}</text>`; }).join("");
+  return `<svg class="mapsvg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Branch map (placeholder for interactive map embed)">${grid}${labels}${dots}<text x="${W-12}" y="${H-10}" text-anchor="end">Interactive map embed · placeholder</text></svg>`;
+}
+
+/* ---------------- Global chrome ---------------- */
+function header() {
+  const acct = S.loggedIn
+    ? `<span class="acct-pill hide-m"><span class="av">AM</span>ABC Mechanical · #10482</span><a class="btn sm ghost hide-m" href="#home" data-act="logout">Log out</a>`
+    : `<a class="btn sm hide-m" href="#login">Log in</a><a class="btn sm primary hide-m" href="#register">Register</a>`;
+  const b = BRANCHES[S.my];
+  return `
+  <div class="util"><div class="wrap">
+    <div class="row"><span>My branch: <a class="link" href="#branch" data-branch="${b.i}">${bname(b)}</a></span><span class="hide-m">Open today 7:00a–5:00p</span></div>
+    <div class="row"><a href="#locations">Find a Branch</a><a class="ext" href="#login" data-act="portal">Pay Your Bill</a><a class="hide-m" href="#credit-app">Apply for Credit</a></div>
+  </div></div>
+  <div class="hdr"><div class="wrap">
+    <a class="logo" href="#home" aria-label="Jackson Supply Company home"><span class="mark">JSC</span><span class="wm"><b>JACKSON SUPPLY CO.</b><i>Existing logo retained</i></span></a>
+    <nav class="nav" aria-label="Primary">
+      <div class="item"><button type="button" aria-haspopup="true">Company</button><div class="menu">
+        <a href="#about"><b>About Us</b><small>Our story, values and footprint</small></a>
+        <a href="#vendors"><b>Vendors &amp; Partners</b><small>Daikin, Goodman, Amana and more</small></a></div></div>
+      <div class="item"><button type="button" aria-haspopup="true">Products &amp; Supplies</button><div class="menu">
+        <a href="#equipment"><b>HVAC Equipment</b><small>Residential &amp; commercial systems</small></a>
+        <a href="#supplies"><b>Wholesale Supplies &amp; Parts</b><small>Thousands of A &amp; B items in stock</small></a>
+        <a href="#private-label"><b>Private Label Equipment</b><small>Jackson's own value lines</small></a>
+        <a href="#system-builder"><b>System Builder</b><small>Match a system in five steps</small></a></div></div>
+      <div class="item"><a href="#locations">Locations</a></div>
+      <div class="item"><button type="button" aria-haspopup="true">Support Center</button><div class="menu">
+        <a href="#resources"><b>Technical Resources</b><small>Spec sheets, manuals, bulletins</small></a>
+        <a href="#promos"><b>Promos</b><small>Current rebates and counter deals</small></a></div></div>
+    </nav>
+    <div class="hdr-actions">${acct}<button type="button" class="hamb" data-act="menu" aria-label="Open menu" aria-expanded="${S.menu}"><i></i></button></div>
+  </div></div>
+  <div class="mnav"><div class="wrap">
+    <details><summary>Company</summary><a href="#about">About Us</a><a href="#vendors">Vendors &amp; Partners</a></details>
+    <details><summary>Products &amp; Supplies</summary><a href="#equipment">HVAC Equipment</a><a href="#supplies">Wholesale Supplies &amp; Parts</a><a href="#private-label">Private Label Equipment</a><a href="#system-builder">System Builder</a></details>
+    <a href="#locations">Locations</a>
+    <details><summary>Support Center</summary><a href="#resources">Technical Resources</a><a href="#promos">Promos</a></details>
+    <div class="row">${S.loggedIn ? `<a class="btn block" href="#home" data-act="logout">Log out</a>` : `<a class="btn primary" href="#register" style="flex:1">Register</a><a class="btn" href="#login" style="flex:1">Log in</a>`}</div>
+  </div></div>
+  <div class="subsearch"><div class="wrap">
+    <form class="searchbar" data-form="search" role="search"><select aria-label="Search in"><option>All products</option><option>Equipment</option><option>Supplies &amp; Parts</option></select><input aria-label="Search parts" placeholder="Search part #, model # or keyword"><button type="submit">Search</button></form>
+    <span class="branch-sel small">Showing stock for <b>${bname(b)}</b> · <a class="link" href="#locations">Change</a></span>
+  </div></div>`;
+}
+
+function footer() {
+  return `<footer class="ftr"><div class="wrap">
+    <div class="top">
+      <div class="stack"><a class="logo" href="#home"><span class="mark">JSC</span><span class="wm"><b>JACKSON SUPPLY CO.</b><i style="color:#e3e6ea">Come Grow With Us</i></span></a>
+        <p class="small" style="color:#e3e6ea;max-width:30ch">27 branches across Texas, Louisiana, Mississippi, Alabama, Tennessee, Oklahoma and Arizona.</p>
+        <div class="row"><a class="btn sm" href="#locations">Find a Branch</a><a class="btn sm ext" href="#login" data-act="portal">Pay Your Bill</a></div></div>
+      <div><h4>Company</h4><ul><li><a href="#about">About Us</a></li><li><a href="#news">News</a></li><li><a href="#vendors">Vendors &amp; Partners</a></li><li><a href="#careers">Careers</a></li></ul></div>
+      <div><h4>Products &amp; Supplies</h4><ul><li><a href="#equipment">HVAC Equipment</a></li><li><a href="#supplies">Wholesale Supplies &amp; Parts</a></li><li><a href="#private-label">Private Label Equipment</a></li><li><a href="#system-builder">System Builder</a></li></ul></div>
+      <div><h4>Support</h4><ul><li><a href="#resources">Technical Resources</a></li><li><a href="#promos">Promos</a></li><li><a href="#contact">Contact Us</a></li></ul></div>
+      <div><h4>Account</h4><ul><li><a href="#locations">Locations</a></li><li><a href="#register">Register</a></li><li><a href="#login">Login</a></li><li><a href="#credit-app">Credit Application</a></li></ul></div>
+    </div>
+    <div class="bottom"><span>© 2026 Jackson Supply Company. All rights reserved.</span><span class="row" style="gap:16px"><a href="#home">Privacy</a><a href="#home">Terms of Sale</a><a href="#home">Accessibility (WCAG 2.2 AA)</a><span>[ Social icons ]</span></span></div>
+  </div></footer>`;
+}
+
+function dock() {
+  const r = S.route;
+  return `<nav class="dock" aria-label="Quick actions">
+    <a href="#locations" class="${r==='locations'||r==='branch'?'on':''}"><i></i>Branches</a>
+    <a href="#supplies" class="${r==='supplies'||r==='equipment'?'on':''}"><i></i>Shop</a>
+    <a href="#login" data-act="portal"><i></i>Pay Bill</a>
+    <a href="${S.loggedIn?'#home':'#login'}" class="${r==='login'||r==='register'?'on':''}"><i></i>${S.loggedIn?'Account':'Log in'}</a>
+  </nav>`;
+}
+
+/* ---------------- Reusable modules ---------------- */
+const branchFinder = (n) => `<section class="sec tint"><div class="wrap split">
+  <div class="stack">${n?pin(n):""}<p class="eyebrow">27 branches · 7 states</p><h2 class="h2">There's a Jackson counter near your next job.</h2>
+  <p class="lede">Search by ZIP or city to see hours, directions and what's on the shelf before you drive.</p>
+  <form class="searchbar" data-form="finder" style="margin-top:8px"><input aria-label="ZIP or city" placeholder="ZIP code or city"><button type="submit">Find a Branch</button></form>
+  <a class="link small" href="#locations" data-act="geo">Use my current location</a></div>
+  <div class="card" style="padding:0;aspect-ratio:2/1">${mapSVG(S.my, BRANCHES)}</div>
+</div></section>`;
+
+const registerBand = (n) => `<section class="sec dark"><div class="wrap split">
+  <div class="stack">${n?pin(n):""}<p class="eyebrow">Contractor accounts</p><h2 class="h2">Your pricing, your branch, your account. In your pocket.</h2>
+  <p class="lede">Register to see account pricing and local stock. New to Jackson? Apply for credit online and sign from your phone.</p></div>
+  <div class="row" style="justify-content:flex-end"><a class="btn primary" href="#register">Register an Account</a><a class="btn" href="#credit-app">Apply for Credit</a></div>
+</div></section>`;
+
+const priceBlock = (i) => S.loggedIn
+  ? `<div class="price"><span class="small muted">Your price</span><b>$${(i*137+412).toLocaleString()}.00</b><span class="tag ok">In stock · ${bname(BRANCHES[S.my])} (${(i*3)%14+2})</span><button class="btn sm primary" type="button" data-act="cart">Add to Order</button></div>`
+  : `<div class="price"><div class="gate"><b>Pricing for account holders</b><span class="muted">Log in to see your price and branch stock.</span><a class="btn sm primary" href="#login">Log in for Pricing</a></div></div>`;
+
+/* ---------------- Pages ---------------- */
+const P = {};
+const N = {}; // annotations per page: [title, body]
+
+P.sitemap = () => `${pagehead("Prototype index","Sitemap recommendation","Every page in this prototype, arranged as in the 09/09/2026 sitemap. Click any node to open its wireframe.","",null)}
+  <section class="sec wrap stack-lg">
+    <div class="row small"><span class="node" style="display:inline-block">Page</span><span class="node form" style="display:inline-block">Form</span><span class="node ext" style="display:inline-block">External link</span></div>
+    <div><a class="node" href="#home" style="display:inline-block">Homepage</a></div>
+    <div class="smap">
+      <div class="col"><b>Company</b><a class="node" href="#about">About Us</a><a class="node" href="#vendors">Vendors &amp; Partners</a><a class="node" href="#news">News (footer)</a><a class="node child" href="#news-detail">News Detail</a><a class="node" href="#careers">Careers (footer)</a><a class="node form child" href="#apply">Employment Application</a></div>
+      <div class="col"><b>Products &amp; Supplies</b><a class="node" href="#equipment">HVAC Equipment</a><a class="node" href="#supplies">Wholesale Supplies &amp; Parts</a><a class="node" href="#private-label">Private Label Equipment</a><a class="node" href="#system-builder">System Builder</a></div>
+      <div class="col"><b>Locations</b><a class="node" href="#locations">Locations</a>${BRANCHES.slice(0,3).map(b=>`<a class="node child" href="#branch" data-branch="${b.i}">${bname(b)}</a>`).join("")}<a class="node child" href="#locations">+ 24 branch pages</a></div>
+      <div class="col"><b>Support Center</b><a class="node" href="#resources">Technical Resources</a><a class="node child" href="#resource-detail">Detail</a><a class="node" href="#promos">Promos</a><a class="node child" href="#promo-detail">Detail</a><a class="node" href="#contact">Contact Us (footer)</a></div>
+      <div class="col"><b>Register</b><a class="node" href="#register">Register</a><a class="node form child" href="#credit-app">Credit Application</a></div>
+      <div class="col"><b>Login</b><a class="node form" href="#login">Login</a><a class="node ext child" href="#login" data-act="portal">Payment Portal</a></div>
+    </div>
+  </section>`;
+N.sitemap = [["How to use this prototype","Use the Page menu or click any node. Toggle Desktop/Mobile to see the mobile-first layouts, and Guest/Logged in to see gated pricing."],["Sample content","Branch cities, products and copy are placeholders for structure only. Swap in the client's real branch list and catalog."]];
+
+P.home = () => `
+  <section class="hero"><div class="wrap split">
+    <div class="stack-lg">
+      <div class="stack"><p class="eyebrow">HVAC wholesale · Since [year] ${pin(1)}</p>
+      <h1 class="h1">The parts you need, in stock at a counter near you.</h1>
+      <p class="lede">27 branches across the South with deep supply inventory, Daikin, Goodman and Amana equipment, and people who've been in the trade 15 to 40 years.</p></div>
+      <form class="searchbar" data-form="search" role="search"><input aria-label="Search parts" placeholder="Search 10,000+ parts by part # or keyword"><button type="submit">Search</button></form>
+      <div class="row"><a class="btn primary" href="#register">Open an Account</a><a class="btn" href="#locations">Find a Branch</a></div>
+    </div>
+    ${ph("Hero photo: authentic branch counter / contractor on the job (client-supplied)","ar-4x3")}
+  </div></section>
+  <section class="sec tight"><div class="wrap stack">${pin(2)}
+    <div class="quick">
+      <a href="#locations"><span class="ico"></span><b>Find a Branch</b><span class="small muted">Hours, directions, stock</span></a>
+      <a href="#supplies"><span class="ico"></span><b>Search Parts</b><span class="small muted">A &amp; B items on the shelf</span></a>
+      <a href="#login" data-act="portal"><span class="ico"></span><b class="ext">Pay Your Bill</b><span class="small muted">Secure payment portal</span></a>
+      <a href="#credit-app"><span class="ico"></span><b>Apply for Credit</b><span class="small muted">Sign online in minutes</span></a>
+    </div></div></section>
+  <section class="sec"><div class="wrap">
+    <div class="sec-head"><div><p class="eyebrow">Products &amp; Supplies ${pin(3)}</p><h2 class="h2">A supply house first. Equipment too.</h2></div><a class="link" href="#supplies">Shop all supplies</a></div>
+    <div class="g6">${SUPPLY_CATS.slice(0,6).map(c=>`<a class="cat" href="#supplies">${ph("Category image")}<b class="small">${c}</b></a>`).join("")}</div>
+  </div></section>
+  <section class="sec tint"><div class="wrap">
+    <div class="sec-head"><div><p class="eyebrow">Equipment ${pin(4)}</p><h2 class="h2">Daikin, Goodman and Amana, stocked locally.</h2></div><a class="link" href="#equipment">Browse equipment</a></div>
+    <div class="g3">${["Daikin","Goodman","Amana"].map(b=>`<a class="card stack" href="#vendors" style="text-decoration:none">${ph(b+" logo + lifestyle image","ar-16x9")}<b class="h3">${b}</b>${lines(2)}<span class="link small">Explore ${b}</span></a>`).join("")}</div>
+  </div></section>
+  <section class="sec"><div class="wrap split">
+    ${ph("System Builder UI preview","ar-4x3")}
+    <div class="stack">${pin(5)}<p class="eyebrow">New · System Builder</p><h2 class="h2">Match a matched system from the truck.</h2><p class="lede">Pick the home, tonnage, efficiency and fuel. We'll show the AHRI-matched systems your branch can pull today.</p><div class="row" style="margin-top:8px"><a class="btn primary" href="#system-builder">Start Building</a></div></div>
+  </div></section>
+  <section class="sec dark tight"><div class="wrap">${pin(6)}
+    <div class="g4" style="margin-top:12px">
+      <div class="stat"><b>27</b><span>branch locations</span></div><div class="stat"><b>7</b><span>states across the South</span></div>
+      <div class="stat"><b>15–40</b><span>years of experience at the counter</span></div><div class="stat"><b>[#]</b><span>A &amp; B supply items stocked</span></div>
+    </div></div></section>
+  ${branchFinder(7)}
+  <section class="sec"><div class="wrap">
+    <div class="sec-head"><div><p class="eyebrow">Promos ${pin(8)}</p><h2 class="h2">This month at the counter</h2></div><a class="link" href="#promos">All promos</a></div>
+    <div class="g3">${["Spring tune-up supply bundle","Line set + pad combo pricing","Daikin dealer rebate"].map(t=>`<a class="card stack" href="#promo-detail" style="text-decoration:none">${ph("Promo graphic","ar-16x9")}<span class="tag">Ends MM/DD</span><b class="h3">${t}</b>${lines(2)}</a>`).join("")}</div>
+  </div></section>
+  ${registerBand(9)}
+  <section class="sec"><div class="wrap g2">
+    <div class="card stack">${pin(10)}<p class="eyebrow">Careers</p><h3 class="h2">Grow with us.</h3><p class="muted">Counter sales, warehouse, drivers and outside sales across 27 branches.</p><div class="row"><a class="btn" href="#careers">See Open Jobs</a></div></div>
+    <div class="card stack"><p class="eyebrow">News</p>${["Jackson Supply opens new branch in [City]","Meet us at the [Region] HVAC Expo","Refrigerant transition: what contractors need to know"].map(t=>`<a href="#news-detail" class="row between" style="text-decoration:none;border-bottom:1px solid var(--g2);padding-bottom:10px"><b>${t}</b><span class="small muted">MM/DD</span></a>`).join("")}<a class="link small" href="#news">All news</a></div>
+  </div></section>`;
+N.home = [
+  ["Hero = single-minded idea","Lead with availability + local relationships. Search is built into the hero because parts lookup is a top task for field techs."],
+  ["Utility hub tiles","The four top tasks from the brief (branch lookup, parts search, payment portal, credit app), one tap each. On mobile they become a 2×2 grid and repeat in the sticky bottom dock."],
+  ["Supply-first story","The brief says the business is now supply-first, with equipment second. Supply categories come before equipment brands."],
+  ["Native vendor content","Brand tiles link to on-site Daikin/Goodman/Amana pages (SEO), not out to manufacturer sites."],
+  ["System Builder","Placeholder for the planned build-your-own-system tool, which may be a plug-in. Scope TBD."],
+  ["Proof points","27 locations, 7 states, 15–40 yr staff tenure. Inventory count TBD from client."],
+  ["Branch finder","Drives KPI: branch map searches. Map pins link to the 27 templated branch landing pages."],
+  ["Promos","Pulled from the Promos CPT; each card links to a promo detail."],
+  ["Account CTAs","Primary conversions: gated account registration and credit application."],
+  ["Careers + News","Secondary audiences: job seekers. Reduces reliance on third-party application tools."]
+];
+
+P.about = () => `${crumbs(["Company","about"],"About Us")}
+  ${pagehead("Company","Built on relationships. Stocked for the long haul.","Jackson Supply has served HVAC contractors across the South for [##] years. We're bigger now, but every branch still runs like the local supply house you know.","",1)}
+  <section class="sec"><div class="wrap split">${ph("Story image: branch team / historic photo (replace outdated Jackson, MS building)","ar-4x3")}
+    <div class="stack"><p class="eyebrow">Our story</p><h2 class="h2">From one counter in Jackson to 27 across seven states.</h2>${lines(5)}${lines(3)}</div></div></section>
+  <section class="sec tint"><div class="wrap"><div class="sec-head"><div><p class="eyebrow">How we work ${pin(2)}</p><h2 class="h2">What contractors count on</h2></div></div>
+    <div class="g3">${[["Stock you can count on","Deep local inventory of the A and B items you use every day."],["Decisions made locally","Branch managers can say yes without waiting on corporate."],["People who know the trade","Counter and sales staff with 15 to 40 years in HVAC."]].map(([t,d])=>`<div class="card stack"><div style="width:40px;height:40px;border:2px solid var(--ink);border-radius:6px"></div><b class="h3">${t}</b><p class="muted">${d}</p></div>`).join("")}</div></div></section>
+  <section class="sec dark tight"><div class="wrap g4"><div class="stat"><b>27</b><span>branches</span></div><div class="stat"><b>7</b><span>states</span></div><div class="stat"><b>[###]</b><span>employees</span></div><div class="stat"><b>[####]</b><span>founded</span></div></div></section>
+  <section class="sec"><div class="wrap split"><div class="stack">${pin(3)}<p class="eyebrow">Footprint</p><h2 class="h2">Serving TX, LA, MS, AL, TN, OK and AZ</h2><p class="muted">State-by-state list links into branch pages.</p>
+    <div class="g2 small">${Object.entries(STATES).map(([k,v])=>`<a class="link" href="#locations" data-state="${k}">${v} (${BRANCHES.filter(b=>b.st===k).length})</a>`).join("")}</div></div>
+    <div class="card" style="padding:0;aspect-ratio:2/1">${mapSVG(-1,BRANCHES)}</div></div></section>
+  ${registerBand()}`;
+N.about = [["Tone","Down-to-earth and relationship-driven, the \"Willie Nelson of HVAC wholesalers.\" Plain words, no corporate speak."],["Values","Customer-first commitment, local decision-making and staff tenure are the brief's proof points."],["No staff directory","Per the brief there are no individual employee profiles, to prevent poaching. Show teams and branches only."]];
+
+P.vendors = () => `${crumbs(["Company","about"],"Vendors & Partners")}
+  ${pagehead("Company","Vendors & Partners","The equipment and supply brands we stock, with product info hosted right here so you don't have to bounce between manufacturer sites.","",1)}
+  <section class="sec tight"><div class="wrap row">${["Daikin","Goodman","Amana","Supply vendors"].map((t,i)=>`<a class="chip" href="#vendors" aria-pressed="${i===0}">${t}</a>`).join("")}</div></section>
+  ${["Daikin","Goodman","Amana"].map((b,i)=>`<section class="sec ${i%2?'tint':''}"><div class="wrap split">
+    ${i%2?'':ph(b+" hero image","ar-16x9")}
+    <div class="stack">${i===0?pin(2):""}<div class="brandtile" style="width:160px;min-height:60px">${b} logo</div><h2 class="h2">${b} equipment at Jackson Supply</h2>${lines(4)}
+      <div class="row small">${["Heat pumps","Split ACs","Furnaces","Ductless"].map(c=>`<span class="tag">${c}</span>`).join("")}</div>
+      <div class="row"><a class="btn primary" href="#equipment">Shop ${b}</a><a class="btn" href="#resources">${b} documents</a></div></div>
+    ${i%2?ph(b+" hero image","ar-16x9"):''}</div></section>`).join("")}
+  <section class="sec"><div class="wrap"><div class="sec-head"><div><p class="eyebrow">Supply partners ${pin(3)}</p><h2 class="h2">Brands on our shelves</h2></div></div>
+    <div class="g6">${Array.from({length:18},(_,i)=>`<div class="brandtile">Vendor logo ${i+1}</div>`).join("")}</div></div></section>`;
+N.vendors = [["Native brand content","Brief: keep Daikin/Goodman/Amana content hosted on-site for SEO instead of linking out."],["Brand block template","Repeatable module: logo, overview, product categories, CTAs into filtered equipment listing + tech docs."],["Supply vendor grid","Logo wall of supply vendors, pulled from the existing products-vendors page."]];
+
+function listing(kind) {
+  const isEq = kind === "equipment";
+  const cats = isEq ? EQUIP_CATS : SUPPLY_CATS;
+  const items = isEq
+    ? ["3 Ton 15.2 SEER2 Heat Pump Split System","2.5 Ton 14.3 SEER2 Air Conditioner","80% AFUE 60k BTU Gas Furnace","3 Ton Multi-Position Air Handler","12k BTU Ductless Mini-Split","4 Ton Packaged Heat Pump"]
+    : ["R-410A Refrigerant, 25 lb Cylinder","3/8 x 3/4 Line Set, 25 ft","45/5 MFD 440V Dual Run Capacitor","Single-Pole 30A Contactor, 24V Coil","Universal 1/2 HP Condenser Fan Motor","Programmable Wi-Fi Thermostat"];
+  const brands = isEq ? ["Daikin","Goodman","Amana","Jackson Private Label"] : ["[Vendor A]","[Vendor B]","[Vendor C]","[Vendor D]"];
+  return `<section class="sec tight"><div class="wrap">
+    <div class="g6" style="margin-bottom:28px">${cats.slice(0,6).map(c=>`<a class="cat" href="#${kind}"><b class="small">${c}</b></a>`).join("")}</div>
+    <div class="side">
+      <div><button class="btn sm ghost mfilter" type="button" data-act="filters">Filters (3)</button>
+      <div class="filters ${S.filterOpen?'open':''}">${pin(2)}
+        <fieldset><legend>Availability</legend><label class="check"><input type="checkbox" checked> In stock at ${bname(BRANCHES[S.my])}</label><label class="check"><input type="checkbox"> Available to transfer</label></fieldset>
+        <fieldset><legend>Category</legend>${cats.slice(0,6).map(c=>`<label class="check"><input type="checkbox"> ${c}</label>`).join("")}</fieldset>
+        <fieldset><legend>Brand</legend>${brands.map(c=>`<label class="check"><input type="checkbox"> ${c}</label>`).join("")}</fieldset>
+        ${isEq?`<fieldset><legend>Tonnage</legend><div class="row">${["1.5","2","2.5","3","3.5","4","5"].map(t=>`<span class="chip">${t}</span>`).join("")}</div></fieldset><fieldset><legend>Efficiency (SEER2)</legend><label class="check"><input type="checkbox"> 13.4–14.2</label><label class="check"><input type="checkbox"> 14.3–15.1</label><label class="check"><input type="checkbox"> 15.2+</label></fieldset>`:`<fieldset><legend>Voltage</legend><label class="check"><input type="checkbox"> 24V</label><label class="check"><input type="checkbox"> 120V</label><label class="check"><input type="checkbox"> 208/230V</label></fieldset>`}
+      </div></div>
+      <div class="stack-lg" style="min-width:0">
+        <div class="row between"><span class="small muted">Showing 1–6 of [###] results</span><label class="small row" style="gap:8px">Sort <select class="select" style="min-height:36px;width:auto"><option>Best match</option><option>Most ordered</option><option>Part # A–Z</option></select></label></div>
+        ${S.loggedIn?"":`<div class="banner">${pin(3)}<span><b>See your account pricing.</b> Log in to view contractor pricing and live stock at your branch.</span><span class="row"><a class="btn sm primary" href="#login">Log in</a><a class="btn sm" href="#register">Register</a></span></div>`}
+        <div class="plist">${items.map((t,i)=>`<div class="prow">${ph("Product")}<div class="stack" style="gap:4px"><span class="small muted mono">${brands[i%4]} · Model ${isEq?"XX-":"P-"}${(48213+i*731)}</span><b>${t}</b><span class="small muted">${isEq?"AHRI matched · R-454B ready":"Ships same day from branch"}</span><a class="link small" href="#resource-detail">Spec sheet</a></div>${priceBlock(i)}</div>`).join("")}</div>
+        <div class="row" style="justify-content:center"><span class="btn sm ghost">1</span><span class="btn sm ghost">2</span><span class="btn sm ghost">3</span><span class="btn sm">Next</span></div>
+      </div>
+    </div></div></section>`;
+}
+P.equipment = () => `${crumbs(["Products & Supplies","supplies"],"HVAC Equipment")}${pagehead("Products & Supplies","HVAC Equipment","Residential and commercial systems from Daikin, Goodman and Amana, plus our private label line.","",1)}${listing("equipment")}${registerBand()}`;
+N.equipment = [["Equipment landing","Category tiles plus a filterable listing. Brand pages from Vendors & Partners deep-link here with the brand filter applied."],["Filters","Stock at the user's branch is the default filter because availability is the main differentiator. On mobile filters collapse behind a button."],["Gated pricing","Brief: all account pricing stays behind secure login. Guests see a login prompt in place of the price. Use the Logged in toggle to compare."]];
+P.supplies = () => `${crumbs(["Products & Supplies","supplies"],"Wholesale Supplies & Parts")}${pagehead("Products & Supplies","Wholesale Supplies & Parts","The A and B items you reach for every day, on the shelf at your local branch.",`<div class="row" style="margin-top:20px"><form class="searchbar" data-form="search" style="flex:1;max-width:620px"><input aria-label="Search supplies" placeholder="Search part #, cross-reference or keyword"><button type="submit">Search</button></form></div>`,1)}${listing("supplies")}${registerBand()}`;
+N.supplies = [["Supply-first catalog","Showcases the massive supply inventory, which the brief says the current site fails to do. Search supports part # and cross-reference."],["Filters","Availability filter defaults to the user's branch."],["Gated pricing","Guest view prompts login and registration, which drives the account-registration KPI."]];
+
+P["private-label"] = () => `${crumbs(["Products & Supplies","supplies"],"Private Label Equipment")}
+  ${pagehead("Products & Supplies","Private Label Equipment","Dependable value equipment, built to spec and backed by Jackson Supply.","",1)}
+  <section class="sec"><div class="wrap split">${ph("Private label product hero","ar-4x3")}<div class="stack"><div class="brandtile" style="width:200px;min-height:60px">[Private label logo]</div><h2 class="h2">Why contractors choose our line</h2>
+    <ul class="stack" style="padding-left:18px;margin:0">${["Competitive pricing on core tonnages","Warranty handled at your branch counter","Parts stocked in all 27 branches"].map(x=>`<li>${x}</li>`).join("")}</ul><div class="row"><a class="btn primary" href="#equipment">Shop Private Label</a><a class="btn" href="#resources">Warranty &amp; docs</a></div></div></div></section>
+  <section class="sec tint"><div class="wrap"><div class="sec-head"><h2 class="h2">The lineup ${pin(2)}</h2></div><div class="g4">${["Air Conditioners","Heat Pumps","Furnaces","Air Handlers"].map(c=>`<a class="cat" href="#equipment">${ph("Product image")}<b>${c}</b><span class="small muted">[#] models</span></a>`).join("")}</div></div></section>
+  <section class="sec"><div class="wrap faq"><h2 class="h2" style="margin-bottom:12px">Common questions ${pin(3)}</h2>${["How is the warranty handled?","Are parts interchangeable with major brands?","Can homeowners register their unit?"].map(q=>`<details><summary>${q}</summary><p>Answer copy placeholder. Two to three sentences.</p></details>`).join("")}</div></section>`;
+N["private-label"] = [["Private label","Brand name and lineup TBD from client."],["Lineup","Category cards deep-link into the equipment listing, filtered to the private label brand."],["FAQ","Answers trust questions. Mark up with FAQ schema for search and AI answers."]];
+
+const SB = [
+  ["Application",[["Residential replacement","Swap an existing system"],["New construction","Single-family or multi-family"],["Light commercial","Up to 25 tons"]]],
+  ["System type",[["AC + gas furnace","Split, gas heat"],["Heat pump + air handler","All electric"],["Packaged unit","Single cabinet"],["Ductless","Mini-split"]]],
+  ["Tonnage",[["1.5–2 ton",""],["2.5–3 ton",""],["3.5–4 ton",""],["5 ton",""]]],
+  ["Efficiency",[["Standard","13.4–14.3 SEER2"],["Mid","14.3–15.2 SEER2"],["High","16+ SEER2 / variable speed"]]],
+  ["Brand",[["Daikin",""],["Goodman",""],["Amana",""],["No preference",""]]]
+];
+P["system-builder"] = () => {
+  const st = S.sb.step, done = st >= SB.length;
+  const stepper = `<ol class="steps" style="padding:0;margin:0 0 28px">${SB.map((s,i)=>`<li class="${i===st?'on':i<st?'done':''}"><b>STEP ${i+1}</b>${s[0]}${i<st&&S.sb.a[i]!=null?`<span class="small">${SB[i][1][S.sb.a[i]][0]}</span>`:""}</li>`).join("")}<li class="${done?'on':''}"><b>RESULT</b>Matched systems</li></ol>`;
+  const body = done
+    ? `<div class="stack-lg"><div class="row between"><h2 class="h2">3 matched systems ${pin(3)}</h2><button class="btn sm ghost" type="button" data-act="sb-reset">Start over</button></div>
+       <div class="g3">${[0,1,2].map(i=>`<div class="card stack">${ph("Condenser + coil + furnace","ar-4x3")}<span class="tag">Good · Better · Best</span><b class="h3">${["Good","Better","Best"][i]}: ${SB[4][1][S.sb.a[4]||0][0].replace("No preference","Daikin")} ${SB[2][1][S.sb.a[2]||0][0]}</b><span class="small muted mono">AHRI # 2xxxxxxx · ${["14.3","15.2","17.0"][i]} SEER2</span><ul class="small" style="margin:0;padding-left:18px"><li>Outdoor unit</li><li>Indoor coil / air handler</li><li>Furnace or heat kit</li></ul>${priceBlock(i+2)}</div>`).join("")}</div>
+       <div class="banner"><span><b>Need help sizing?</b> Your branch can run a load calc and quote.</span><a class="btn sm" href="#contact">Ask My Branch</a></div></div>`
+    : `<div class="stack-lg"><div><p class="eyebrow">Step ${st+1} of ${SB.length}</p><h2 class="h2">${["What's the job?","Pick a system type","What size?","Efficiency target","Preferred brand"][st]}</h2></div>
+       <div class="g${SB[st][1].length===3?3:4}">${SB[st][1].map((o,i)=>`<button type="button" class="opt" data-sb="${i}" aria-pressed="${S.sb.a[st]===i}"><b>${o[0]}</b>${o[1]?`<span>${o[1]}</span>`:""}</button>`).join("")}</div>
+       <div class="row between"><button class="btn ghost" type="button" data-act="sb-back" ${st===0?'disabled':''}>Back</button><button class="btn primary" type="button" data-act="sb-next" ${S.sb.a[st]==null?'disabled':''}>${st===SB.length-1?'See Matched Systems':'Next'}</button></div></div>`;
+  return `${crumbs(["Products & Supplies","supplies"],"System Builder")}${pagehead("Products & Supplies","System Builder","Answer five quick questions and get AHRI-matched systems your branch can pull today.","",1)}
+   <section class="sec"><div class="wrap">${pin(2)}<div style="margin-top:12px">${stepper}${body}</div></div></section>`;
+};
+N["system-builder"] = [["Scope TBD","The brief lists Build your own HVAC system as a possible plug-in. This wireframe shows the step flow regardless of vendor tool."],["Stepper","Five steps, one decision per screen, with large tap targets for iPad/phone use on site. Steps can be revisited."],["Results","Good/Better/Best matched systems. Pricing stays gated. The results can be saved to an account quote (future)."]];
+
+P.locations = () => {
+  const q = S.locQuery.trim().toLowerCase();
+  let list = BRANCHES.filter(b => (S.stateFilter==="All"||b.st===S.stateFilter) && (!q || bname(b).toLowerCase().includes(q) || STATES[b.st].toLowerCase().includes(q)));
+  return `${crumbs("Locations")}${pagehead("Locations","Find a Branch","27 branches across Texas, Louisiana, Mississippi, Alabama, Tennessee, Oklahoma and Arizona.",`
+    <div class="stack" style="margin-top:20px;max-width:720px"><form class="searchbar" data-form="loc"><input id="locq" aria-label="Search by ZIP, city or state" placeholder="ZIP, city or state" value="${S.locQuery.replace(/"/g,'&quot;')}"><button type="submit">Search</button></form>
+    <div class="row"><button class="chip" type="button" data-act="geo">Use my location</button>${["All",...Object.keys(STATES)].map(s=>`<button type="button" class="chip" data-state="${s}" aria-pressed="${S.stateFilter===s}">${s==="All"?"All states":STATES[s]}</button>`).join("")}</div></div>`,1)}
+  <section class="sec tight"><div class="wrap">
+    <div class="loc">
+      <div class="list" aria-live="polite">${pin(2)}<div class="small muted" style="padding:12px 18px;border-bottom:1px solid var(--g2)">${list.length} branch${list.length===1?"":"es"} · <span class="mono">sample data</span></div>
+        ${list.length? list.map(b=>`<div class="bcard ${b.i===S.view?'on':''}" data-pick="${b.i}"><div class="t"><b>${bname(b)}${b.hq?' <span class="tag solid">HQ</span>':''}</b><span class="tag ok">Open</span></div><span class="small muted">[Street address], ${b.city}, ${b.st} [ZIP]</span><span class="small muted">(XXX) XXX-XXXX · Today 7:00a–5:00p</span><div class="row small" style="margin-top:4px"><a class="link" href="#branch" data-branch="${b.i}">View branch</a><a class="link ext" href="#locations">Directions</a><a class="link" href="#locations" data-act="mybranch" data-b="${b.i}">${b.i===S.my?'My branch ✓':'Set as my branch'}</a></div></div>`).join("") : `<div style="padding:24px" class="stack"><b>No branches match "${S.locQuery}".</b><span class="muted small">Try a nearby city or clear the state filter.</span></div>`}
+      </div>
+      <div class="map">${pin(3)}${mapSVG(S.view, list)}</div>
+    </div>
+    <div class="g4" style="margin-top:40px">${Object.entries(STATES).map(([k,v])=>`<div class="stack" style="gap:6px">${k==="TX"?pin(4):""}<b>${v}</b>${BRANCHES.filter(b=>b.st===k).map(b=>`<a class="small" href="#branch" data-branch="${b.i}">${b.city}</a>`).join("")}</div>`).join("")}</div>
+  </div></section>`;
+};
+N.locations = [["Branch finder","Search by ZIP, city or state, plus geolocation. Feeds the branch map searches KPI. (Geolocation is simulated in this prototype.)"],["Result list","Each card has hours, open status, directions, View branch and Set as my branch. My branch drives stock display sitewide."],["Map","Interactive map (Google Maps or Mapbox) with clustered pins. Placeholder grid here; pins are clickable."],["Crawlable index","Plain links to all 27 branch pages by state for local SEO and for users who prefer lists."]];
+
+P.branch = () => {
+  const b = BRANCHES[S.view];
+  const near = BRANCHES.filter(x=>x.i!==b.i).map(x=>({x,d:Math.hypot(x.lat-b.lat,x.lon-b.lon)})).sort((a,c)=>a.d-c.d).slice(0,3).map(o=>o.x);
+  return `${crumbs(["Locations","locations"],bname(b))}
+  <section class="hero" style="padding-block:32px 48px"><div class="wrap split">
+    <div class="stack-lg"><div class="stack">${pin(1)}<p class="eyebrow">Jackson Supply · ${STATES[b.st]}</p><h1 class="h1">HVAC Supply in ${b.city}, ${b.st}</h1><p class="lede">Your local counter for HVAC equipment, parts and supplies in ${b.city} and surrounding areas.</p></div>
+      <div class="g2">
+        <dl class="kv"><dt>Address</dt><dd>[Street address]<br>${b.city}, ${b.st} [ZIP]</dd></dl>
+        <dl class="kv"><dt>Phone</dt><dd>(XXX) XXX-XXXX</dd><dt style="margin-top:8px">Status</dt><dd><span class="tag ok">Open now · closes 5:00p</span></dd></dl>
+      </div>
+      <div class="row"><a class="btn primary ext" href="#branch">Get Directions</a><a class="btn" href="#branch">Call Branch</a><button type="button" class="btn ghost" data-act="mybranch" data-b="${b.i}">${b.i===S.my?'My Branch ✓':'Set as My Branch'}</button></div>
+    </div>
+    ${ph(`Authentic photo: ${b.city} branch exterior / counter (client-supplied)`,"ar-4x3")}
+  </div></section>
+  <section class="sec"><div class="wrap g3">
+    <div class="card stack">${pin(2)}<b class="h3">Hours</b><div class="hours"><span>Mon–Fri</span><span>7:00a – 5:00p</span><span>Saturday</span><span>8:00a – 12:00p</span><span>Sunday</span><span>Closed</span></div><span class="small muted">Holiday hours banner appears here when set.</span></div>
+    <div class="card stack">${pin(3)}<b class="h3">Contact this branch</b><p class="small muted">Questions route to the branch team inbox. No individual staff listed.</p>
+      <div class="stack" style="gap:6px"><span>Counter sales · (XXX) XXX-XXXX</span><span>Equipment quotes · (XXX) XXX-XXXX</span><span>Warranty &amp; returns · (XXX) XXX-XXXX</span></div><a class="btn sm" href="#contact">Send a Message</a></div>
+    <div class="card stack"><b class="h3">Services</b><ul class="small" style="margin:0;padding-left:18px;display:grid;gap:4px"><li>Will-call counter pickup</li><li>Local job-site delivery</li><li>Equipment quotes &amp; load calcs</li><li>Warranty processing</li><li>Refrigerant recovery cylinder exchange</li></ul></div>
+  </div></section>
+  <section class="sec tint"><div class="wrap split">
+    <div class="stack">${pin(4)}<p class="eyebrow">In stock at ${b.city}</p><h2 class="h2">What's on the shelf</h2><p class="muted">Top supply categories stocked at this branch. Log in for live item-level stock.</p>
+      <div class="g2 small">${SUPPLY_CATS.slice(0,8).map(c=>`<a class="link" href="#supplies">${c}</a>`).join("")}</div>
+      <div class="row">${["Daikin","Goodman","Amana"].map(x=>`<div class="brandtile" style="min-height:52px;width:110px">${x}</div>`).join("")}</div></div>
+    <div class="card" style="padding:0;aspect-ratio:2/1">${mapSVG(b.i,[b,...near])}</div>
+  </div></section>
+  <section class="sec"><div class="wrap split" style="align-items:start">
+    <div class="article">${pin(5)}<p class="eyebrow">About this branch</p><h2 class="h2">Serving ${b.city} contractors since [year]</h2>${lines(4)}<p class="small muted">Unique local copy per branch (service area cities, team tenure, local partnerships). Avoids duplicate content across the 27 pages.</p></div>
+    <div class="stack"><b class="h3">Current promos at this branch</b>${["Line set + pad combo pricing","Spring tune-up supply bundle"].map(t=>`<a class="card flat row between" href="#promo-detail" style="text-decoration:none"><b>${t}</b><span class="tag">Ends MM/DD</span></a>`).join("")}</div>
+  </div></section>
+  <section class="sec tint"><div class="wrap"><div class="sec-head"><h2 class="h2">Nearby branches ${pin(6)}</h2><a class="link" href="#locations">All locations</a></div>
+    <div class="g3">${near.map(n=>`<a class="card stack" href="#branch" data-branch="${n.i}" style="text-decoration:none"><b class="h3">${bname(n)}</b><span class="small muted">[Street address] · (XXX) XXX-XXXX</span><span class="link small">View branch</span></a>`).join("")}</div></div></section>
+  <section class="sec"><div class="wrap faq"><h2 class="h2" style="margin-bottom:12px">${b.city} branch FAQ</h2>${[`Does the ${b.city} branch deliver to job sites?`,`Can I open an account at the ${b.city} counter?`,"Do you stock R-454B equipment and refrigerant?"].map(q=>`<details><summary>${q}</summary><p>Answer copy placeholder.</p></details>`).join("")}</div></section>
+  ${registerBand()}`;
+};
+N.branch = [["Templated landing page","One template, 27 pages. H1 + title use \"HVAC Supply in [City, ST]\" for local search. Add LocalBusiness schema and keep NAP consistent with Google Business Profile."],["Hours","Managed per branch in the CMS, with a holiday override and live open/closed status."],["Generic contact routing","Brief: no staff directories. Department lines and a form route to the branch inbox."],["Local inventory","Shows the depth of A & B supply items. Logged-in users get live item-level stock."],["Unique local copy","Each page needs distinct content so it ranks for its own city. This is the main driver of the organic local traffic KPI."],["Nearby branches","Cross-links between branch pages for crawlability and as a backup option when stock is out."]];
+
+P.resources = () => `${crumbs(["Support Center","resources"],"Technical Resources")}${pagehead("Support Center","Technical Resources","Spec sheets, install manuals, wiring diagrams and service bulletins in one place.",`<div class="row" style="margin-top:20px"><form class="searchbar" data-form="search" style="flex:1;max-width:620px"><input aria-label="Search documents" placeholder="Search by model #, brand or document type"><button type="submit">Search</button></form></div>`,1)}
+  <section class="sec tight"><div class="wrap side">
+    <div class="filters">${pin(2)}<fieldset><legend>Brand</legend>${["Daikin","Goodman","Amana","Private label"].map(c=>`<label class="check"><input type="checkbox"> ${c}</label>`).join("")}</fieldset><fieldset><legend>Document type</legend>${["Spec sheet","Installation manual","Wiring diagram","Service bulletin","Warranty","Training video"].map(c=>`<label class="check"><input type="checkbox"> ${c}</label>`).join("")}</fieldset></div>
+    <div style="min-width:0">${pin(3)}${["Heat Pump Split System, Product Specifications","Gas Furnace Installation Manual","Air Handler Wiring Diagram","R-454B Transition Service Bulletin","Residential Limited Warranty","Mini-Split Commissioning Guide","Packaged Unit Service Manual","Thermostat Compatibility Chart"].map((t,i)=>`<div class="doc"><div class="stack" style="gap:2px"><a class="link" href="#resource-detail">${t}</a><span class="small muted">${["Daikin","Goodman","Amana"][i%3]} · ${["Spec sheet","Installation manual","Wiring diagram","Service bulletin","Warranty"][i%5]} · Updated MM/YYYY</span></div><a class="btn sm ghost pdf" href="#resource-detail">Download</a></div>`).join("")}</div>
+  </div></section>`;
+N.resources = [["Support Center","Merges docs currently hosted on vendor sites. Supports the field-use, phone-on-site scenario."],["Filters","Brand and document type. Filters collapse on mobile."],["Link to PDF","Rows open a detail page (for SEO) with a direct PDF download. Sitemap marks PDFs as a separate node type."]];
+P["resource-detail"] = () => `${crumbs(["Support Center","resources"],["Technical Resources","resources"],"Detail")}
+  <section class="sec"><div class="wrap side" style="grid-template-columns:minmax(0,1fr) 320px">
+    <div class="stack-lg">${pin(1)}<div class="stack"><span class="tag">Service bulletin</span><h1 class="h1" style="font-size:36px">R-454B Transition Service Bulletin</h1><p class="muted">Daikin · Goodman · Amana · Updated MM/YYYY</p></div>
+      ${ph("PDF preview / first page thumbnail","ar-4x3")}<div class="article">${lines(4)}${lines(3)}</div></div>
+    <div class="stack"><div class="card stack">${pin(2)}<a class="btn primary block pdf" href="#resource-detail">Download PDF (2.4 MB)</a><dl class="kv"><dt>Applies to</dt><dd>Model families XX, YY</dd><dt style="margin-top:8px">Doc #</dt><dd class="mono">SB-0000</dd></dl></div>
+      <div class="card stack"><b>Related documents</b>${["Installation manual","Wiring diagram","Warranty"].map(t=>`<a class="link small" href="#resource-detail">${t}</a>`).join("")}</div>
+      <div class="card stack"><b>Need help?</b><p class="small muted">Talk to your branch's tech support line.</p><a class="btn sm" href="#locations">Find My Branch</a></div></div>
+  </div></section>`;
+N["resource-detail"] = [["Detail template","Indexable summary page wrapping the PDF, so search engines and AI answers can cite it."],["Download + metadata","File size, applicable models and related docs."]];
+
+P.promos = () => `${crumbs(["Support Center","resources"],"Promos")}${pagehead("Support Center","Promos","Current rebates, counter deals and seasonal bundles. Some promos are branch-specific.",`<div class="row" style="margin-top:20px">${["All","Equipment","Supplies","Rebates","My branch only"].map((c,i)=>`<span class="chip" aria-pressed="${i===0}">${c}</span>`).join("")}</div>`,1)}
+  <section class="sec"><div class="wrap g3">${["Spring tune-up supply bundle","Line set + pad combo pricing","Daikin dealer rebate","Goodman install incentive","Buy 10 capacitors, get 2 free","Amana extended warranty promo"].map((t,i)=>`<a class="card stack" href="#promo-detail" style="text-decoration:none">${i===0?`<div class="pin-abs">${pin(2)}</div>`:""}${ph("Promo graphic","ar-16x9")}<div class="row"><span class="tag">Ends MM/DD</span><span class="tag">${i%2?"All branches":"Select branches"}</span></div><b class="h3">${t}</b>${lines(2)}<span class="link small">See details</span></a>`).join("")}</div></section>
+  ${registerBand()}`;
+N.promos = [["Promo index","Filter chips include My branch only, tied to the user's branch."],["Promo card","Graphic, expiry, branch eligibility. Expired promos auto-unpublish."]];
+P["promo-detail"] = () => `${crumbs(["Support Center","resources"],["Promos","promos"],"Detail")}
+  <section class="sec"><div class="wrap split" style="align-items:start">${ph("Promo hero graphic","ar-4x3")}
+    <div class="stack-lg">${pin(1)}<div class="stack"><span class="tag">Ends MM/DD/YYYY</span><h1 class="h1" style="font-size:38px">Spring tune-up supply bundle</h1><p class="lede">Promo summary placeholder. What's included and who qualifies.</p></div>
+      <div class="card stack"><b>What's included</b><ul class="small" style="margin:0;padding-left:18px"><li>Item one</li><li>Item two</li><li>Item three</li></ul></div>
+      <div class="row"><a class="btn primary" href="${S.loggedIn?'#supplies':'#login'}">${S.loggedIn?'Shop the Bundle':'Log in to Redeem'}</a><a class="btn" href="#locations">Participating Branches</a></div>
+      <div class="faq">${pin(2)}<details><summary>Terms &amp; conditions</summary><p>Legal copy placeholder.</p></details></div></div>
+  </div></section>`;
+N["promo-detail"] = [["Promo detail","Redemption CTA respects gating. Guests are sent to log in."],["Terms","Collapsed legal terms keep the page scannable on mobile."]];
+
+P.register = () => `${crumbs("Register")}
+  <section class="sec"><div class="wrap split" style="align-items:start">
+    <div class="stack-lg"><div class="stack">${pin(1)}<p class="eyebrow">Account registration</p><h1 class="h1">Get your pricing online.</h1><p class="lede">Already buy from Jackson? Link your account to see your pricing, branch stock and order history.</p></div>
+      ${formOk("register","Request received.","We'll verify your account with your branch and email you within 1 business day.") || `<form class="form-grid" data-form="register">
+        <div class="field full"><span class="lbl">Do you have a Jackson Supply account?</span><div class="row"><label class="check"><input type="radio" name="has" checked> Yes, I have an account number</label><label class="check"><input type="radio" name="has"> No, I'm a new customer</label></div></div>
+        <div class="field"><label for="r-acct">Account number</label><input class="input" id="r-acct" placeholder="e.g. 10482"></div>
+        <div class="field"><label for="r-co">Company name</label><input class="input" id="r-co" placeholder="ABC Mechanical"></div>
+        <div class="field"><label for="r-fn">First name</label><input class="input" id="r-fn" autocomplete="given-name"></div>
+        <div class="field"><label for="r-ln">Last name</label><input class="input" id="r-ln" autocomplete="family-name"></div>
+        <div class="field"><label for="r-em">Work email</label><input class="input" id="r-em" type="email" autocomplete="email"></div>
+        <div class="field"><label for="r-ph">Mobile phone</label><input class="input" id="r-ph" type="tel" autocomplete="tel"></div>
+        <div class="field full"><label for="r-br">Home branch</label><select class="select" id="r-br">${BRANCHES.map(b=>`<option ${b.i===S.my?'selected':''}>${bname(b)}</option>`).join("")}</select></div>
+        <div class="field"><label for="r-pw">Create password</label><input class="input" id="r-pw" type="password" autocomplete="new-password"><span class="hint">12+ characters</span></div>
+        <div class="field"><label for="r-pw2">Confirm password</label><input class="input" id="r-pw2" type="password" autocomplete="new-password"></div>
+        <label class="check full"><input type="checkbox"> I agree to the Terms of Sale and Privacy Policy.</label>
+        <div class="full row"><button class="btn primary" type="submit">Create Account</button><span class="small muted">Have a login? <a class="link" href="#login">Log in</a></span></div>
+      </form>`}</div>
+    <div class="stack">
+      <div class="card stack">${pin(2)}<p class="eyebrow">New to Jackson Supply?</p><b class="h3">Apply for a credit account</b><p class="muted small">Fill out and sign the credit application online. Most decisions in [#] business days.</p><a class="btn primary" href="#credit-app">Start Credit Application</a></div>
+      <div class="card stack"><b>What you get</b><ul class="small" style="margin:0;padding-left:18px;display:grid;gap:4px"><li>Your contract pricing</li><li>Live stock at your branch</li><li>Order online for pickup or delivery</li><li>Invoices &amp; payment portal access</li></ul></div>
+    </div>
+  </div></section>`;
+N.register = [["Gated account registration","Primary KPI. Existing customers link with an account # and branch verifies. New customers are routed to the credit app."],["Credit application path","Dotted link in the sitemap: Register → Credit Application (not in the dropdown)."]];
+
+const CA = ["Business","Owners","References","Terms & Sign"];
+P["credit-app"] = () => {
+  const st = S.ca;
+  const done = S.sent.credit;
+  const steps = `<ol class="steps" style="padding:0;margin:0 0 28px">${CA.map((s,i)=>`<li class="${done?'done':i===st?'on':i<st?'done':''}"><b>STEP ${i+1}</b>${s}</li>`).join("")}</ol>`;
+  const panels = [
+    `<div class="form-grid"><div class="field full"><label for="c-legal">Legal business name</label><input class="input" id="c-legal"></div><div class="field"><label for="c-dba">DBA (if different)</label><input class="input" id="c-dba"></div><div class="field"><label for="c-type">Business type</label><select class="select" id="c-type"><option>LLC</option><option>Corporation</option><option>Sole proprietor</option><option>Partnership</option></select></div><div class="field"><label for="c-ein">Federal tax ID (EIN)</label><input class="input" id="c-ein" placeholder="XX-XXXXXXX"></div><div class="field"><label for="c-lic">State HVAC license #</label><input class="input" id="c-lic"></div><div class="field full"><label for="c-addr">Business address</label><input class="input" id="c-addr" autocomplete="street-address"></div><div class="field"><label for="c-yrs">Years in business</label><input class="input" id="c-yrs" inputmode="numeric"></div><div class="field"><label for="c-cr">Requested credit limit</label><input class="input" id="c-cr" placeholder="$"></div><div class="field full"><span class="lbl">Tax exempt?</span><label class="check"><input type="checkbox"> Yes, I'll upload a resale certificate</label><input class="input" type="file" aria-label="Upload resale certificate"></div></div>`,
+    `<div class="stack-lg">${[1,2].map(n=>`<div class="form-grid card flat"><b class="full">Owner / principal ${n}</b><div class="field"><label for="o${n}-n">Full name</label><input class="input" id="o${n}-n"></div><div class="field"><label for="o${n}-t">Title</label><input class="input" id="o${n}-t"></div><div class="field"><label for="o${n}-e">Email</label><input class="input" id="o${n}-e" type="email"></div><div class="field"><label for="o${n}-p">Phone</label><input class="input" id="o${n}-p" type="tel"></div></div>`).join("")}<button class="btn sm ghost" type="button" style="justify-self:start">+ Add another owner</button></div>`,
+    `<div class="stack-lg"><div class="form-grid card flat"><b class="full">Bank reference</b><div class="field"><label for="b-n">Bank name</label><input class="input" id="b-n"></div><div class="field"><label for="b-p">Bank phone</label><input class="input" id="b-p" type="tel"></div></div>${[1,2,3].map(n=>`<div class="form-grid card flat"><b class="full">Trade reference ${n}</b><div class="field"><label for="t${n}-n">Supplier name</label><input class="input" id="t${n}-n"></div><div class="field"><label for="t${n}-p">Phone or email</label><input class="input" id="t${n}-p"></div></div>`).join("")}</div>`,
+    `<div class="stack-lg"><div class="card flat stack" style="max-height:180px;overflow:auto"><b>Terms of credit</b>${lines(6)}${lines(4)}</div><label class="check"><input type="checkbox"> I have read and agree to the terms of credit and authorize Jackson Supply to verify the information provided.</label><label class="check"><input type="checkbox"> I agree to a personal guarantee as described above.</label>
+      <div class="form-grid"><div class="field"><label for="s-n">Signer full name</label><input class="input" id="s-n"></div><div class="field"><label for="s-t">Title</label><input class="input" id="s-t"></div></div>
+      <div class="field">${pin(3)}<span class="lbl">Signature (draw with finger, stylus or mouse)</span><canvas class="sig" id="sig" aria-label="Signature pad"></canvas><div class="row small"><button type="button" class="link" style="background:none;border:0;padding:0" data-act="sig-clear">Clear signature</button><span class="muted">Dated ${new Date().toLocaleDateString()}</span></div></div></div>`
+  ];
+  const body = done ? `<div class="success" role="status"><p class="h3">Application submitted.</p><p class="muted" style="margin-top:6px">A signed PDF copy was emailed to you. Your branch credit team will follow up within [#] business days. Reference # CA-000000.</p><div class="row" style="margin-top:12px"><a class="btn" href="#register">Register for Online Access</a><a class="btn ghost" href="#home">Back to Home</a></div></div>`
+    : `<form data-form="credit" class="stack-lg">${panels[st]}<div class="row between"><button class="btn ghost" type="button" data-act="ca-back" ${st===0?'disabled':''}>Back</button><div class="row"><span class="small muted">Progress saves automatically</span><button class="btn primary" type="submit">${st===CA.length-1?'Sign & Submit':'Continue'}</button></div></div></form>`;
+  return `${crumbs(["Register","register"],"Credit Application")}${pagehead("Account","Credit Application","Apply for a Jackson Supply credit account. It takes about 10 minutes and you can sign right on your phone.","",1)}
+  <section class="sec"><div class="wrap" style="max-width:900px">${pin(2)}<div style="margin-top:12px">${steps}${body}</div></div></section>`;
+};
+N["credit-app"] = [["Integrated digital form","Brief: web-based credit application with digital signature. Replaces the PDF/fax process and third-party tools."],["Multi-step","Four short steps with autosave, built for iPad/phone completion. Each step validates before continuing."],["E-signature","Signature pad is live in this prototype, so try drawing. Production would use an e-sign service or plugin and send a signed PDF to the branch credit team."]];
+
+P.login = () => `${crumbs("Login")}
+  <section class="sec"><div class="wrap split" style="align-items:start">
+    <div class="stack-lg" style="max-width:460px">${pin(1)}<div class="stack"><p class="eyebrow">Account login</p><h1 class="h1">Welcome back.</h1></div>
+      ${S.loggedIn?`<div class="success"><p class="h3">You're logged in as ABC Mechanical.</p><div class="row" style="margin-top:10px"><a class="btn primary" href="#supplies">Shop with My Pricing</a><a class="btn" href="#home" data-act="logout">Log out</a></div></div>`:
+      `<form class="stack" data-form="login"><div class="field"><label for="l-em">Email or username</label><input class="input" id="l-em" autocomplete="username" value="demo@abcmechanical.com"></div><div class="field"><label for="l-pw">Password</label><input class="input" id="l-pw" type="password" autocomplete="current-password" value="••••••••••••"></div><div class="row between"><label class="check"><input type="checkbox" checked> Keep me signed in</label><a class="link small" href="#login">Forgot password?</a></div><button class="btn primary block" type="submit">Log In</button><p class="small muted">No account? <a class="link" href="#register">Register</a> or <a class="link" href="#credit-app">apply for credit</a>.</p></form>`}
+    </div>
+    <div class="card stack-lg" style="padding:28px">${pin(2)}<div class="stack"><p class="eyebrow">Payment Portal</p><b class="h2">Pay invoices online</b><p class="muted">View statements and pay your Jackson Supply account through our secure payment portal.</p></div>
+      <a class="btn primary ext" href="#login" data-act="portal">Go to Payment Portal</a><p class="small muted">Opens [portal domain] in a new tab. Separate login may be required.</p></div>
+  </div></section>`;
+N.login = [["Secure login","Gated pricing sits behind login. Submit the form to switch the prototype to the logged-in state."],["Payment portal entry","Brief: clean visual entry to the external proprietary payment portal. Also in the utility bar, footer and mobile dock."]];
+
+P.news = () => `${crumbs(["Company","about"],"News")}${pagehead("Company","News","Branch openings, events, industry updates and product news.","",1)}
+  <section class="sec"><div class="wrap stack-lg">
+    <a class="card split" href="#news-detail" style="text-decoration:none">${ph("Featured image","ar-16x9")}<div class="stack"><span class="tag">Featured · Company</span><b class="h2">Jackson Supply opens new branch in [City]</b>${lines(3)}<span class="small muted">MM/DD/YYYY</span></div></a>
+    <div class="row">${["All","Company","Industry","Events","Products"].map((c,i)=>`<span class="chip" aria-pressed="${i===0}">${c}</span>`).join("")}</div>
+    <div class="g3">${["Meet us at the [Region] HVAC Expo","Refrigerant transition: what contractors need to know","New Daikin lineup now in stock","Counter day at [City] branch","Jackson Supply joins Watsco family [TBD]","Summer readiness checklist"].map((t,i)=>`<a class="card stack" href="#news-detail" style="text-decoration:none">${i===0?`<div class="pin-abs">${pin(2)}</div>`:""}${ph("Thumbnail","ar-16x9")}<span class="tag">${["Events","Industry","Products","Events","Company","Industry"][i]}</span><b class="h3">${t}</b><span class="small muted">MM/DD/YYYY</span></a>`).join("")}</div>
+  </div></section>`;
+N.news = [["Footer-only page","Per sitemap, News lives in the footer (Company), not the primary nav."],["Acquisition messaging","Any Watsco mention needs client approval. The brief says JSC operates independently and should keep its brand continuity."]];
+P["news-detail"] = () => `${crumbs(["Company","about"],["News","news"],"Detail")}
+  <section class="sec"><div class="wrap" style="max-width:820px"><div class="stack-lg">${pin(1)}<div class="stack"><span class="tag">Company</span><h1 class="h1" style="font-size:38px">Jackson Supply opens new branch in [City]</h1><p class="muted small">MM/DD/YYYY · 3 min read</p></div>${ph("Article hero image","ar-16x9")}<div class="article">${lines(5)}${lines(4)}<h2 class="h3">Subhead</h2>${lines(4)}</div><div class="row small"><span class="muted">Share:</span><span class="tag">LinkedIn</span><span class="tag">Facebook</span><span class="tag">Copy link</span></div></div></div></section>
+  <section class="sec tint"><div class="wrap"><div class="sec-head"><h2 class="h2">More news</h2></div><div class="g3">${[1,2,3].map(()=>`<a class="card stack" href="#news-detail" style="text-decoration:none">${ph("Thumbnail","ar-16x9")}<b>Related article title</b><span class="small muted">MM/DD/YYYY</span></a>`).join("")}</div></div></section>`;
+N["news-detail"] = [["Article template","Simple readable column (~70ch), share tools and related posts."]];
+
+P.careers = () => `${crumbs(["Company","about"],"Careers")}
+  <section class="hero"><div class="wrap split"><div class="stack">${pin(1)}<p class="eyebrow">Careers</p><h1 class="h1">Come grow with us.</h1><p class="lede">People stay at Jackson Supply for 15, 25, even 40 years. Join a team that runs like family and backs you up.</p><div class="row" style="margin-top:12px"><a class="btn primary" href="#apply">Apply Now</a><a class="btn" href="#careers">See Open Positions</a></div></div>${ph("Team photo (authentic, client-supplied)","ar-4x3")}</div></section>
+  <section class="sec tint"><div class="wrap g4">${["Medical, dental & vision","401(k) with match","Paid time off","Training & advancement"].map(t=>`<div class="card stack"><div style="width:36px;height:36px;border:2px solid var(--ink);border-radius:6px"></div><b>${t}</b>${lines(2)}</div>`).join("")}</div></section>
+  <section class="sec"><div class="wrap"><div class="sec-head"><div><p class="eyebrow">Open positions ${pin(2)}</p><h2 class="h2">[#] openings across 7 states</h2></div><div class="row"><select class="select" aria-label="Filter by state" style="width:auto"><option>All states</option>${Object.values(STATES).map(s=>`<option>${s}</option>`).join("")}</select><select class="select" aria-label="Filter by role" style="width:auto"><option>All roles</option><option>Counter sales</option><option>Warehouse</option><option>Driver</option><option>Outside sales</option></select></div></div>
+    <div class="plist">${[["Counter Sales Associate",0],["Warehouse Associate",5],["CDL Delivery Driver",10],["Outside Sales Rep",16],["Branch Manager Trainee",19]].map(([t,bi])=>`<div class="doc"><div class="stack" style="gap:2px"><b>${t}</b><span class="small muted">${bname(BRANCHES[bi])} · Full-time</span></div><a class="btn sm" href="#apply">Apply</a></div>`).join("")}</div></div></section>`;
+N.careers = [["Careers (footer)","Secondary audience: job applicants. Uses the existing tagline \"Come Grow With Us.\""],["Embedded jobs","Native job list + application to reduce reliance on third-party tools (KPI)."]];
+
+P.apply = () => `${crumbs(["Company","about"],["Careers","careers"],"Employment Application")}${pagehead("Careers","Employment Application","Apply in about five minutes. Upload a resume or fill in your experience.","",1)}
+  <section class="sec"><div class="wrap" style="max-width:860px">${formOk("apply","Thanks for applying!","The hiring manager at your selected branch will review your application and reach out if there's a fit.") || `<form class="form-grid" data-form="apply">
+    <div class="field"><label for="a-pos">Position</label><select class="select" id="a-pos"><option>Counter Sales Associate</option><option>Warehouse Associate</option><option>CDL Delivery Driver</option><option>Outside Sales Rep</option><option>General application</option></select></div>
+    <div class="field"><label for="a-br">Preferred branch</label><select class="select" id="a-br">${BRANCHES.map(b=>`<option>${bname(b)}</option>`).join("")}</select></div>
+    <div class="field"><label for="a-fn">First name</label><input class="input" id="a-fn"></div><div class="field"><label for="a-ln">Last name</label><input class="input" id="a-ln"></div>
+    <div class="field"><label for="a-em">Email</label><input class="input" id="a-em" type="email"></div><div class="field"><label for="a-ph">Phone</label><input class="input" id="a-ph" type="tel"></div>
+    <div class="field full">${pin(2)}<label for="a-cv">Resume (PDF or Word)</label><input class="input" id="a-cv" type="file"></div>
+    <div class="field full"><label for="a-xp">HVAC / trade experience</label><textarea class="textarea" id="a-xp"></textarea></div>
+    <div class="field"><span class="lbl">Valid driver's license?</span><div class="row"><label class="check"><input type="radio" name="dl"> Yes</label><label class="check"><input type="radio" name="dl"> No</label></div></div>
+    <div class="field"><span class="lbl">Authorized to work in the US?</span><div class="row"><label class="check"><input type="radio" name="wa"> Yes</label><label class="check"><input type="radio" name="wa"> No</label></div></div>
+    <label class="check full"><input type="checkbox"> I certify the information above is accurate. (EEO statement placeholder)</label>
+    <div class="full"><button class="btn primary" type="submit">Submit Application</button></div></form>`}</div></section>`;
+N.apply = [["Embedded application","Brief: online job application on-site. Routes to the selected branch's hiring manager inbox, not to named staff."],["Resume upload","Optional upload plus a free-text field for mobile applicants without a resume file."]];
+
+P.contact = () => `${crumbs("Contact Us")}${pagehead("Support","Contact Us","Tell us what you need and we'll route it to the right branch team. For fastest help, call your local branch.","",1)}
+  <section class="sec"><div class="wrap split" style="align-items:start">
+    ${formOk("contact","Message sent.","Your message went to the "+bname(BRANCHES[S.my])+" team. Expect a reply within 1 business day.") || `<form class="form-grid" data-form="contact">${pin(2)}
+      <div class="field full"><label for="ct-topic">How can we help?</label><select class="select" id="ct-topic"><option>Product or stock question</option><option>Equipment quote</option><option>Account or billing</option><option>Warranty or return</option><option>Vendor / partnership inquiry</option><option>Website feedback</option></select></div>
+      <div class="field full"><label for="ct-br">Branch</label><select class="select" id="ct-br">${BRANCHES.map(b=>`<option ${b.i===S.my?'selected':''}>${bname(b)}</option>`).join("")}</select></div>
+      <div class="field"><label for="ct-n">Name</label><input class="input" id="ct-n"></div><div class="field"><label for="ct-co">Company</label><input class="input" id="ct-co"></div>
+      <div class="field"><label for="ct-e">Email</label><input class="input" id="ct-e" type="email"></div><div class="field"><label for="ct-p">Phone</label><input class="input" id="ct-p" type="tel"></div>
+      <div class="field full"><label for="ct-m">Message</label><textarea class="textarea" id="ct-m"></textarea></div>
+      <div class="full"><button class="btn primary" type="submit">Send Message</button></div></form>`}
+    <div class="stack">
+      <div class="card stack"><b class="h3">Your branch</b><p><b>${bname(BRANCHES[S.my])}</b><br><span class="muted small">[Street address] · (XXX) XXX-XXXX</span></p><a class="link small" href="#branch" data-branch="${S.my}">Branch details</a></div>
+      <div class="card stack">${pin(3)}<b class="h3">Corporate office</b><p class="muted small">[HQ address], Jackson, MS<br>(XXX) XXX-XXXX</p></div>
+      <div class="card stack"><b class="h3">Billing questions?</b><a class="btn sm ext" href="#login" data-act="portal">Payment Portal</a></div>
+    </div></div></section>`;
+N.contact = [["Footer page","Contact Us appears under Support in the footer."],["Generic routing","Topic + branch selection routes to department inboxes. No individual staff names or emails (brief requirement)."],["HQ","Corporate info only. Branch phone numbers live on branch pages."]];
+
+/* ---------------- Render ---------------- */
+const site = $("#site"), rail = $("#rail");
+function render() {
+  const r = P[S.route] ? S.route : "home";
+  site.classList.toggle("menu-open", S.menu);
+  site.innerHTML = header() + `<main id="main">${P[r]()}</main>` + footer() + dock();
+  const notes = N[r] || [];
+  rail.innerHTML = `<h2>Annotations</h2><p class="pg">${LABEL[r]}</p><p class="tpl">#${r} · ${S.loggedIn?"logged-in":"guest"} state</p>
+    <ol>${notes.map((n,i)=>`<li><span class="pin">${i+1}</span><div><b>${n[0]}</b><span>${n[1]}</span></div></li>`).join("")}</ol>
+    <div class="legend">Wireframe only · grayscale on purpose. Placeholder brackets [ ] = client to supply. Branch cities are sample data.</div>`;
+  $("#devRoute").textContent = "#" + r;
+  $("#pagePick").value = r;
+  if (r === "credit-app" && S.ca === 3 && !S.sent.credit) initSig();
+}
+function go(route, keepScroll) {
+  S.route = route; S.menu = false; S.filterOpen = false;
+  render();
+  if (!keepScroll) { const top = $("#device").getBoundingClientRect().top + window.scrollY - 70; window.scrollTo({ top: Math.max(0, top), behavior: "instant" in window ? "instant" : "auto" }); }
+}
+function setLogged(v) { S.loggedIn = v; $("#sIn").setAttribute("aria-pressed", v); $("#sOut").setAttribute("aria-pressed", !v); render(); }
+
+/* signature pad */
+function initSig() {
+  const c = $("#sig"); if (!c) return;
+  const r = c.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+  c.width = r.width * dpr; c.height = r.height * dpr;
+  const ctx = c.getContext("2d"); ctx.scale(dpr, dpr); ctx.lineWidth = 2.2; ctx.lineCap = "round"; ctx.strokeStyle = "#16191d";
+  let down = false;
+  const p = e => { const b = c.getBoundingClientRect(); return [e.clientX - b.left, e.clientY - b.top]; };
+  c.addEventListener("pointerdown", e => { down = true; c.setPointerCapture(e.pointerId); ctx.beginPath(); ctx.moveTo(...p(e)); });
+  c.addEventListener("pointermove", e => { if (!down) return; ctx.lineTo(...p(e)); ctx.stroke(); });
+  c.addEventListener("pointerup", () => down = false);
+  c.addEventListener("pointercancel", () => down = false);
+}
+
+/* ---------------- Events ---------------- */
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-act],[data-branch],[data-pick],[data-state],[data-sb]");
+  if (!t || !site.contains(t) && !t.closest(".site")) return;
+  if (t.dataset.branch != null) { S.view = +t.dataset.branch; if (location.hash === t.getAttribute('href')) { e.preventDefault(); go(S.route); return; } }
+  if (t.dataset.pick != null && !t.dataset.act) { S.view = +t.dataset.pick; render(); return; }
+  if (t.dataset.state != null) { e.preventDefault(); S.stateFilter = t.dataset.state; S.locQuery = ""; if (S.route !== "locations") { location.hash = "locations"; return; } render(); return; }
+  if (t.dataset.sb != null) { S.sb.a[S.sb.step] = +t.dataset.sb; render(); return; }
+  const a = t.dataset.act;
+  if (!a) return;
+  if (a === "menu") { S.menu = !S.menu; render(); }
+  else if (a === "logout") { e.preventDefault(); setLogged(false); if (location.hash !== "#home") location.hash = "home"; }
+  else if (a === "portal") { e.preventDefault(); showToast("External link → proprietary Payment Portal (opens in new tab)"); }
+  else if (a === "cart") { showToast("Added to order (prototype)"); }
+  else if (a === "geo") { e.preventDefault(); S.stateFilter = "All"; S.locQuery = ""; S.view = 0; showToast("Simulated location: nearest branch is Jackson, MS"); if (S.route !== "locations") location.hash = "locations"; else render(); }
+  else if (a === "mybranch") { e.preventDefault(); S.my = +t.dataset.b; store.set("jsc-my", String(S.my)); showToast("My branch set to " + bname(BRANCHES[S.my])); render(); }
+  else if (a === "filters") { S.filterOpen = !S.filterOpen; render(); }
+  else if (a === "sb-next") { S.sb.step++; render(); }
+  else if (a === "sb-back") { S.sb.step = Math.max(0, S.sb.step - 1); render(); }
+  else if (a === "sb-reset") { S.sb = { step: 0, a: {} }; render(); }
+  else if (a === "ca-back") { S.ca = Math.max(0, S.ca - 1); render(); }
+  else if (a === "sig-clear") { const c = $("#sig"); c.getContext("2d").clearRect(0,0,c.width,c.height); }
+});
+document.addEventListener("submit", e => {
+  const f = e.target.closest("[data-form]"); if (!f) return;
+  e.preventDefault();
+  const k = f.dataset.form;
+  if (k === "search") { showToast("Search results page (out of scope for this round)"); location.hash = "supplies"; }
+  else if (k === "finder") { S.locQuery = f.querySelector("input").value; S.stateFilter = "All"; location.hash = "locations"; }
+  else if (k === "loc") { S.locQuery = $("#locq").value; S.stateFilter = "All"; render(); }
+  else if (k === "login") { setLogged(true); location.hash = "supplies"; showToast("Logged in as ABC Mechanical (demo)"); }
+  else if (k === "credit") { if (S.ca < CA.length - 1) { S.ca++; render(); } else { S.sent.credit = true; render(); } }
+  else { S.sent[k] = true; render(); }
+});
+
+/* toast */
+let toastT;
+function showToast(msg) {
+  let el = $("#toast");
+  if (!el) { el = document.createElement("div"); el.id = "toast"; el.setAttribute("role","status");
+    el.style.cssText = "position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#16191d;color:#fff;font:500 13px var(--mono);padding:10px 16px;border-radius:6px;z-index:80;max-width:calc(100vw - 32px);box-shadow:0 8px 24px rgba(0,0,0,.2)";
+    document.body.appendChild(el); }
+  el.textContent = msg; el.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(() => el.hidden = true, 2600);
+}
+
+/* prototype chrome */
+const pick = $("#pagePick");
+pick.innerHTML = PAGES.map(([g, list]) => `<optgroup label="${g}">${list.map(([k,l])=>`<option value="${k}">${l}</option>`).join("")}</optgroup>`).join("");
+pick.addEventListener("change", () => { location.hash = pick.value; });
+function setDevice(m) {
+  $("#device").classList.toggle("mobile", m);
+  $("#vMob").setAttribute("aria-pressed", m); $("#vDesk").setAttribute("aria-pressed", !m);
+  $("#devName").textContent = m ? "Mobile · 390" : "Desktop · 1280";
+  store.set("jsc-dev", m ? "m" : "d");
+}
+$("#vDesk").onclick = () => setDevice(false);
+$("#vMob").onclick = () => setDevice(true);
+$("#sIn").onclick = () => setLogged(true);
+$("#sOut").onclick = () => setLogged(false);
+$("#notesTog").addEventListener("change", e => {
+  $("#proto").classList.toggle("no-notes", !e.target.checked);
+  $("#proto").classList.toggle("no-pins", !e.target.checked);
+});
+
+const my = store.get("jsc-my"); if (my != null && BRANCHES[+my]) S.my = S.view = +my;
+if (store.get("jsc-dev") === "m") setDevice(true);
+const fromHash = () => { const h = location.hash.replace("#",""); go(P[h] ? h : "home", !h); };
+window.addEventListener("hashchange", fromHash);
+fromHash();
+})();
+</script>
