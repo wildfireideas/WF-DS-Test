@@ -72,16 +72,16 @@ footer { margin-top: 48px; font-size: 13.5px; color: var(--muted); }
   <p class="eyebrow">Jackson Supply Company · Website redesign</p>
   <h1>Wireframe UX review</h1>
   <p class="lede">An expert UX and information-architecture review of the v1 clickable wireframe, with what changed in v2 for each of the 36 findings. Every finding links to the matching page in the v2 prototype.</p>
-  <div class="meta-row"><span>Reviewed: <b>v1 wireframe prototype</b></span><span>Updated to: <b>v2</b></span><span>Date: <b>Nov 13, 2026</b></span><span>Sitemap: <b>09/09/2026 “no ecomm”</b></span></div>
+  <div class="meta-row"><span>Reviewed: <b>v1 wireframe prototype</b></span><span>Updated to: <b>v2.1</b></span><span>Date: <b>Nov 17, 2026</b></span><span>Decided: <b>no online ordering (WordPress)</b></span><span>Sitemap: <b>09/09/2026 “no ecomm”</b></span></div>
   <a class="cta" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky" target="_blank" rel="noopener">Open the v2 prototype ↗<span class="sr"> (opens in a new tab)</span></a>
 
   <section class="summary" aria-label="Status summary">
-    <div class="bar" aria-hidden="true"><span class="seg st-fixed" style="flex:31" title="Fixed in v2: 31"></span><span class="seg st-confirm" style="flex:2" title="Fixed · client to confirm: 2"></span><span class="seg st-partly" style="flex:1" title="Partly fixed: 1"></span><span class="seg st-decision" style="flex:2" title="Needs client decision: 2"></span></div>
+    <div class="bar" aria-hidden="true"><span class="seg st-fixed" style="flex:32" title="Fixed in v2: 32"></span><span class="seg st-confirm" style="flex:2" title="Fixed · client to confirm: 2"></span><span class="seg st-partly" style="flex:1" title="Partly fixed: 1"></span><span class="seg st-decision" style="flex:1" title="Needs client decision: 1"></span></div>
     <div class="legend" role="group" aria-label="Filter findings by status">
-      <button type="button" data-f="fixed" aria-pressed="false"><b>31</b><span><i style="background:var(--fixed)"></i>Fixed in v2</span></button>
+      <button type="button" data-f="fixed" aria-pressed="false"><b>32</b><span><i style="background:var(--fixed)"></i>Fixed in v2</span></button>
       <button type="button" data-f="confirm" aria-pressed="false"><b>2</b><span><i style="background:var(--confirm)"></i>Fixed · client to confirm</span></button>
       <button type="button" data-f="partly" aria-pressed="false"><b>1</b><span><i style="background:var(--partly)"></i>Partly fixed</span></button>
-      <button type="button" data-f="decision" aria-pressed="false"><b>2</b><span><i style="background:var(--decision)"></i>Needs client decision</span></button>
+      <button type="button" data-f="decision" aria-pressed="false"><b>1</b><span><i style="background:var(--decision)"></i>Needs client decision</span></button>
     </div>
     <p class="hint" id="fhint">Showing all 36 findings. Select a status to filter.</p>
   </section>
@@ -89,8 +89,7 @@ footer { margin-top: 48px; font-size: 13.5px; color: var(--muted); }
   <section class="decisions" aria-labelledby="dec">
     <h2 id="dec">Decisions needed from the client</h2>
     <ol>
-      <li><b>Online ordering or not.</b> v2 uses a Quote List as the default. If Shopify B2B is chosen, Quote List becomes cart, checkout and order history, and My Account grows to match.</li>
-      <li><b>Connection to the inventory and pricing system.</b> Public stock and gated pricing both depend on it, whichever platform wins.</li>
+      <li><b>Connection to the inventory and pricing system.</b> Public stock and gated pricing on the WordPress site both depend on it.</li>
       <li><b>Confirm:</b> the efficiency minimums (#7), the credit application's guarantor and consent wording (#19), the real branch list, HQ address, inventory count and any ownership messaging.</li>
     </ol>
   </section>
@@ -101,12 +100,12 @@ footer { margin-top: 48px; font-size: 13.5px; color: var(--muted); }
     <dl><div><dt>Problem in v1</dt><dd>“Register,” “Open an Account,” “Create Account” and “Apply for Credit” blurred two different things: online access for existing customers and a credit account for new ones.</dd></div><div><dt>What v2 does</dt><dd>One “Become a Customer” page asks how you buy today, then branches to the online-access form or the credit application. The same labels are used everywhere.</dd></div></dl>
   </div>
   <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#register" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
-</article><article class="item" data-status="decision">
+</article><article class="item" data-status="fixed">
   <div class="num">#2</div>
   <div class="body"><h3>Ordering buttons in a sitemap without ordering</h3>
-    <dl><div><dt>Problem in v1</dt><dd>“Add to Order” and an “Account” tab existed, but there was no cart, checkout or account page.</dd></div><div><dt>What v2 does</dt><dd>“Add to Order” became “Add to Quote List,” and a My Account page was added (quote lists, invoices, company users). If Shopify B2B is approved, this becomes cart, checkout and order history.</dd></div></dl>
+    <dl><div><dt>Problem in v1</dt><dd>“Add to Order” and an “Account” tab existed, but there was no cart, checkout or account page.</dd></div><div><dt>What v2 does</dt><dd>Client decided on 11/17: no online ordering, and the site stays on WordPress (no Shopify). Ordering buttons are gone. Logged-in contractors see their price with Call to Order and Request a Quote. My Account covers quote requests, invoices (via the portal), saved systems and company users.</dd></div></dl>
   </div>
-  <div class="meta"><span class="st st-decision">Needs client decision</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#account" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
+  <div class="meta"><span class="st st-fixed">Fixed in v2</span><a class="see" href="https://claude.ai/artifact/BYQJJuwohKkHwA62MLzLky#product" target="_blank" rel="noopener">See it in v2<span class="sr"> (opens in a new tab)</span></a></div>
 </article><article class="item" data-status="fixed">
   <div class="num">#3</div>
   <div class="body"><h3>No search results or product pages</h3>

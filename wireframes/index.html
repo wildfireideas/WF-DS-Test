@@ -376,7 +376,7 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 </style>
 
 <header class="proto-bar">
-  <span class="name">JSC · Wireframe Prototype <small>v2 · mid-fi · Nov 2026</small></span>
+  <span class="name">JSC · Wireframe Prototype <small>v2.1 · mid-fi · Nov 2026</small></span>
   <label for="pagePick">Page
     <select id="pagePick"></select>
   </label>
@@ -626,10 +626,10 @@ function availability(item) {
   return `<span class="tag ${s.cls}">${s.label} · ${b.city}${S.loggedIn && s.q ? ` (${s.q})` : ""}</span>`;
 }
 function priceBlock(item) {
-  if (S.loggedIn) return `<div class="price">${availability(item)}<span class="small muted">Your price</span><b class="amt">$${(item.id*137+412).toLocaleString()}.00</b><button class="btn sm primary" type="button" data-act="quote">Add to Quote List</button></div>`;
+  if (S.loggedIn) return `<div class="price">${availability(item)}<span class="small muted">Your price</span><b class="amt">$${(item.id*137+412).toLocaleString()}.00</b>${myB()?`<a class="link small" href="${telHref(myB())}">Call ${myB().city} to order</a>`:`<a class="link small" href="#locations">Choose a branch to order</a>`}</div>`;
   return `<div class="price">${availability(item)}<a class="link small" href="#login" data-act="gate">Log in for your price</a></div>`;
 }
-const gateBanner = (n) => S.loggedIn ? "" : `<div class="gate-banner">${n?pin(n):""}<span><b>Contractor pricing is for account holders.</b> Everyone can see stock; log in to see your price.</span><span class="row"><a class="btn sm primary" href="#login" data-act="gate">Log In</a><a class="btn sm" href="#register">Become a Customer</a></span></div>`;
+const gateBanner = (n) => S.loggedIn ? `<div class="gate-banner">${n?pin(n):""}<span><b>Prices shown are your account prices.</b> To order, call ${myB()?`<a class="link" href="${telHref(myB())}">${myB().city} at ${phone(myB())}</a>`:"your branch"} or stop by the counter.</span></div>` : `<div class="gate-banner">${n?pin(n):""}<span><b>Contractor pricing is for account holders.</b> Everyone can see stock; log in to see your price.</span><span class="row"><a class="btn sm primary" href="#login" data-act="gate">Log In</a><a class="btn sm" href="#register">Become a Customer</a></span></div>`;
 const registerBand = (n) => S.loggedIn ? "" : `<section class="sec dark"><div class="wrap split">
   <div class="stack">${n?pin(n):""}<p class="eyebrow">Contractor accounts</p><h2 class="h2">Your pricing and your branch, right on your phone.</h2>
   <p class="lede">Already buy from us? Set up online access in a couple of minutes. New to Jackson? Apply for credit and sign from the truck.</p></div>
@@ -643,7 +643,7 @@ const P = {}, N = {}, EV = {};
 /* ---- Revised sitemap ---- */
 P.sitemap = () => {
   const n = (route, label, url, cls="", flag="", extra="") => `<a class="node ${cls}" href="#${route}" ${extra}>${flag?`<span class="flag">${flag}</span>`:""}${label}<small>${url}</small></a>`;
-  return `${pagehead("Prototype index · v2","Revised sitemap","Changes from the 09/09/2026 sitemap, based on the UX review. Click any box to open its wireframe.",`<div class="row small" style="margin-top:18px"><span class="node" style="display:inline-grid">Page</span><span class="node form" style="display:inline-grid">Form</span><span class="node ext" style="display:inline-grid">External</span><span class="node tbd" style="display:inline-grid">Scope TBD</span><span class="small muted">Flags: NEW · MOVED · RENAMED</span></div>`,null)}
+  return `${pagehead("Prototype index · v2.1","Revised sitemap","Changes from the 09/09/2026 sitemap, based on the UX review. Click any box to open its wireframe.",`<div class="row small" style="margin-top:18px"><span class="node" style="display:inline-grid">Page</span><span class="node form" style="display:inline-grid">Form</span><span class="node ext" style="display:inline-grid">External</span><span class="small muted">Flags: NEW · MOVED · RENAMED</span></div>`,null)}
   <section class="sec wrap stack-lg">
     <div>${n("home","Homepage","/")}</div>
     <div class="smap">
@@ -682,7 +682,7 @@ P.sitemap = () => {
         ${n("login","Log In","/login","form")}
         ${n("register","Become a Customer","/become-a-customer","form","Renamed")}
         ${n("credit-app","Credit Application","/become-a-customer/credit","form child")}
-        ${n("account","My Account","/account","tbd","New")}
+        ${n("account","My Account","/account","","New")}
         <a class="node ext" href="#" data-act="portal"><span class="flag">External</span>Payment Portal<small>[portal domain]</small></a>
         ${n("legal","Legal ×3","/privacy · /terms · /accessibility","","New")}
       </div>
@@ -694,11 +694,11 @@ P.sitemap = () => {
         <li><b>Each brand gets its own URL</b> for search. Vendors &amp; Partners moved from Company to Products as "Brands &amp; Vendors."</li>
         <li><b>New templates:</b> Search Results, Product Detail, State pages, My Account and Legal.</li>
         <li><b>Support Center is now "Resources."</b> Promos moved to Products. Contact Us and Careers are now in the main menu.</li>
+        <li><b>Decided 11/17: no online ordering.</b> The site stays on WordPress (no Shopify). Logged-in contractors see their price, then Call to Order or Request a Quote from their branch.</li>
       </ul></div>
       <div class="card stack"><h2 class="h3">Open decisions for the client</h2><ul class="small" style="margin:0;padding-left:18px;display:grid;gap:6px">
-        <li><b>Online ordering or not?</b> v2 uses a Quote List as the safe default. If Shopify B2B is chosen, it becomes Cart, Checkout and Order History.</li>
-        <li><b>Inventory and pricing system connection.</b> Live stock and gated pricing need a link to the client's inventory system on either platform.</li>
-        <li><b>My Account scope</b> depends on the two decisions above.</li>
+        <li><b>Inventory and pricing system connection.</b> Public stock and gated pricing need a link from WordPress to the client's inventory system.</li>
+        <li><b>System Builder:</b> custom build or a plug-in.</li>
         <li><b>Facts to confirm:</b> the real branch list, HQ address, inventory count, founding year and any ownership messaging.</li>
       </ul></div>
     </div>
@@ -849,7 +849,7 @@ function listing(kind) {
 }
 P.equipment = () => `${crumbs("Products","HVAC Equipment")}${pagehead("Products","HVAC Equipment","Residential and commercial systems from Daikin, Goodman, Amana and our private label line.","",1)}${listing("equipment")}${registerBand()}`;
 N.equipment = [["Equipment listing","Product titles now open a Product Detail page.","#3"],["Working filters","Brand, tonnage and in-stock filters apply. Applied filters show as removable chips with Clear all. Efficiency ranges start at the regional minimum.","#7 #24"],["Stock is public, price is gated","Guests see In stock / Limited / Out at their branch. One banner replaces the repeated login boxes.","#4 #23"],["Empty state","Shown when filters match nothing, with a call-your-branch fallback.","#21"]];
-EV.equipment = ["view_item_list","filter_apply","select_item","gated_price_prompt_click","add_to_quote"];
+EV.equipment = ["view_item_list","filter_apply","select_item","gated_price_prompt_click","call_to_order_click"];
 P.supplies = () => `${crumbs("Products","Supplies &amp; Parts")}${pagehead("Products","Supplies &amp; Parts","The A and B items you reach for every day, on the shelf at your local branch. Search by part number, cross-reference or keyword in the bar above.","",1)}${listing("supplies")}${registerBand()}`;
 N.supplies = [["Supply-first catalog","Shows the inventory depth the current site hides.",""],["Working filters","Availability and brand filters apply. On mobile they collapse behind a Filters button that shows the count.","#24"],["Stock is public, price is gated","Guests see availability; only price and quantity need a login.","#4 #23"],["Empty state","Try: choose a branch, tick In stock, then pick a brand with nothing in stock.","#21"]];
 EV.supplies = EV.equipment;
@@ -892,15 +892,15 @@ P.product = () => {
       <div class="card stack">${pin(2)}
         ${S.loggedIn ? `<span class="small muted">Your price</span><b class="amt" style="font-size:28px">$${(it.id*137+412).toLocaleString()}.00</b>` : `<b>Contractor pricing</b><span class="small muted">Log in to see your account price.</span>`}
         <div class="stack" style="gap:6px"><b class="small">Availability</b>${b ? [b,...near.map(n=>n.x)].map((x,k)=>{const s=stock(it,x.i);return `<div class="row between small"><span>${bname(x)}${k===0?" (my branch)":` · ${Math.round(near[k-1].d)} mi`}</span><span class="tag ${s.cls}">${s.label}${S.loggedIn&&s.q?` (${s.q})`:""}</span></div>`;}).join("") : `<a class="link small" href="#locations">Choose your branch to see stock</a>`}</div>
-        ${S.loggedIn ? `<div class="row"><label class="sr" for="qty">Quantity</label><input class="input" id="qty" type="number" min="1" value="1" style="width:90px"><button type="button" class="btn primary" data-act="quote" style="flex:1">Add to Quote List</button></div>` : `<div class="row"><a class="btn primary" href="#login" data-act="gate" style="flex:1">Log In for Price</a><a class="btn" href="#register" style="flex:1">Become a Customer</a></div>`}
+        ${S.loggedIn ? `<div class="row"><label class="sr" for="qty">Quantity</label><input class="input" id="qty" type="number" min="1" value="1" style="width:90px">${myB()?`<a class="btn primary" href="${telHref(myB())}" style="flex:1">Call to Order</a>`:`<a class="btn primary" href="#locations" style="flex:1">Choose Branch to Order</a>`}<button type="button" class="btn" data-act="quotereq" data-id="${it.id}" style="flex:1">Request a Quote</button></div><p class="small muted">Orders are placed with your branch by phone or at the counter.</p>` : `<div class="row"><a class="btn primary" href="#login" data-act="gate" style="flex:1">Log In for Price</a><a class="btn" href="#register" style="flex:1">Become a Customer</a></div>`}
       </div>
       <div class="stack"><h2 class="h3">Specifications</h2><table class="spec"><tbody>${specs.map(([k,v])=>`<tr><th scope="row">${k}</th><td>${v}</td></tr>`).join("")}</tbody></table></div>
       <div class="stack">${pin(3)}<h2 class="h3">Documents</h2>${["Spec sheet","Installation manual"].map(t=>`<a class="link pdf" href="#resource-detail">${t}</a>`).join("")}</div>
     </div></div></section>
   <section class="sec tint"><div class="wrap"><div class="sec-head"><h2 class="h2">Often bought together</h2></div><div class="plist">${rel.map(productRow).join("")}</div></div></section>`;
 };
-N.product = [["New: Product Detail","Product titles had nowhere to go in v1. URL pattern: /products/[category]/[item].","#3"],["Stock at nearby branches","Guests see status at their branch plus the 3 closest. Logged-in users also see quantities and their price. \"Add to Quote List\" becomes \"Add to Cart\" if online ordering is approved.","#2 #4"],["Documents on the product","Spec sheets live here as well as in Technical Resources.",""]];
-EV.product = ["view_item","add_to_quote","gated_price_prompt_click","doc_download"];
+N.product = [["New: Product Detail","Product titles had nowhere to go in v1. URL pattern: /products/[category]/[item].","#3"],["Stock at nearby branches","Guests see status at their branch plus the 3 closest. Logged-in users also see quantities and their price. There is no online ordering (client decision, 11/17): Call to Order dials their branch and Request a Quote opens a pre-filled message to it.","#2 #4"],["Measuring orders","Orders happen offline, so track call_to_order_click and quote_request as the website's contribution to the orders KPI.",""],["Documents on the product","Spec sheets live here as well as in Technical Resources.",""]];
+EV.product = ["view_item","call_to_order_click","quote_request","gated_price_prompt_click","doc_download"];
 
 /* ---- Private label ---- */
 P["private-label"] = () => `${crumbs("Products",["HVAC Equipment","equipment"],"Private Label")}
@@ -929,7 +929,7 @@ P["system-builder"] = () => {
   const body = done
     ? `<div class="stack-lg"><div class="row between"><h2 class="h2">3 matched systems ${pin(3)}</h2><button class="btn sm ghost" type="button" data-act="sb-reset">Start Over</button></div>
        <div class="g3">${["Good","Better","Best"].map((g,i)=>`<div class="card stack">${ph("Outdoor unit + coil + furnace or air handler","ar-4x3")}<span class="tag" style="justify-self:start">${g}</span><h3 class="h3">${brand} ${ton} · ${sys}</h3><span class="small muted mono">AHRI # 2xxxxxxx · ${["14.3","15.2","17.0"][i]} SEER2</span><ul class="small" style="margin:0;padding-left:18px"><li>Outdoor unit</li><li>Indoor coil or air handler</li><li>Furnace or heat kit</li></ul>${S.loggedIn?`<b class="amt">$${(3200+i*1150).toLocaleString()}.00 per system</b>`:`<a class="link small" href="#login" data-act="gate">Log in for your price</a>`}</div>`).join("")}</div>
-       <div class="row">${S.loggedIn?`<button type="button" class="btn primary" data-act="sb-save">Save to My Account</button>`:`<a class="btn primary" href="#login" data-act="gate">Log In to Save</a>`}<a class="btn" href="#contact">Request a Quote from My Branch</a></div></div>`
+       <div class="row">${S.loggedIn?`<button type="button" class="btn primary" data-act="sb-save">Save to My Account</button>`:`<a class="btn primary" href="#login" data-act="gate">Log In to Save</a>`}<a class="btn" href="#contact" data-act="sbquote">Request a Quote from My Branch</a></div></div>`
     : `<div class="stack-lg"><fieldset><legend><span class="eyebrow">Step ${st+1} of ${SB.length}</span><span class="h2" style="display:block">${SBQ[st]}</span></legend>
        <div class="g${SB[st][1].length===3?3:4}" style="margin-top:20px">${SB[st][1].map((o,i)=>`<button type="button" class="opt" data-sb="${i}" aria-pressed="${a[st]===i}"><b>${o[0]}</b>${o[1]?`<span>${o[1]}</span>`:""}</button>`).join("")}</div></fieldset>
        ${st===3?`<p class="small muted">${pin(4)} Since 2023, split ACs installed in the Southeast and Southwest must meet 14.3 SEER2 (13.8 SEER2 at 45k BTU and up), and heat pumps 14.3 SEER2 everywhere. Lower options are hidden.</p>`:""}
@@ -1213,24 +1213,24 @@ N.login = [["Return to where you were","Logging in from a \"Log in for your pric
 EV.login = ["login","portal_click"];
 
 P.account = () => {
-  if (!S.loggedIn) return `${crumbs("My Account")}<section class="sec"><div class="wrap stack" style="max-width:560px">${pin(1)}<h1 class="h2">Log in to see your account</h1><p class="muted">Your quote lists, invoices and saved systems live here.</p><div class="row"><a class="btn primary" href="#login">Log In</a><a class="btn" href="#register">Become a Customer</a></div></div></section>`;
+  if (!S.loggedIn) return `${crumbs("My Account")}<section class="sec"><div class="wrap stack" style="max-width:560px">${pin(1)}<h1 class="h2">Log in to see your account</h1><p class="muted">Your quote requests, invoices and saved systems live here.</p><div class="row"><a class="btn primary" href="#login">Log In</a><a class="btn" href="#register">Become a Customer</a></div></div></section>`;
   const b = myB();
   return `${crumbs("My Account")}
   ${pagehead("My Account","Hi, ABC Mechanical","Account #10482 · Net 30 terms","",1)}
   <section class="sec tight"><div class="wrap g4">
     <div class="card stack"><span class="small muted">My branch</span><b>${b?bname(b):"Not set"}</b>${b?`<a class="link small" href="${telHref(b)}">${phone(b)}</a>`:`<a class="link small" href="#locations">Choose branch</a>`}</div>
     <div class="card stack"><span class="small muted">Open balance</span><b class="amt" style="font-size:22px">$[#,###].00</b>${portalLink("link small","Pay in portal")}</div>
-    <div class="card stack"><span class="small muted">Quote lists</span><b class="amt" style="font-size:22px">3</b><button type="button" class="link small" style="justify-self:start" data-focus="quotes">View lists</button></div>
+    <div class="card stack"><span class="small muted">Open quote requests</span><b class="amt" style="font-size:22px">2</b><button type="button" class="link small" style="justify-self:start" data-focus="quotes">View requests</button></div>
     <div class="card stack"><span class="small muted">Saved systems</span><b class="amt" style="font-size:22px">2</b><a class="link small" href="#system-builder">Build another</a></div>
   </div></section>
-  <section class="sec tight"><div class="wrap stack">${pin(2)}<h2 class="h3" id="quotes" tabindex="-1">Quote lists</h2><div class="tbl-wrap"><table class="data"><thead><tr><th scope="col">List</th><th scope="col">Items</th><th scope="col">Branch</th><th scope="col">Updated</th><th scope="col"><span class="sr">Actions</span></th></tr></thead><tbody>
-    ${[["Smith job: 3 ton swap",6],["Truck restock",14],["Spring PM supplies",9]].map(([n,c])=>`<tr><td><b>${n}</b></td><td class="num">${c}</td><td>${b?b.city:"Not set"}</td><td class="num">MM/DD</td><td><button type="button" class="btn sm ghost" data-act="sendquote">Send to Branch</button></td></tr>`).join("")}</tbody></table></div></div></section>
+  <section class="sec tight"><div class="wrap stack">${pin(2)}<h2 class="h3" id="quotes" tabindex="-1">Quote requests</h2><div class="tbl-wrap"><table class="data"><thead><tr><th scope="col">Request</th><th scope="col">Branch</th><th scope="col">Sent</th><th scope="col">Status</th></tr></thead><tbody>
+    ${[["Smith job: 3 ton heat pump system","Waiting on branch","warn"],["Daikin 12k mini-split ×4","Quoted · call to order","ok"],["Commercial RTU replacement","Closed",""]].map(([n,s,c])=>`<tr><td><b>${n}</b></td><td>${b?b.city:"Not set"}</td><td class="num">MM/DD</td><td><span class="tag ${c}">${s}</span></td></tr>`).join("")}</tbody></table></div><p class="small muted">Quotes come back from your branch by email or phone. To order, call your branch or stop by the counter.</p></div></section>
   <section class="sec tight"><div class="wrap stack">${pin(3)}<h2 class="h3">Recent invoices</h2><div class="tbl-wrap"><table class="data"><thead><tr><th scope="col">Invoice</th><th scope="col">Date</th><th scope="col">Amount</th><th scope="col">Status</th></tr></thead><tbody>
     ${[["INV-00481","Paid","ok"],["INV-00476","Due MM/DD","warn"],["INV-00470","Paid","ok"]].map(([n,s,c],i)=>`<tr><td class="mono">${n}</td><td class="num">MM/DD</td><td class="num">$${(1240+i*311).toLocaleString()}.00</td><td><span class="tag ${c}">${s}</span></td></tr>`).join("")}</tbody></table></div><div>${portalLink("btn sm","Pay or View All in Payment Portal")}</div></div></section>
   <section class="sec tight"><div class="wrap g2"><div class="card stack"><h2 class="h3">Company users</h2><p class="small muted">Admins can invite techs and choose who sees pricing.</p><button type="button" class="btn sm" style="justify-self:start" data-act="invite">Invite a User</button></div><div class="card stack"><h2 class="h3">Profile &amp; security</h2><p class="small muted">Email, password and notification settings.</p><button type="button" class="btn sm" style="justify-self:start" data-act="logout">Log Out</button></div></div></section>`;
 };
-N.account = [["New: My Account (scope TBD)","v1's logged-in state had nowhere to go. Guests see a log-in prompt here.","#2"],["Quote lists (default)","Works without online ordering: build a list and send it to the branch. If Shopify B2B is approved, this becomes Orders and Reorder.","#2"],["Invoices","A read-only summary; payments still happen in the external portal.",""]];
-EV.account = ["quote_send","portal_click","user_invite"];
+N.account = [["New: My Account","WordPress member area. No online ordering (client decision, 11/17), so there's no cart or order history. Guests see a log-in prompt here.","#2"],["Quote requests","Read-only list of quotes sent from product pages, the System Builder and the contact form. Branches reply by email or phone.","#2"],["Invoices","A read-only summary; payments still happen in the external portal.",""]];
+EV.account = ["portal_click","user_invite","call_to_order_click"];
 
 P.legal = () => `${crumbs("Legal")}${pagehead("Legal","Privacy Policy","Template for the Privacy Policy, Terms of Sale and Accessibility Statement.","",1)}<section class="sec"><div class="wrap article">${lines(6)}<h2 class="h3">Section heading</h2>${lines(5)}<h2 class="h3">Accessibility</h2><p class="muted">Statement of WCAG 2.2 AA conformance and a way to report barriers.</p></div></section>`;
 N.legal = [["New: Legal template","Footer legal links went to the homepage in v1.","#15"]];
@@ -1311,7 +1311,7 @@ document.addEventListener("click", e => {
   else if (a === "logout") { e.preventDefault(); setLogged(false); nav("home"); }
   else if (a === "portal") toast("External link: the payment portal opens in a new tab");
   else if (a === "gate") { S.returnTo = S.route; nav("login"); }
-  else if (a === "quote") toast("Added to quote list (prototype)");
+  else if (a === "quotereq") { const it = ITEMS[+d.id]; S.vals["ct-topic"] = "Equipment quote"; S.vals["ct-m"] = `Please quote: ${it.title} (${it.brand} ${it.model}). Qty: ${$("#qty")?.value || 1}.`; S.sent.contact = false; nav("contact"); }
   else if (a === "geo") { S.loc = { q:"", st:"All", geo:true }; toast("Simulated location: Jackson, MS area"); if (S.route !== "locations") nav("locations"); else render(); }
   else if (a === "demozip") { S.loc = { q:"75701", st:"All", geo:false }; render(); }
   else if (a === "locclear") { S.loc = { q:"", st:"All", geo:false }; render(); }
@@ -1322,13 +1322,13 @@ document.addEventListener("click", e => {
   else if (a === "sb-next") { S.sb.step++; render(); }
   else if (a === "sb-back") { S.sb.step = Math.max(0, S.sb.step - 1); render(); }
   else if (a === "sb-reset") { S.sb = { step:0, a:{} }; render(); }
+  else if (a === "sbquote") { e.preventDefault(); S.vals["ct-topic"] = "Equipment quote"; S.vals["ct-m"] = "Please quote the system I built in the System Builder: [system summary]."; S.sent.contact = false; nav("contact"); }
   else if (a === "sb-save") toast("System saved to My Account (prototype)");
   else if (a === "ca-back") { S.ca.step = Math.max(0, S.ca.step - 1); clearErr(); render(); }
   else if (a === "ca-save") toast("We emailed you a secure link to finish later (prototype)");
   else if (a === "ca-fill") { Object.assign(S.vals, { "c-legal":"ABC Mechanical LLC","c-type":"LLC","c-ein":"12-3456789","c-lic":"HVAC-000000","c-addr":"100 Main St","c-city":"Tyler","c-zip":"75701","c-yrs":"12","o1-n":"Alex Morgan","o1-t":"Owner","o1-e":"alex@abcmechanical.com","o1-p":"555-010-0199","g-n":"Alex Morgan","g-ssn":"000000000","g-addr":"200 Oak St","g-city":"Tyler","g-zip":"75703","g-consent":true,"b-n":"[Bank name]","b-p":"555-010-0198","t1-n":"[Supplier]","t1-p":"555-010-0197","s-n":"Alex Morgan","s-t":"Owner","s-terms":true }); clearErr(); render(); }
   else if (a === "sig-clear") { const c = $("#sig"); c.getContext("2d").clearRect(0,0,c.width,c.height); }
   else if (a === "promolocal") { S.promoLocal = !S.promoLocal; render(); }
-  else if (a === "sendquote") toast("Quote list sent to your branch (prototype)");
   else if (a === "copylink") toast("Link copied (prototype)");
   else if (a === "share") toast("Opens the share dialog (prototype)");
   else if (a === "addowner") toast("Adds another owner block (prototype)");
