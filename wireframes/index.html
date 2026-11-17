@@ -291,6 +291,13 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 .cat { border: 1px solid var(--g3); padding: 16px; text-decoration: none; display: grid; gap: 10px; background: var(--paper); min-width: 0; }
 .cat:hover { border-color: var(--ink); }
 .cat .ph { min-height: 0; aspect-ratio: 4/3; }
+/* Category cards with an image: full-bleed image, name padded below (matches the Figma Category card component) */
+.cat:has(> .ph) { padding: 0; gap: 0; align-content: start; }
+.cat:has(> .ph) > .ph { border: 0; border-bottom: 1px solid var(--g3); width: 100%; }
+.cat:has(> .ph) > :not(.ph) { padding-inline: 16px; }
+.cat:has(> .ph) > .ph + * { padding-top: 12px; }
+.cat:has(> .ph) > :not(.ph) + :not(.ph) { padding-top: 4px; }
+.cat:has(> .ph) > :last-child { padding-bottom: 16px; }
 .crumbs { font-size: 14px; color: var(--g5); padding-block: 16px 0; }
 .crumbs ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .crumbs li + li::before { content: "/"; margin-right: 6px; }
