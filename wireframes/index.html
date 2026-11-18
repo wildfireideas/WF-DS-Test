@@ -254,7 +254,7 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 
 .dock { display: none; }
 @container site (max-width: 760px) {
-  .dock { display: grid; grid-template-columns: repeat(4, 1fr); position: sticky; bottom: 0; z-index: 25; background: var(--paper); border-top: 1px solid var(--g3); }
+  .dock { display: grid; grid-template-columns: repeat(5, 1fr); position: sticky; bottom: 0; z-index: 25; background: var(--paper); border-top: 1px solid var(--g3); }
   .dock a { display: grid; justify-items: center; gap: 3px; padding: 8px 2px 10px; text-decoration: none; font-size: 12px; font-weight: 600; min-height: 56px; }
   .dock a i { width: 22px; height: 22px; border: 2px solid var(--g5); border-radius: 5px; display: block; }
   .dock a[aria-current="page"] i { background: var(--ink); border-color: var(--ink); }
@@ -278,6 +278,15 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 .hero .split { gap: 48px; }
 @container site (min-width: 761px) { .hero .split { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); } }
 .hero .lede { max-width: 36ch; text-wrap: balance; }
+.stamp { font-family: var(--mono); font-size: 12px; color: var(--g5); }
+.chip.sm { min-height: 40px; padding: 0 12px; font-size: 13px; }
+.lang { display: inline-flex; gap: 2px; align-items: center; }
+.lang button { background: none; border: 0; color: inherit; font: inherit; padding: 2px 6px; cursor: pointer; border-radius: 3px; }
+.lang button[aria-pressed="true"] { background: rgba(255,255,255,.2); font-weight: 700; }
+.mnav .lang button[aria-pressed="true"] { background: var(--g2); }
+.lang-banner { background: var(--g1); border-bottom: 1px solid var(--g3); font-size: 14px; }
+.lang-banner .wrap { padding-block: 10px; }
+.searchbar .scan { background: var(--paper); color: var(--ink); border-left: 1px solid var(--g3); padding: 0 14px; font-weight: 600; }
 .signoff { font-size: 24px; font-weight: 700; letter-spacing: -.01em; color: var(--g5); margin: 0; }
 @container site (max-width: 760px) { .signoff { font-size: 19px; } }
 .proof { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 14px; color: var(--g5); }
@@ -387,7 +396,7 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 </style>
 
 <header class="proto-bar">
-  <span class="name">JSC · Wireframe Prototype <small>v2.1 · mid-fi · Nov 2026</small></span>
+  <span class="name">JSC · Wireframe Prototype <small>v2.2 · mid-fi · Nov 2026</small></span>
   <label for="pagePick">Page
     <select id="pagePick"></select>
   </label>
@@ -444,10 +453,11 @@ const ITEMS = [
   ["supplies","[Vendor B]","Capacitors & Contactors","Single-Pole 30A Contactor, 24V Coil","P-30124","","C-130 · 42-25101"],
   ["supplies","[Vendor C]","Motors & Blowers","Universal 1/2 HP Condenser Fan Motor","P-50812","","FM-1/2-U"],
   ["supplies","[Vendor A]","Copper & Line Sets","3/8 x 3/4 Line Set, 25 ft","P-37425",""],
-  ["supplies","[Vendor D]","Refrigerants","R-454B Refrigerant, 20 lb Cylinder","P-45420",""],
+  ["supplies","[Vendor D]","Refrigerants","R-32 Refrigerant, 20 lb Cylinder","P-32020",""],
   ["supplies","[Vendor B]","Thermostats & Controls","Programmable Wi-Fi Thermostat","P-70210","","T-WIFI-2H1C"],
   ["supplies","[Vendor C]","Filters & IAQ","16x25x1 MERV 8 Pleated Filter, 12-pack","P-16251",""],
-  ["supplies","[Vendor D]","Drain & Condensate","Condensate Pump, 115V, 20 ft Lift","P-11520",""]
+  ["supplies","[Vendor D]","Drain & Condensate","Condensate Pump, 115V, 20 ft Lift","P-11520",""],
+  ["supplies","[Vendor B]","Refrigerants","R-454B Refrigerant, 20 lb Cylinder (service, other brands)","P-45420",""]
 ].map((x,id)=>({ id, kind:x[0], brand:x[1], cat:x[2], title:x[3], model:x[4], tons:x[5], xref:x[6]||"" }));
 const PROMOS = [
   ["Spring tune-up supply bundle","Supplies",false],["Line set + pad combo pricing","Supplies",true],["Daikin dealer rebate","Rebates",false],
@@ -460,22 +470,22 @@ const PAGES = [
   ["Primary", [["home","Homepage"]]],
   ["Products", [["equipment","HVAC Equipment"],["supplies","Supplies & Parts"],["private-label","Private Label Equipment"],["brand","Brand page (template)"],["vendors","Brands & Vendors"],["system-builder","System Builder"],["promos","Promos & Rebates"],["promo-detail","Promo Detail"],["search","Search Results"],["product","Product Detail"]]],
   ["Locations", [["locations","Find a Branch"],["state","State page (template)"],["branch","Branch page (template)"]]],
-  ["Resources", [["resources","Technical Resources"],["resource-detail","Technical Resource Detail"],["contact","Contact Us"]]],
+  ["Resources", [["resources","Technical Resources"],["resource-detail","Technical Resource Detail"],["warranty","Warranty & Returns"],["training","Training & CE"],["contact","Contact Us"]]],
   ["Company", [["about","About Us"],["careers","Careers"],["apply","Employment Application"],["news","News"],["news-detail","News Detail"]]],
   ["Account", [["register","Become a Customer"],["credit-app","Credit Application"],["login","Log In"],["account","My Account"]]],
   ["Utility", [["legal","Legal page (template)"]]]
 ];
 const LABEL = Object.fromEntries(PAGES.flatMap(g => g[1]));
 const SECTION = { equipment:"products", supplies:"products", "private-label":"products", brand:"products", vendors:"products", "system-builder":"products", promos:"products", "promo-detail":"products", product:"products", search:"products",
-  locations:"locations", state:"locations", branch:"locations", resources:"resources", "resource-detail":"resources", contact:"resources", about:"company", careers:"company", apply:"company", news:"company", "news-detail":"company" };
+  locations:"locations", state:"locations", branch:"locations", resources:"resources", "resource-detail":"resources", warranty:"resources", training:"resources", contact:"resources", about:"company", careers:"company", apply:"company", news:"company", "news-detail":"company" };
 
 /* ================= State ================= */
 const S = {
   route:"home", loggedIn:false, my:null, view:0, state:"TX", brand:"Daikin", product:0, q:"capacitor",
   loc:{ q:"", st:"All", geo:false, origin:null, msg:"" },
   f:{ brands:[], stock:false, tons:[] }, fKind:null, filterOpen:false,
-  sb:{ step:0, a:{} }, ca:{ step:0, sent:false }, sigMode:"type",
-  vals:{}, err:{}, errFor:null, sent:{}, promoCat:"All", promoLocal:false, newsCat:"All", returnTo:null, nav:false
+  sb:{ step:0, a:{}, x:{} }, ca:{ step:0, sent:false }, sigMode:"type",
+  vals:{}, err:{}, errFor:null, sent:{}, promoCat:"All", promoLocal:false, newsCat:"All", returnTo:null, nav:false, lang:"en", spec:[], reg:{}
 };
 const store = { get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch(e){} } };
 
@@ -490,6 +500,11 @@ const phone = b => `(555) 010-${String(100 + b.i).padStart(4, "0")}`;
 const telHref = b => `tel:+1555010${String(100 + b.i).padStart(4, "0")}`;
 const dirHref = b => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("Jackson Supply Company " + bname(b))}`;
 const myB = () => S.my == null ? null : BRANCHES[S.my];
+const smsHref = b => `sms:+1555010${String(100 + b.i).padStart(4, "0")}`;
+const afterHours = b => `(555) 019-${String(100 + b.i).padStart(4, "0")}`;
+const afterHref = b => `tel:+1555019${String(100 + b.i).padStart(4, "0")}`;
+const STOCK_TIME = "9:42 AM"; // sample: production shows the time of the last inventory sync
+const PULL = "Pull for pickup (have it ready at the counter)";
 const crumbs = (...parts) => `<nav class="crumbs wrap" aria-label="Breadcrumb"><ol><li><a href="#home">Home</a></li>${parts.map((p,i) => `<li>${Array.isArray(p) ? `<a href="#${p[1]}">${p[0]}</a>` : `<span ${i===parts.length-1?'aria-current="page"':''}>${p}</span>`}</li>`).join("")}</ol></nav>`;
 const pagehead = (eyebrow, title, lede, extra="", n) => `<section class="pagehead wrap">${n?`<div class="pin-abs">${pin(n)}</div>`:""}<p class="eyebrow">${eyebrow}</p><h1 class="h1">${title}</h1>${lede?`<p class="lede">${lede}</p>`:""}${extra}</section>`;
 const extLink = (href, text, cls="link") => `<a class="${cls} ext" href="${href}" target="_blank" rel="noopener">${text}<span class="sr"> (opens in a new tab)</span></a>`;
@@ -568,40 +583,42 @@ function header() {
     ? `<a class="acct-pill hide-m" href="#account"><span class="av" aria-hidden="true">AM</span>My Account</a>`
     : `<a class="btn sm hide-m" href="#login">Log In</a><a class="btn sm primary hide-m" href="#register">Become a Customer</a>`;
   const branchBit = b
-    ? `<span>My branch: <a class="link" href="#branch" data-branch="${b.i}">${bname(b)}</a></span><a href="${telHref(b)}">Call ${phone(b)}</a><span>Open today 7:00a–5:00p ${TZ(b.st)}</span>`
+    ? `<span>My branch: <a class="link" href="#branch" data-branch="${b.i}">${bname(b)}</a></span><a href="${telHref(b)}">Call ${phone(b)}</a><a href="${smsHref(b)}">Text</a><span>Open today 6:30a–5:00p ${TZ(b.st)}</span>`
     : `<span>No branch selected · <a class="link" href="#locations">Choose your branch</a></span>`;
   return `
   <a class="skip" href="#" data-focus="main">Skip to main content</a>
   <div class="util"><div class="wrap">
     <div class="row">${branchBit}</div>
-    <div class="row"><a href="#contact">Contact Us</a>${portalLink("", "Pay Your Bill")}</div>
+    <div class="row"><span class="lang" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="${S.lang==='en'}">English</button><button type="button" data-lang="es" aria-pressed="${S.lang==='es'}" lang="es">Español</button></span><a href="#contact">Contact Us</a>${portalLink("", "Pay Your Bill")}</div>
   </div></div>
   <header class="hdr"><div class="wrap">
     <a class="logo" href="#home"><span class="mark" aria-hidden="true">JSC</span><span class="wm" aria-hidden="true"><b>JACKSON SUPPLY CO.</b><i>Existing logo retained</i></span><span class="sr">Jackson Supply Company home</span></a>
     <nav class="nav" aria-label="Main"><ul>
       ${navItem("products","Products",`<div class="menu mega">
-        <div class="col"><b>Shop</b><a href="#equipment"><b>HVAC Equipment</b><small>Includes our private label line</small></a><a href="#supplies"><b>Supplies &amp; Parts</b><small>A &amp; B items on the shelf</small></a><a href="#private-label"><b>Private Label Equipment</b><small>Jackson's value line</small></a></div>
+        <div class="col"><b>Browse</b><a href="#equipment"><b>HVAC Equipment</b><small>Includes our private label line</small></a><a href="#supplies"><b>Supplies &amp; Parts</b><small>A &amp; B items on the shelf</small></a><a href="#private-label"><b>Private Label Equipment</b><small>Jackson's value line</small></a></div>
         <div class="col"><b>Brands</b>${BRANDS.map(x=>`<a href="#brand" data-brand="${x}"><b>${x}</b></a>`).join("")}<a href="#vendors"><b>All brands &amp; vendors</b></a></div>
-        <div class="col"><b>Tools &amp; deals</b><a href="#system-builder"><b>System Builder</b><small>Match a system in 5 steps</small></a><a href="#promos"><b>Promos &amp; Rebates</b><small>This month's deals</small></a></div></div>`)}
+        <div class="col"><b>Tools &amp; deals</b><a href="#system-builder"><b>System Builder</b><small>Match a system in 6 steps</small></a><a href="#promos"><b>Promos &amp; Rebates</b><small>This month's deals</small></a></div></div>`)}
       <li class="item"><a href="#locations" ${SECTION[S.route]==="locations"?'aria-current="page"':''}>Locations</a></li>
-      ${navItem("resources","Resources",`<div class="menu"><a href="#resources"><b>Technical Resources</b><small>Spec sheets, manuals, bulletins</small></a><a href="#contact"><b>Contact Us</b><small>Reach the right branch team</small></a></div>`)}
+      ${navItem("resources","Resources",`<div class="menu"><a href="#resources"><b>Technical Resources</b><small>Spec sheets, manuals, bulletins</small></a><a href="#warranty"><b>Warranty &amp; Returns</b><small>Serial lookup, claims, registration</small></a><a href="#training"><b>Training &amp; CE</b><small>A2L, factory training, license hours</small></a><a href="#contact"><b>Contact Us</b><small>Reach the right branch team</small></a></div>`)}
       ${navItem("company","Company",`<div class="menu"><a href="#about"><b>About Us</b></a><a href="#careers"><b>Careers</b><small>Open jobs in 7 states</small></a><a href="#news"><b>News</b></a></div>`)}
     </ul></nav>
     <div class="hdr-actions">${acct}<button type="button" class="hamb" data-act="menu" aria-label="Menu" aria-expanded="${S.nav}" aria-controls="mnav"><i aria-hidden="true"></i></button></div>
   </div></header>
   <nav class="mnav" id="mnav" aria-label="Mobile"><div class="wrap">
-    <div class="mybr">${b ? `<span class="small">My branch: <b>${bname(b)}</b></span><div class="row"><a class="btn sm primary" href="${telHref(b)}">Call ${phone(b)}</a><a class="btn sm" href="#locations">Change</a></div>` : `<a class="btn sm primary" href="#locations">Choose Your Branch</a>`}</div>
+    <div class="mybr">${b ? `<span class="small">My branch: <b>${bname(b)}</b></span><div class="row"><a class="btn sm primary" href="${telHref(b)}">Call ${phone(b)}</a><a class="btn sm" href="${smsHref(b)}">Text</a><a class="btn sm" href="#locations">Change</a></div>` : `<a class="btn sm primary" href="#locations">Choose Your Branch</a>`}</div>
     <details><summary>Products</summary><a href="#equipment">HVAC Equipment</a><a href="#supplies">Supplies &amp; Parts</a><a href="#private-label">Private Label Equipment</a>${BRANDS.map(x=>`<a href="#brand" data-brand="${x}">${x}</a>`).join("")}<a href="#vendors">All brands &amp; vendors</a><a href="#system-builder">System Builder</a><a href="#promos">Promos &amp; Rebates</a></details>
     <a href="#locations">Locations</a>
-    <details><summary>Resources</summary><a href="#resources">Technical Resources</a><a href="#contact">Contact Us</a></details>
+    <details><summary>Resources</summary><a href="#resources">Technical Resources</a><a href="#warranty">Warranty &amp; Returns</a><a href="#training">Training &amp; CE</a><a href="#contact">Contact Us</a></details>
     <details><summary>Company</summary><a href="#about">About Us</a><a href="#careers">Careers</a><a href="#news">News</a></details>
     ${portalLink("", "Pay Your Bill")}
+    <div class="row" style="padding-block:12px 0"><span class="lang" role="group" aria-label="Language"><button type="button" data-lang="en" aria-pressed="${S.lang==='en'}">English</button><button type="button" data-lang="es" aria-pressed="${S.lang==='es'}" lang="es">Español</button></span></div>
     <div class="row">${S.loggedIn ? `<a class="btn primary" href="#account" style="flex:1">My Account</a><button type="button" class="btn" data-act="logout" style="flex:1">Log Out</button>` : `<a class="btn primary" href="#register" style="flex:1">Become a Customer</a><a class="btn" href="#login" style="flex:1">Log In</a>`}</div>
   </div></nav>
   <div class="subsearch"><div class="wrap">
-    <form class="searchbar" data-form="search" role="search"><label for="gq" class="sr">Search products</label><input id="gq" placeholder="Part #, model # or keyword" value="${S.route==='search'?esc(S.q):''}"><button type="submit">Search</button></form>
+    <form class="searchbar" data-form="search" role="search"><label for="gq" class="sr">Search products</label><input id="gq" placeholder="Part #, model #, serial # or keyword" value="${S.route==='search'?esc(S.q):''}"><button type="button" class="scan" data-act="scan" aria-label="Scan a nameplate or barcode">Scan</button><button type="submit">Search</button></form>
     <span class="branch-sel">${b ? `Stock shown for <b>${bname(b)}</b> · <a class="link" href="#locations">Change</a>` : `<a class="link" href="#locations">Choose a branch</a> to see stock`}</span>
-  </div></div>`;
+  </div></div>
+  ${S.lang === "es" ? `<div class="lang-banner" lang="es"><div class="wrap"><b>Español:</b> stock, branch pages and the credit application will have professionally translated Spanish versions. [Translated copy goes here.] <button type="button" class="link" data-lang="en">View in English</button></div></div>` : ""}`;
 }
 function footer() {
   return `<footer class="ftr"><div class="wrap">
@@ -611,7 +628,7 @@ function footer() {
         <div class="row"><a class="btn sm" href="#locations">Find a Branch</a>${portalLink("btn sm","Pay Your Bill")}</div></div>
       <div><h2>Products</h2><ul><li><a href="#equipment">HVAC Equipment</a></li><li><a href="#supplies">Supplies &amp; Parts</a></li><li><a href="#private-label">Private Label</a></li><li><a href="#vendors">Brands &amp; Vendors</a></li><li><a href="#system-builder">System Builder</a></li><li><a href="#promos">Promos &amp; Rebates</a></li></ul></div>
       <div><h2>Locations</h2><ul>${Object.entries(STATES).map(([k,v])=>`<li><a href="#state" data-state="${k}">${v}</a></li>`).join("")}<li><a href="#locations">All locations</a></li></ul></div>
-      <div><h2>Resources</h2><ul><li><a href="#resources">Technical Resources</a></li><li><a href="#contact">Contact Us</a></li></ul></div>
+      <div><h2>Resources</h2><ul><li><a href="#resources">Technical Resources</a></li><li><a href="#warranty">Warranty &amp; Returns</a></li><li><a href="#training">Training &amp; CE</a></li><li><a href="#contact">Contact Us</a></li></ul></div>
       <div><h2>Company</h2><ul><li><a href="#about">About Us</a></li><li><a href="#careers">Careers</a></li><li><a href="#news">News</a></li></ul></div>
       <div><h2>Account</h2><ul><li><a href="#login">Log In</a></li><li><a href="#register">Become a Customer</a></li><li><a href="#credit-app">Credit Application</a></li><li>${portalLink("","Pay Your Bill")}</li></ul></div>
     </div>
@@ -623,7 +640,8 @@ function dock() {
   const cur = c => c ? 'aria-current="page"' : "";
   return `<nav class="dock" aria-label="Quick actions">
     <a href="${b?'#branch':'#locations'}" ${b?`data-branch="${b.i}"`:''} ${cur(sec==='locations')}><i aria-hidden="true"></i>${b?'My Branch':'Branches'}</a>
-    <a href="#supplies" ${cur(sec==='products')}><i aria-hidden="true"></i>Shop</a>
+    <a href="#supplies" ${cur(sec==='products')}><i aria-hidden="true"></i>Parts</a>
+    <a href="${b?smsHref(b):'#locations'}"><i aria-hidden="true"></i>Text</a>
     <a href="#" data-act="portal"><i aria-hidden="true"></i>Pay Bill</a>
     <a href="${S.loggedIn?'#account':'#login'}" ${cur(['login','register','account','credit-app'].includes(S.route))}><i aria-hidden="true"></i>${S.loggedIn?'Account':'Log In'}</a>
   </nav>`;
@@ -634,19 +652,19 @@ function availability(item) {
   const b = myB();
   if (!b) return `<a class="link small" href="#locations">Choose your branch to see stock</a>`;
   const s = stock(item, b.i);
-  return `<span class="tag ${s.cls}">${s.label} · ${b.city}${S.loggedIn && s.q ? ` (${s.q})` : ""}</span>`;
+  return `<span class="tag ${s.cls}">${s.label} · ${b.city}${S.loggedIn && s.q ? ` (${s.q})` : ""}</span><span class="stamp">Updated ${STOCK_TIME}</span>`;
 }
 function priceBlock(item) {
-  if (S.loggedIn) return `<div class="price">${availability(item)}<span class="small muted">Your price</span><b class="amt">$${(item.id*137+412).toLocaleString()}.00</b>${myB()?`<a class="link small" href="${telHref(myB())}">Call ${myB().city} to order</a>`:`<a class="link small" href="#locations">Choose a branch to order</a>`}</div>`;
+  if (S.loggedIn) return `<div class="price">${availability(item)}<span class="small muted">Your price</span><b class="amt">$${(item.id*137+412).toLocaleString()}.00</b>${myB()?`<span class="row" style="gap:14px"><a class="link small" href="${telHref(myB())}">Call ${myB().city} to order</a><button type="button" class="link small" data-act="pull" data-id="${item.id}">Pull for pickup</button></span>`:`<a class="link small" href="#locations">Choose a branch to order</a>`}</div>`;
   return `<div class="price">${availability(item)}<a class="link small" href="#login" data-act="gate">Log in for your price</a></div>`;
 }
-const gateBanner = (n) => S.loggedIn ? `<div class="gate-banner">${n?pin(n):""}<span><b>Prices shown are your account prices.</b> To order, call ${myB()?`<a class="link" href="${telHref(myB())}">${myB().city} at ${phone(myB())}</a>`:"your branch"} or stop by the counter.</span></div>` : `<div class="gate-banner">${n?pin(n):""}<span><b>Contractor pricing is for account holders.</b> Everyone can see stock; log in to see your price.</span><span class="row"><a class="btn sm primary" href="#login" data-act="gate">Log In</a><a class="btn sm" href="#register">Become a Customer</a></span></div>`;
+const gateBanner = (n) => S.loggedIn ? `<div class="gate-banner">${n?pin(n):""}<span><b>Prices shown are your account prices.</b> To order, call or text ${myB()?`<a class="link" href="${telHref(myB())}">${myB().city} at ${phone(myB())}</a>`:"your branch"}, or use <b>Pull for pickup</b> and it'll be waiting at the counter.</span></div>` : `<div class="gate-banner">${n?pin(n):""}<span><b>Contractor pricing is for account holders.</b> Everyone can see stock; log in to see your price.</span><span class="row"><a class="btn sm primary" href="#login" data-act="gate">Log In</a><a class="btn sm" href="#register">Become a Customer</a></span></div>`;
 const registerBand = (n) => S.loggedIn ? "" : `<section class="sec dark"><div class="wrap split">
   <div class="stack">${n?pin(n):""}<p class="eyebrow">Contractor accounts</p><h2 class="h2">Your pricing and your branch, right on your phone.</h2>
   <p class="lede">Already buy from us? Set up online access in a couple of minutes. New to Jackson? Apply for credit and sign from the truck.</p></div>
   <div class="row" style="justify-content:flex-end"><a class="btn primary" href="#register">Become a Customer</a><a class="btn" href="#login">Log In</a></div>
 </div></section>`;
-const productRow = it => `<div class="prow">${ph("Product photo")}<div class="stack" style="gap:4px;min-width:0"><span class="small muted mono">${it.brand} · ${it.model}</span><h3 class="h4"><a href="#product" data-product="${it.id}">${it.title}</a></h3><span class="small muted">${it.kind==="equipment"?"AHRI matched · R-454B":"Ships same day from branch"}</span></div>${priceBlock(it)}</div>`;
+const productRow = it => `<div class="prow">${ph("Product photo")}<div class="stack" style="gap:4px;min-width:0"><span class="small muted mono">${it.brand} · ${it.model}</span><h3 class="h4"><a href="#product" data-product="${it.id}">${it.title}</a></h3><span class="small muted">${it.kind==="equipment"?"AHRI matched · R-32":it.cat==="Refrigerants"?"EPA 608 certification required":"Same-day pickup or job-site delivery"}</span>${it.kind==="equipment"&&/Heat Pumps|Split Systems|Packaged Units/.test(it.cat)?`<a class="link small" href="#system-builder" style="justify-self:start">See AHRI matches</a>`:""}</div>${priceBlock(it)}</div>`;
 
 /* ================= Pages ================= */
 const P = {}, N = {}, EV = {};
@@ -680,6 +698,8 @@ P.sitemap = () => {
       <div class="col"><b>Resources</b>
         ${n("resources","Technical Resources","/resources","","Renamed")}
         ${n("resource-detail","Resource Detail","/resources/[doc]","child")}
+        ${n("warranty","Warranty &amp; Returns","/resources/warranty","form","New")}
+        ${n("training","Training &amp; CE","/resources/training","","New")}
         ${n("contact","Contact Us","/contact","form","Moved")}
       </div>
       <div class="col"><b>Company</b>
@@ -706,6 +726,7 @@ P.sitemap = () => {
         <li><b>New templates:</b> Search Results, Product Detail, State pages, My Account and Legal.</li>
         <li><b>Support Center is now "Resources."</b> Promos moved to Products. Contact Us and Careers are now in the main menu.</li>
         <li><b>Decided 11/17: no online ordering.</b> The site stays on WordPress (no Shopify). Logged-in contractors see their price, then Call to Order or Request a Quote from their branch.</li>
+        <li><b>Contractor audit (11/18):</b> R-32 data, EER2 for Arizona, authorized purchasers, stock timestamps, after-hours lines, Pull for Pickup, Text the counter, spec filters, nameplate scan, install details in the System Builder, Warranty &amp; Returns and Training pages, Spanish toggle and utility rebates.</li>
       </ul></div>
       <div class="card stack"><h2 class="h3">Open decisions for the client</h2><ul class="small" style="margin:0;padding-left:18px;display:grid;gap:6px">
         <li><b>Inventory and pricing system connection.</b> Public stock and gated pricing need a link from WordPress to the client's inventory system.</li>
@@ -723,7 +744,7 @@ function branchFinder(n) {
   const b = myB();
   return `<section class="sec"><div class="wrap split">
   <div class="stack">${n?pin(n):""}<p class="eyebrow">27 branches · 7 states</p><h2 class="h2">Pull up to a counter near the job.</h2>
-  ${b ? `<div class="card flat stack"><span class="small muted">Your branch</span><h3 class="h3">${bname(b)}</h3><span class="small"><a href="${telHref(b)}">${phone(b)}</a> · Open today 7:00a–5:00p ${TZ(b.st)}</span><div class="row"><a class="btn sm primary" href="#branch" data-branch="${b.i}">Branch Details</a><a class="btn sm" href="#locations">Change Branch</a></div></div>`
+  ${b ? `<div class="card flat stack"><span class="small muted">Your branch</span><h3 class="h3">${bname(b)}</h3><span class="small"><a href="${telHref(b)}">${phone(b)}</a> · Open today 6:30a–5:00p ${TZ(b.st)}</span><div class="row"><a class="btn sm primary" href="#branch" data-branch="${b.i}">Branch Details</a><a class="btn sm" href="#locations">Change Branch</a></div></div>`
        : `<p class="lede">Enter a ZIP code or city to see the closest branches, hours and directions.</p>
   <form class="searchbar" data-form="finder" style="margin-top:8px"><label class="sr" for="fq">ZIP code or city</label><input id="fq" placeholder="ZIP code or city"><button type="submit">Find a Branch</button></form>
   <button type="button" class="link small" style="justify-self:start" data-act="geo">Use my current location</button>`}</div>
@@ -784,7 +805,8 @@ N.home = [
   ["System Builder teaser","Copy fixed. Tool scope is still TBD (possible plug-in).","#32"],
   ["Promos","Pulled from the Promos content type. Each card opens a promo detail page.",""],
   ["One account call-to-action","Shown once and hidden when logged in. The stats band was folded into the hero's proof line.","#31"],
-  ["Careers + News","Careers is also in the Company menu now.","#10"]
+  ["Careers + News","Careers is also in the Company menu now.","#10"],
+  ["Top bar and search, site-wide","Branch hours open at 6:30a, Text sits next to Call, and an English / Español toggle starts the Spanish rollout. Search takes serial numbers and has a Scan button for nameplates and barcodes. The mobile bottom bar reads My Branch · Parts · Text · Pay Bill · Account.","Audit #5 #7 #9 #13 #14"]
 ];
 EV.home = ["cta_click","branch_search","set_my_branch","portal_click","promo_view"];
 
@@ -831,6 +853,13 @@ N.brand = [["Brand template (×3)","Each brand gets its own URL (/brands/daikin)
 EV.brand = ["brand_view","cta_click","doc_download"];
 
 /* ---- Listings ---- */
+// Supply parts are chosen by spec, not brand. Chips are visual in the prototype; production filters on catalog attributes.
+const SPEC_GROUPS = [
+  ["Capacitors", [["MFD", ["35/5","40/5","45/5","55/5","5","7.5"]], ["Voltage", ["370V","440V"]], ["Shape", ["Round","Oval"]]]],
+  ["Motors", [["HP", ["1/6","1/4","1/3","1/2","3/4"]], ["RPM", ["825","1075","1625"]], ["Rotation", ["CW","CCW","Reversible"]], ["Voltage", ["115V","208/230V"]]]],
+  ["Contactors", [["Poles", ["1","2","3"]], ["Amps", ["30A","40A"]], ["Coil", ["24V","120V","208/240V"]]]]
+];
+const specFilters = () => SPEC_GROUPS.map(([g, rows]) => `<fieldset><legend>${g}</legend>${rows.map(([lab, opts]) => `<span class="small muted">${lab}</span><div class="row" style="gap:6px;margin-bottom:6px">${opts.map(o => { const k = g + ":" + lab + ":" + o; return `<button type="button" class="chip sm" data-spec="${k}" aria-pressed="${S.spec.includes(k)}">${o}</button>`; }).join("")}</div>`).join("")}</fieldset>`).join("");
 // Placeholder rows: the real brand list comes from the catalog and can be long.
 const moreBrands = () => `${[1,2].map(()=>`<label class="check muted"><input type="checkbox" disabled> [Additional brand]</label>`).join("")}<button type="button" class="link small" style="justify-self:start;margin-top:4px" data-act="morebrands">Show all brands ([##])</button>`;
 function listing(kind) {
@@ -850,7 +879,7 @@ function listing(kind) {
         <fieldset><legend>Availability</legend>${b ? `<label class="check"><input type="checkbox" data-filter="stock" ${S.f.stock?'checked':''}> In stock at ${b.city}</label>` : `<a class="link small" href="#locations">Choose your branch</a>`}</fieldset>
         <fieldset><legend>Brand</legend>${brands.map(x=>`<label class="check"><input type="checkbox" data-filter="brand" value="${esc(x)}" ${S.f.brands.includes(x)?'checked':''}> ${x}</label>`).join("")}${moreBrands()}</fieldset>
         ${isEq?`<fieldset><legend>Tonnage</legend><div class="row" style="gap:8px">${["1","2.5","3","4"].map(t=>`<button type="button" class="chip" data-filter="tons" value="${t}" aria-pressed="${S.f.tons.includes(t)}">${t} ton</button>`).join("")}</div></fieldset>
-          <fieldset><legend>Efficiency (SEER2)</legend><label class="check"><input type="checkbox"> 14.3–15.1</label><label class="check"><input type="checkbox"> 15.2–16.9</label><label class="check"><input type="checkbox"> 17+</label><span class="small muted">Only models that meet the 2023 Southeast/Southwest minimums are listed.</span></fieldset>`:`<fieldset><legend>Voltage</legend><label class="check"><input type="checkbox"> 24V</label><label class="check"><input type="checkbox"> 120V</label><label class="check"><input type="checkbox"> 208/230V</label></fieldset>`}
+          <fieldset><legend>Efficiency (SEER2 / EER2)</legend><label class="check"><input type="checkbox"> 14.3–15.1 SEER2</label><label class="check"><input type="checkbox"> 15.2–16.9 SEER2</label><label class="check"><input type="checkbox"> 17+ SEER2</label><label class="check"><input type="checkbox" ${myB()&&myB().st==="AZ"?"checked":""}> Meets Southwest EER2 (Arizona)</label><span class="small muted">Only models that meet the 2023 regional minimums are listed: SEER2 everywhere, plus EER2 for split ACs in Arizona.</span></fieldset>`:specFilters()}
       </div></div>
       <div class="stack-lg" style="min-width:0">
         ${gateBanner(3)}
@@ -862,10 +891,10 @@ function listing(kind) {
     </div></div></section>`;
 }
 P.equipment = () => `${crumbs("Products","HVAC Equipment")}${pagehead("Products","HVAC Equipment","Residential and commercial systems from Daikin, Goodman, Amana and our private label line.","",1)}${listing("equipment")}${registerBand()}`;
-N.equipment = [["Equipment listing","Product titles now open a Product Detail page.","#3"],["Working filters","Brand, tonnage and in-stock filters apply. Applied filters show as removable chips with Clear all. Efficiency ranges start at the regional minimum.","#7 #24"],["Stock is public, price is gated","Guests see In stock / Limited / Out at their branch. One banner replaces the repeated login boxes.","#4 #23"],["Empty state","Shown when filters match nothing, with a call-your-branch fallback.","#21"]];
+N.equipment = [["Equipment listing","Product titles now open a Product Detail page. Outdoor units link to AHRI matches.","#3 · Audit #17"],["EER2 for Arizona","Efficiency filter adds the Southwest EER2 rule, pre-ticked when the user's branch is in Arizona.","Audit #2"],["Working filters","Brand, tonnage and in-stock filters apply. Applied filters show as removable chips with Clear all. Efficiency ranges start at the regional minimum.","#7 #24"],["Stock is public, price is gated","Guests see In stock / Limited / Out at their branch. One banner replaces the repeated login boxes.","#4 #23"],["Empty state","Shown when filters match nothing, with a call-your-branch fallback.","#21"]];
 EV.equipment = ["view_item_list","filter_apply","select_item","gated_price_prompt_click","call_to_order_click"];
 P.supplies = () => `${crumbs("Products","Supplies &amp; Parts")}${pagehead("Products","Supplies &amp; Parts","The A and B items you reach for every day, on the shelf at your local branch. Search by part number, cross-reference or keyword in the bar above.","",1)}${listing("supplies")}${registerBand()}`;
-N.supplies = [["Supply-first catalog","Shows the inventory depth the current site hides.",""],["Working filters","Availability and brand filters apply. On mobile they collapse behind a Filters button that shows the count.","#24"],["Stock is public, price is gated","Guests see availability; only price and quantity need a login.","#4 #23"],["Empty state","Try: choose a branch, tick In stock, then pick a brand with nothing in stock.","#21"]];
+N.supplies = [["Supply-first catalog","Shows the inventory depth the current site hides.",""],["Shop by spec","Capacitors by MFD, voltage and shape; motors by HP, RPM, rotation and voltage; contactors by poles, amps and coil. That's how contractors look for parts. Chips are visual here; production filters on catalog attributes.","Audit #8"],["Working filters","Availability and brand filters apply. On mobile they collapse behind a Filters button that shows the count.","#24"],["Stock is public, price is gated","Guests see availability; only price and quantity need a login.","#4 #23"],["Empty state","Try: choose a branch, tick In stock, then pick a brand with nothing in stock.","#21"]];
 EV.supplies = EV.equipment;
 
 /* ---- Search ---- */
@@ -886,7 +915,7 @@ P.search = () => {
       <div class="row"><a class="btn sm" href="#supplies">Browse Supplies</a>${myB()?`<a class="btn sm primary" href="${telHref(myB())}">Ask Your Branch</a>`:`<a class="btn sm primary" href="#contact">Ask a Branch</a>`}</div></div>`}
   </div></section>`;
 };
-N.search = [["New: Search Results","Parts search is a top task but v1 had no results page. Results cover products, documents and branches.","#3"],["Exact and cross-reference matches","A part # or cross-reference # pins that item to the top. Needs cross-reference data from the client's product catalog.",""],["No-results state","Gives tips plus someone to call, so search never dead-ends.","#21"]];
+N.search = [["Scan a nameplate","The Scan button in the search bar opens the camera to read a model or serial number from the nameplate, or a part's barcode.","Audit #9"],["New: Search Results","Parts search is a top task but v1 had no results page. Results cover products, documents and branches.","#3"],["Exact and cross-reference matches","A part # or cross-reference # pins that item to the top. Needs cross-reference data from the client's product catalog.",""],["No-results state","Gives tips plus someone to call, so search never dead-ends.","#21"]];
 EV.search = ["search","view_search_results","select_item","search_no_results"];
 
 /* ---- Product detail ---- */
@@ -895,8 +924,10 @@ P.product = () => {
   const b = myB();
   const near = b ? BRANCHES.filter(x=>x.i!==b.i).map(x=>({x,d:dist([b.lat,b.lon],[x.lat,x.lon])})).sort((a,c)=>a.d-c.d).slice(0,3) : [];
   const rel = ITEMS.filter(i=>i.kind===it.kind && i.id!==it.id).slice(0,3);
+  const outdoor = it.kind==="equipment" && /Heat Pumps|Split Systems|Packaged Units/.test(it.cat);
+  const refr = it.cat === "Refrigerants";
   const specs = it.kind==="equipment"
-    ? [["Capacity",it.tons?it.tons+" ton":"80,000 BTU"],["Efficiency","15.2 SEER2 / 7.8 HSPF2"],["Refrigerant","R-454B"],["Voltage","208/230V, 1 ph"],["AHRI #","2xxxxxxx"],["Warranty","10-yr parts (registered)"]]
+    ? [["Capacity",it.tons?it.tons+" ton":"80,000 BTU"],["Efficiency","15.2 SEER2 · 12.0 EER2 · 7.8 HSPF2"],["Southwest (Arizona)","Meets SEER2 and EER2 minimums"],["Refrigerant","R-32 (A2L)"],["Cabinet width","17.5 in"],["Voltage","208/230V, 1 ph"],["AHRI #","2xxxxxxx"],["Warranty","10-yr parts (registered)"]]
     : [["Category",it.cat],["Brand",it.brand],["Part #",it.model],["Cross-reference",it.xref||"None"],["Pack qty","1"]];
   return `${crumbs("Products",[it.kind==="equipment"?"HVAC Equipment":"Supplies &amp; Parts",it.kind],it.title)}
   <section class="sec"><div class="wrap split" style="align-items:start">
@@ -905,16 +936,19 @@ P.product = () => {
       <div class="stack"><span class="small muted mono">${it.brand} · Model ${it.model}${it.xref?` · Cross-ref ${it.xref}`:""}</span><h1 class="h1" style="font-size:32px">${it.title}</h1><p class="muted">${it.cat}</p></div>
       <div class="card stack">${pin(2)}
         ${S.loggedIn ? `<span class="small muted">Your price</span><b class="amt" style="font-size:28px">$${(it.id*137+412).toLocaleString()}.00</b>` : `<b>Contractor pricing</b><span class="small muted">Log in to see your account price.</span>`}
-        <div class="stack" style="gap:6px"><b class="small">Availability</b>${b ? [b,...near.map(n=>n.x)].map((x,k)=>{const s=stock(it,x.i);return `<div class="row between small"><span>${bname(x)}${k===0?" (my branch)":` · ${Math.round(near[k-1].d)} mi`}</span><span class="tag ${s.cls}">${s.label}${S.loggedIn&&s.q?` (${s.q})`:""}</span></div>`;}).join("") : `<a class="link small" href="#locations">Choose your branch to see stock</a>`}</div>
-        ${S.loggedIn ? `<div class="row"><label class="sr" for="qty">Quantity</label><input class="input" id="qty" type="number" min="1" value="1" style="width:90px">${myB()?`<a class="btn primary" href="${telHref(myB())}" style="flex:1">Call to Order</a>`:`<a class="btn primary" href="#locations" style="flex:1">Choose Branch to Order</a>`}<button type="button" class="btn" data-act="quotereq" data-id="${it.id}" style="flex:1">Request a Quote</button></div><p class="small muted">Orders are placed with your branch by phone or at the counter.</p>` : `<div class="row"><a class="btn primary" href="#login" data-act="gate" style="flex:1">Log In for Price</a><a class="btn" href="#register" style="flex:1">Become a Customer</a></div>`}
+        <div class="stack" style="gap:6px"><div class="row between"><b class="small">Availability</b><span class="stamp">Updated ${STOCK_TIME}</span></div>${b ? [b,...near.map(n=>n.x)].map((x,k)=>{const s=stock(it,x.i);return `<div class="row between small"><span>${bname(x)}${k===0?" (my branch)":` · ${Math.round(near[k-1].d)} mi`}</span><span class="tag ${s.cls}">${s.label}${S.loggedIn&&s.q?` (${s.q})`:""}</span></div>`;}).join("") : `<a class="link small" href="#locations">Choose your branch to see stock</a>`}</div>
+        ${refr ? `<p class="small"><span class="tag ${S.loggedIn?'ok':''}">EPA 608</span> ${S.loggedIn?"Certification on file for your account.":"Certification required to buy refrigerant. Add it once to your account and you won't be asked at the counter."}</p>` : ""}
+        ${S.loggedIn ? `<div class="row"><label class="sr" for="qty">Quantity</label><input class="input" id="qty" type="number" min="1" value="1" style="width:90px">${b?`<a class="btn primary" href="${telHref(b)}" style="flex:1">Call to Order</a>`:`<a class="btn primary" href="#locations" style="flex:1">Choose Branch to Order</a>`}</div>
+          <div class="row"><button type="button" class="btn" data-act="pull" data-id="${it.id}" style="flex:1">Pull for Pickup</button><button type="button" class="btn" data-act="quotereq" data-id="${it.id}" style="flex:1">Request a Quote</button>${b?`<a class="btn ghost" href="${smsHref(b)}">Text</a>`:""}</div>
+          <p class="small muted">No online checkout. Pull for Pickup sends your list to ${b?b.city:"your branch"} so it's waiting at the counter.</p>` : `<div class="row"><a class="btn primary" href="#login" data-act="gate" style="flex:1">Log In for Price</a><a class="btn" href="#register" style="flex:1">Become a Customer</a></div>`}
       </div>
       <div class="stack"><h2 class="h3">Specifications</h2><table class="spec"><tbody>${specs.map(([k,v])=>`<tr><th scope="row">${k}</th><td>${v}</td></tr>`).join("")}</tbody></table></div>
-      <div class="stack">${pin(3)}<h2 class="h3">Documents</h2>${["Spec sheet","Installation manual"].map(t=>`<a class="link pdf" href="#resource-detail">${t}</a>`).join("")}</div>
+      <div class="stack">${pin(3)}<h2 class="h3">Documents</h2>${["Spec sheet","Installation manual"].map(t=>`<a class="link pdf" href="#resource-detail">${t}</a>`).join("")}${outdoor?`<button type="button" class="link pdf" style="justify-self:start" data-act="ahri">AHRI certificate</button><a class="link" href="#system-builder">See AHRI-matched systems</a>`:""}<a class="link" href="#warranty">Warranty lookup and claims</a></div>
     </div></div></section>
   <section class="sec tint"><div class="wrap"><div class="sec-head"><h2 class="h2">Often bought together</h2></div><div class="plist">${rel.map(productRow).join("")}</div></div></section>`;
 };
-N.product = [["New: Product Detail","Product titles had nowhere to go in v1. URL pattern: /products/[category]/[item].","#3"],["Stock at nearby branches","Guests see status at their branch plus the 3 closest. Logged-in users also see quantities and their price. There is no online ordering (client decision, 11/17): Call to Order dials their branch and Request a Quote opens a pre-filled message to it.","#2 #4"],["Measuring orders","Orders happen offline, so track call_to_order_click and quote_request as the website's contribution to the orders KPI.",""],["Documents on the product","Spec sheets live here as well as in Technical Resources.",""]];
-EV.product = ["view_item","call_to_order_click","quote_request","gated_price_prompt_click","doc_download"];
+N.product = [["New: Product Detail","Product titles had nowhere to go in v1. URL pattern: /products/[category]/[item].","#3"],["Stock at nearby branches","Guests see status at their branch plus the 3 closest. Logged-in users also see quantities and their price. There is no online ordering (client decision, 11/17): Call to Order dials their branch and Request a Quote opens a pre-filled message to it.","#2 #4"],["Pull for Pickup, Text, Quote","Logged-in contractors can call, text, request a quote or send a pull list so the order is waiting at the counter. Still no online checkout: it's a message to the branch. Track call_to_order_click, pickup_request and quote_request for the orders KPI.","Audit #6 #7"],["Stock timestamp","Availability shows when stock was last synced, so contractors trust it before driving over.","Audit #4"],["Trade-correct specs","Daikin, Goodman and Amana use R-32. Specs add EER2, Southwest compliance and cabinet width; outdoor units link to AHRI matches and the certificate. Refrigerant shows the EPA 608 requirement.","Audit #1 #2 #17 #19"],["Documents on the product","Spec sheets live here as well as in Technical Resources.",""]];
+EV.product = ["view_item","call_to_order_click","pickup_request","quote_request","text_branch_click","ahri_cert_download","gated_price_prompt_click","doc_download"];
 
 /* ---- Private label ---- */
 P["private-label"] = () => `${crumbs("Products",["HVAC Equipment","equipment"],"Private Label")}
@@ -931,28 +965,45 @@ const SB = [
   ["Application",[["Residential replacement","Swap an existing system"],["New construction","Single-family or multi-family"],["Light commercial","Up to 25 tons"]]],
   ["System type",[["AC + gas furnace","Split, gas heat"],["Heat pump + air handler","All electric"],["Packaged unit","Single cabinet"],["Ductless","Mini-split"]]],
   ["Tonnage",[["1.5–2 ton",""],["2.5–3 ton",""],["3.5–4 ton",""],["5 ton",""]]],
+  ["Install details",null,"multi"],
   ["Efficiency",[["Standard","14.3–15.1 SEER2 · meets the 2023 regional minimum"],["Mid","15.2–16.9 SEER2"],["High","17+ SEER2 · variable speed"]]],
   ["Brand",[["Daikin",""],["Goodman",""],["Amana",""],["No preference",""]]]
 ];
-const SBQ = ["What's the job?","Pick a system type","What size?","Efficiency target","Preferred brand"];
+const SBQ = ["What's the job?","Pick a system type","What size?","Install details","Efficiency target","Preferred brand"];
+const SBX = [["width","Cabinet width",["14 in","17.5 in","21 in","24.5 in"]],["orient","Airflow",["Upflow","Downflow","Horizontal"]],["reuse","Existing equipment",["Replacing everything","Reusing the furnace","Reusing the coil"]],["gas","Gas",["Natural gas","LP","Not needed"]],["strips","Heat strips",["None","5 kW","8 kW","10 kW"]],["volt","Voltage",["208/230V 1-ph","208/230V 3-ph","460V 3-ph"]]];
+const sbxLabel = k => { const g = SBX.find(x=>x[0]===k); return S.sb.x[k]==null ? "" : g[2][S.sb.x[k]]; };
 P["system-builder"] = () => {
-  const st = S.sb.step, done = st >= SB.length, a = S.sb.a;
-  const stepper = `<ol class="steps">${SB.map((s,i)=>`<li class="${i===st?'on':i<st?'done':''}" ${i===st?'aria-current="step"':''}><b>STEP ${i+1}</b>${s[0]}${i<st&&a[i]!=null?`<button type="button" class="link small" style="text-align:left" data-sbgo="${i}">${SB[i][1][a[i]][0]} · Edit</button>`:""}</li>`).join("")}<li class="${done?'on':''}" ${done?'aria-current="step"':''}><b>RESULT</b>Matched systems</li></ol>`;
-  const brand = a[4] == null || a[4] === 3 ? "Daikin" : SB[4][1][a[4]][0];
+  const st = S.sb.step, done = st >= SB.length, a = S.sb.a, x = S.sb.x;
+  const answered = i => SB[i][2]==="multi" ? (x.width!=null && x.orient!=null) : a[i]!=null;
+  const summary = i => SB[i][2]==="multi" ? `${sbxLabel("width")} · ${sbxLabel("orient")}` : SB[i][1][a[i]][0];
+  const stepper = `<ol class="steps">${SB.map((s,i)=>`<li class="${i===st?'on':i<st?'done':''}" ${i===st?'aria-current="step"':''}><b>STEP ${i+1}</b>${s[0]}${i<st&&answered(i)?`<button type="button" class="link small" style="text-align:left" data-sbgo="${i}">${summary(i)} · Edit</button>`:""}</li>`).join("")}<li class="${done?'on':''}" ${done?'aria-current="step"':''}><b>RESULT</b>Matched systems</li></ol>`;
+  const brand = a[5] == null || a[5] === 3 ? "Daikin" : SB[5][1][a[5]][0];
   const sys = SB[1][1][a[1]||0][0], ton = SB[2][1][a[2]||0][0];
-  const body = done
-    ? `<div class="stack-lg"><div class="row between"><h2 class="h2">3 matched systems ${pin(3)}</h2><button class="btn sm ghost" type="button" data-act="sb-reset">Start Over</button></div>
-       <div class="g3">${["Good","Better","Best"].map((g,i)=>`<div class="card stack">${ph("Outdoor unit + coil + furnace or air handler","ar-4x3")}<span class="tag" style="justify-self:start">${g}</span><h3 class="h3">${brand} ${ton} · ${sys}</h3><span class="small muted mono">AHRI # 2xxxxxxx · ${["14.3","15.2","17.0"][i]} SEER2</span><ul class="small" style="margin:0;padding-left:18px"><li>Outdoor unit</li><li>Indoor coil or air handler</li><li>Furnace or heat kit</li></ul>${S.loggedIn?`<b class="amt">$${(3200+i*1150).toLocaleString()}.00 per system</b>`:`<a class="link small" href="#login" data-act="gate">Log in for your price</a>`}</div>`).join("")}</div>
-       <div class="row">${S.loggedIn?`<button type="button" class="btn primary" data-act="sb-save">Save to My Account</button>`:`<a class="btn primary" href="#login" data-act="gate">Log In to Save</a>`}<a class="btn" href="#contact" data-act="sbquote">Request a Quote from My Branch</a></div></div>`
-    : `<div class="stack-lg"><fieldset><legend><span class="eyebrow">Step ${st+1} of ${SB.length}</span><span class="h2" style="display:block">${SBQ[st]}</span></legend>
+  const az = !!(myB() && myB().st === "AZ");
+  const effNote = `${pin(4)} Since 2023, split ACs installed in the Southeast and Southwest must meet 14.3 SEER2 (13.8 SEER2 at 45k BTU and up), and heat pumps 14.3 SEER2 everywhere. ${az ? "Your branch is in Arizona, where the Southwest region also sets an EER2 minimum for split ACs, so results are checked for both." : "Arizona branches also check EER2, which the Southwest region requires for split ACs."} Lower options are hidden.`;
+  const strips = sbxLabel("strips");
+  const installDetail = [sbxLabel("width") && sbxLabel("width")+" cabinet", sbxLabel("orient"), sbxLabel("reuse"), sbxLabel("gas"), strips && strips!=="None" ? strips+" heat strips" : "", sbxLabel("volt")].filter(Boolean).join(" · ");
+  let body;
+  if (done) {
+    body = `<div class="stack-lg"><div class="row between"><h2 class="h2">3 matched systems ${pin(3)}</h2><button class="btn sm ghost" type="button" data-act="sb-reset">Start Over</button></div>
+       ${installDetail?`<p class="small muted">Matched for: ${installDetail}</p>`:""}
+       <div class="g3">${["Good","Better","Best"].map((g,i)=>`<div class="card stack">${ph("Outdoor unit + coil + furnace or air handler","ar-4x3")}<span class="tag" style="justify-self:start">${g}</span><h3 class="h3">${brand} ${ton} · ${sys}</h3><span class="small muted mono">AHRI # 2xxxxxxx · ${["14.3","15.2","17.0"][i]} SEER2 · ${["11.7","12.0","12.5"][i]} EER2 · R-32</span><ul class="small" style="margin:0;padding-left:18px"><li>Outdoor unit</li><li>Indoor coil or air handler${sbxLabel("width")?` (${sbxLabel("width")})`:""}</li><li>${sys.includes("gas")?"Furnace":"Heat kit"}${strips&&strips!=="None"?` · ${strips}`:""}</li></ul>${S.loggedIn?`<b class="amt">$${(3200+i*1150).toLocaleString()}.00 per system</b>`:`<a class="link small" href="#login" data-act="gate">Log in for your price</a>`}<button type="button" class="link small pdf" style="justify-self:start" data-act="ahri">AHRI certificate</button></div>`).join("")}</div>
+       <div class="row">${S.loggedIn?`<button type="button" class="btn primary" data-act="sb-save">Save to My Account</button>`:`<a class="btn primary" href="#login" data-act="gate">Log In to Save</a>`}<a class="btn" href="#contact" data-act="sbquote">Request a Quote from My Branch</a></div></div>`;
+  } else if (SB[st][2] === "multi") {
+    body = `<div class="stack-lg"><div><span class="eyebrow">Step ${st+1} of ${SB.length}</span><h2 class="h2">Install details</h2><p class="small muted" style="margin-top:6px">${pin(5)} These decide whether a system actually fits the job. Cabinet width and airflow are required.</p></div>
+       ${SBX.map(([k,label,opts],gi)=>`<fieldset class="stack" style="gap:8px"><legend class="lbl">${label}${gi<2?' <span class="req" aria-hidden="true">*</span>':''}</legend><div class="row" style="gap:8px">${opts.map((o,oi)=>`<button type="button" class="chip" data-sbx="${k}" data-sbi="${oi}" aria-pressed="${x[k]===oi}">${o}</button>`).join("")}</div></fieldset>`).join("")}
+       <div class="row between"><button class="btn ghost" type="button" data-act="sb-back">Back</button><button class="btn primary" type="button" data-act="sb-next" ${answered(st)?'':'disabled'}>Next</button></div></div>`;
+  } else {
+    body = `<div class="stack-lg"><fieldset><legend><span class="eyebrow">Step ${st+1} of ${SB.length}</span><span class="h2" style="display:block">${SBQ[st]}</span></legend>
        <div class="g${SB[st][1].length===3?3:4}" style="margin-top:20px">${SB[st][1].map((o,i)=>`<button type="button" class="opt" data-sb="${i}" aria-pressed="${a[st]===i}"><b>${o[0]}</b>${o[1]?`<span>${o[1]}</span>`:""}</button>`).join("")}</div></fieldset>
-       ${st===3?`<p class="small muted">${pin(4)} Since 2023, split ACs installed in the Southeast and Southwest must meet 14.3 SEER2 (13.8 SEER2 at 45k BTU and up), and heat pumps 14.3 SEER2 everywhere. Lower options are hidden.</p>`:""}
+       ${SB[st][0]==="Efficiency"?`<p class="small muted">${effNote}</p>`:""}
        <div class="row between"><button class="btn ghost" type="button" data-act="sb-back" ${st===0?'disabled':''}>Back</button><button class="btn primary" type="button" data-act="sb-next" ${a[st]==null?'disabled':''}>${st===SB.length-1?'See Matched Systems':'Next'}</button></div></div>`;
-  return `${crumbs("Products","System Builder")}${pagehead("Products · Tools","System Builder","Answer five quick questions and get AHRI-matched systems your branch can pull.","",1)}
+  }
+  return `${crumbs("Products","System Builder")}${pagehead("Products · Tools","System Builder","Six quick questions, including the install details that decide fit, then AHRI-matched systems your branch can pull.","",1)}
    <section class="sec"><div class="wrap">${pin(2)}<div style="margin-top:12px">${stepper}${body}</div></div></section>`;
 };
-N["system-builder"] = [["Scope TBD","The brief lists this as a possible plug-in. This shows the flow whichever tool is used.",""],["Stepper","One decision per screen with big tap targets. Earlier answers can be edited from the stepper.",""],["Results","Good/Better/Best with gated pricing, save to account and request a quote.",""],["Efficiency guardrail","Options start at the 2023 Department of Energy regional minimum for all 7 states. Confirm with the client.","#7"]];
-EV["system-builder"] = ["builder_start","builder_step","builder_complete","builder_save","quote_request"];
+N["system-builder"] = [["Scope TBD","The brief lists this as a possible plug-in. This shows the flow whichever tool is used.",""],["Stepper","One decision per screen with big tap targets. Earlier answers can be edited from the stepper.",""],["Results","Good/Better/Best with gated pricing, save to account and request a quote.",""],["Efficiency guardrail","Options start at the 2023 Department of Energy regional minimum for all 7 states. Arizona adds the Southwest EER2 check. Confirm with the client.","#7 · Audit #2"],["Install details","Cabinet width, airflow, reused equipment, gas type, heat strips and voltage: the fields that decide a real match. Results show them and offer the AHRI certificate for rebate paperwork.","Audit #10"]];
+EV["system-builder"] = ["builder_start","builder_step","builder_complete","builder_save","ahri_cert_download","quote_request"];
 
 /* ---- Promos ---- */
 P.promos = () => {
@@ -962,9 +1013,14 @@ P.promos = () => {
   <section class="sec"><div class="wrap">
     <p class="small muted" aria-live="polite" style="margin-bottom:16px">${list.length} ${list.length===1?"promo":"promos"}</p>
     ${list.length?`<div class="g3">${list.map((p,i)=>`<a class="card stack" href="#promo-detail">${i===0?`<div class="pin-abs">${pin(2)}</div>`:""}${ph("Promo graphic","ar-16x9")}<div class="row"><span class="tag">Ends MM/DD</span><span class="tag">${p.local?"Select branches":"All branches"}</span></div><h2 class="h3">${p.title}</h2>${lines(2)}<span class="link small">See details</span></a>`).join("")}</div>`:`<div class="card stack"><h2 class="h3">No promos match.</h2><button type="button" class="btn sm" style="justify-self:start" data-promocat="All">Show All Promos</button></div>`}
+  </div></section>
+  <section class="sec tint"><div class="wrap stack">${pin(3)}<div class="sec-head" style="margin-bottom:8px"><div><p class="eyebrow">Utility rebates</p><h2 class="h2">Rebates by state and utility</h2></div></div>
+    <p class="small muted">Most programs need the AHRI certificate and your invoice. Programs and amounts change often: the client confirms them, and confirms current federal tax-credit status, before launch.</p>
+    <div class="tbl-wrap"><table class="data"><thead><tr><th scope="col">State</th><th scope="col">Utilities with HVAC programs</th><th scope="col">Typical rebate</th><th scope="col">Paperwork</th></tr></thead><tbody>
+    ${[["Texas","Oncor · SWEPCO · Entergy Texas"],["Louisiana","Entergy Louisiana · Cleco · SWEPCO"],["Mississippi","Entergy Mississippi · Mississippi Power · TVA (EnergyRight)"],["Alabama","Alabama Power · TVA (EnergyRight)"],["Tennessee","TVA (EnergyRight) via local power companies"],["Oklahoma","OG&amp;E · PSO"],["Arizona","APS · SRP · TEP"]].map(([st,u])=>`<tr><td><b>${st}</b></td><td>${u}</td><td class="num">[$ per ton or per unit]</td><td>AHRI cert + invoice</td></tr>`).join("")}</tbody></table></div>
   </div></section>${registerBand()}`;
 };
-N.promos = [["Moved to Products","Promos are marketing, not support.","#12"],["Working filters","Category chips and \"at my branch only\" are real buttons now.","#24"]];
+N.promos = [["Moved to Products","Promos are marketing, not support.","#12"],["Rebates by utility","Organized the way contractors look them up: by state and utility. Amounts and programs are placeholders for the client to confirm.","Audit #18"],["Working filters","Category chips and \"at my branch only\" are real buttons now.","#24"]];
 EV.promos = ["promo_view","filter_apply"];
 P["promo-detail"] = () => `${crumbs("Products",["Promos &amp; Rebates","promos"],"Spring tune-up supply bundle")}
   <section class="sec"><div class="wrap split" style="align-items:start">${ph("Promo graphic","ar-4x3")}
@@ -1026,7 +1082,7 @@ P.state = () => {
   return `${crumbs(["Locations","locations"],STATES[st])}
   ${pagehead("Locations",`HVAC Supply in ${STATES[st]}`,`${list.length} Jackson Supply branches serving ${STATES[st]} contractors with equipment, parts and supplies.`,"",1)}
   <section class="sec"><div class="wrap split" style="align-items:start">
-    <div class="stack">${list.map(b=>`<div class="card flat stack"><h2 class="h3"><a class="link" href="#branch" data-branch="${b.i}">${bname(b)}</a></h2><span class="small muted">[Street address] · <a href="${telHref(b)}">${phone(b)}</a></span><span class="small">Mon–Fri 7:00a–5:00p ${TZ(b.st)}</span><div class="row">${extLink(dirHref(b),"Directions","btn sm ghost")}<a class="btn sm" href="#branch" data-branch="${b.i}">Branch Details</a></div></div>`).join("")}</div>
+    <div class="stack">${list.map(b=>`<div class="card flat stack"><h2 class="h3"><a class="link" href="#branch" data-branch="${b.i}">${bname(b)}</a></h2><span class="small muted">[Street address] · <a href="${telHref(b)}">${phone(b)}</a></span><span class="small">Mon–Fri 6:30a–5:00p ${TZ(b.st)}</span><div class="row">${extLink(dirHref(b),"Directions","btn sm ghost")}<a class="btn sm" href="#branch" data-branch="${b.i}">Branch Details</a></div></div>`).join("")}</div>
     <div class="stack-lg"><div class="card" style="padding:0;aspect-ratio:2/1">${mapSVG(-1,list)}</div><div class="article">${pin(2)}<h2 class="h3">Serving ${STATES[st]} since [year]</h2>${lines(4)}</div></div>
   </div></section>`;
 };
@@ -1044,15 +1100,15 @@ P.branch = () => {
         <dl class="kv"><dt>Address</dt><dd>[Street address]<br>${b.city}, ${b.st} [ZIP]</dd></dl>
         <dl class="kv"><dt>Phone</dt><dd><a href="${telHref(b)}">${phone(b)}</a></dd><dt style="margin-top:8px">Status</dt><dd><span class="tag ok">Open now · closes 5:00p ${TZ(b.st)}</span></dd></dl>
       </div>
-      <div class="row">${extLink(dirHref(b),"Get Directions","btn primary")}<a class="btn" href="${telHref(b)}">Call ${phone(b)}</a><button type="button" class="btn ghost" data-act="mybranch" data-b="${b.i}" aria-pressed="${b.i===S.my}">${b.i===S.my?'My Branch ✓':'Set as My Branch'}</button></div>
+      <div class="row">${extLink(dirHref(b),"Get Directions","btn primary")}<a class="btn" href="${telHref(b)}">Call ${phone(b)}</a><a class="btn" href="${smsHref(b)}">Text the Counter</a><button type="button" class="btn ghost" data-act="mybranch" data-b="${b.i}" aria-pressed="${b.i===S.my}">${b.i===S.my?'My Branch ✓':'Set as My Branch'}</button></div>
     </div>
     ${ph(`Real photo: ${b.city} branch exterior or counter (client-supplied)`,"ar-4x3")}
   </div></section>
   <section class="sec"><div class="wrap g3">
-    <div class="card stack">${pin(2)}<h2 class="h3">Hours</h2><table class="hours"><caption class="sr">Branch hours</caption><tbody><tr><th scope="row">Mon–Fri</th><td>7:00a – 5:00p</td></tr><tr><th scope="row">Saturday</th><td>8:00a – 12:00p</td></tr><tr><th scope="row">Sunday</th><td>Closed</td></tr></tbody></table><span class="small muted">All times ${b.st==="AZ"?"Mountain Standard Time (Arizona doesn't observe daylight saving time)":"Central Time"}. A holiday hours banner appears here when set.</span></div>
+    <div class="card stack">${pin(2)}<h2 class="h3">Hours</h2><table class="hours"><caption class="sr">Branch hours</caption><tbody><tr><th scope="row">Mon–Fri</th><td>6:30a – 5:00p</td></tr><tr><th scope="row">Saturday</th><td>8:00a – 12:00p</td></tr><tr><th scope="row">Sunday</th><td>Closed</td></tr></tbody></table><span class="small muted">All times ${b.st==="AZ"?"Mountain Standard Time (Arizona doesn't observe daylight saving time)":"Central Time"}. A holiday hours banner appears here when set.</span><p class="small"><b>After hours (no-heat / no-cool):</b> <a href="${afterHref(b)}" style="white-space:nowrap">${afterHours(b)}</a><br><span class="muted">On-call staff can meet you at the counter. [Client to confirm per branch, or show "No after-hours service".]</span></p></div>
     <div class="card stack">${pin(3)}<h2 class="h3">Contact this branch</h2><p class="small muted">Messages go to the branch team inbox. No individual staff are listed.</p>
-      <ul class="stack small" style="gap:6px;list-style:none;margin:0;padding:0"><li>Counter sales · <a href="${telHref(b)}">${phone(b)}</a></li><li>Equipment quotes · <a href="${telHref(b)}">${phone(b)} ext. 2</a></li><li>Warranty &amp; returns · <a href="${telHref(b)}">${phone(b)} ext. 3</a></li></ul><a class="btn sm" href="#contact" style="justify-self:start">Send a Message</a></div>
-    <div class="card stack"><h2 class="h3">Services</h2><ul class="small" style="margin:0;padding-left:18px;display:grid;gap:4px"><li>Will-call counter pickup</li><li>Local job-site delivery</li><li>Equipment quotes &amp; load calcs</li><li>Warranty processing</li><li>Refrigerant cylinder exchange</li></ul></div>
+      <ul class="stack small" style="gap:6px;list-style:none;margin:0;padding:0"><li>Counter sales · <a href="${telHref(b)}">${phone(b)}</a></li><li>Text the counter · <a href="${smsHref(b)}">${phone(b)}</a></li><li>Equipment quotes · <a href="${telHref(b)}">${phone(b)} ext. 2</a></li><li>Warranty &amp; returns · <a href="${telHref(b)}">${phone(b)} ext. 3</a></li></ul><a class="btn sm" href="#contact" style="justify-self:start">Send a Message</a></div>
+    <div class="card stack"><h2 class="h3">Services</h2><ul class="small" style="margin:0;padding-left:18px;display:grid;gap:4px"><li>Will-call pickup, or <b>Pull for Pickup</b> from your phone</li><li>Job-site delivery: order by 10:00a for same-day</li><li>Equipment quotes &amp; load calcs</li><li>Warranty processing and warranty part pickup</li><li>Refrigerant cylinder exchange</li><li>Tool loaners: recovery machine, vacuum pump</li><li>Duct fabrication shop [if this branch has one]</li><li>A2L and factory training: see <a class="link" href="#training">Training &amp; CE</a></li></ul></div>
   </div></section>
   <section class="sec tint"><div class="wrap split">
     <div class="stack">${pin(4)}<p class="eyebrow">On the shelf in ${b.city}</p><h2 class="h2">What we stock here</h2><p class="muted">Top supply categories at this branch. Log in to see quantities.</p>
@@ -1066,23 +1122,23 @@ P.branch = () => {
   </div></section>
   <section class="sec tint"><div class="wrap"><div class="sec-head"><h2 class="h2">Nearby branches ${pin(6)}</h2><a class="link" href="#state" data-state="${b.st}">All ${STATES[b.st]} branches</a></div>
     <div class="g3">${near.map(n=>`<div class="card stack"><h3 class="h3"><a class="link" href="#branch" data-branch="${n.x.i}">${bname(n.x)}</a></h3><span class="small muted">${Math.round(n.d)} mi · <a href="${telHref(n.x)}">${phone(n.x)}</a></span></div>`).join("")}</div></div></section>
-  <section class="sec"><div class="wrap faq"><h2 class="h2" style="margin-bottom:12px">${b.city} branch FAQ</h2>${[`Does the ${b.city} branch deliver to job sites?`,`Can I open an account at the ${b.city} counter?`,"Do you stock R-454B equipment and refrigerant?"].map(q=>`<details><summary>${q}</summary><p>Answer copy placeholder.</p></details>`).join("")}</div></section>
+  <section class="sec"><div class="wrap faq"><h2 class="h2" style="margin-bottom:12px">${b.city} branch FAQ</h2>${[`Does the ${b.city} branch deliver to job sites?`,`Can I open an account at the ${b.city} counter?`,"Do you stock R-32 equipment and A2L-rated tools?"].map(q=>`<details><summary>${q}</summary><p>Answer copy placeholder.</p></details>`).join("")}</div></section>
   ${registerBand()}`;
 };
-N.branch = [["Branch template (×27)","URL /locations/[state]/[city]. Title and H1 \"HVAC Supply in [City, ST]\". Add LocalBusiness schema and keep name, address and phone identical to the Google Business Profile.","#13"],["Hours in a real table","Open/closed is calculated in the branch's own time zone (Arizona stays on MST all year).","#26"],["Generic contact routing","Department lines (tap-to-call) and a form to the branch inbox. No staff names.","#11 #26"],["Local inventory","Brand tiles go to the brand pages.","#8"],["Original local copy","The main driver of the organic local traffic KPI.",""],["Nearby branches","Show distance, and link up to the state page.","#13"]];
-EV.branch = ["call_click","directions_click","set_my_branch","contact_click"];
+N.branch = [["Contractor essentials","Opens 6:30a. After-hours line for no-heat and no-cool calls (or a clear \"no after-hours service\"), Text the Counter, same-day delivery cutoff, tool loaners and duct fabrication when the branch has them.","Audit #5 #7 #15"],["Branch template (×27)","URL /locations/[state]/[city]. Title and H1 \"HVAC Supply in [City, ST]\". Add LocalBusiness schema and keep name, address and phone identical to the Google Business Profile.","#13"],["Hours in a real table","Open/closed is calculated in the branch's own time zone (Arizona stays on MST all year).","#26"],["Generic contact routing","Department lines (tap-to-call) and a form to the branch inbox. No staff names.","#11 #26"],["Local inventory","Brand tiles go to the brand pages.","#8"],["Original local copy","The main driver of the organic local traffic KPI.",""],["Nearby branches","Show distance, and link up to the state page.","#13"]];
+EV.branch = ["call_click","text_branch_click","after_hours_call","directions_click","set_my_branch","contact_click"];
 
 /* ---- Resources ---- */
 P.resources = () => `${crumbs("Resources","Technical Resources")}${pagehead("Resources","Technical Resources","Spec sheets, install manuals, wiring diagrams and service bulletins in one place.",`<div class="row" style="margin-top:20px"><form class="searchbar" data-form="docsearch" role="search" style="flex:1;max-width:620px"><label class="sr" for="dq">Search documents</label><input id="dq" placeholder="Model #, brand or document type"><button type="submit">Search</button></form></div>`,1)}
   <section class="sec tight"><div class="wrap side">
     <div><button class="btn sm ghost mfilter" type="button" data-act="filters" aria-expanded="${S.filterOpen}" aria-controls="dfilters">Filters</button><div class="filters ${S.filterOpen?'open':''}" id="dfilters">${pin(2)}<fieldset><legend>Brand</legend>${["Daikin","Goodman","Amana","Private label"].map(c=>`<label class="check"><input type="checkbox"> ${c}</label>`).join("")}${moreBrands()}</fieldset><fieldset><legend>Document type</legend>${["Spec sheet","Installation manual","Wiring diagram","Service bulletin","Warranty","Training video"].map(c=>`<label class="check"><input type="checkbox"> ${c}</label>`).join("")}</fieldset></div></div>
-    <div style="min-width:0">${pin(3)}${["Heat Pump Split System, Product Specifications","Gas Furnace Installation Manual","Air Handler Wiring Diagram","R-454B Transition Service Bulletin","Residential Limited Warranty","Mini-Split Commissioning Guide"].map((t,i)=>`<div class="doc"><div class="stack" style="gap:2px"><a class="link" href="#resource-detail">${t}</a><span class="small muted">${BRANDS[i%3]} · ${["Spec sheet","Installation manual","Wiring diagram","Service bulletin","Warranty"][i%5]} · Updated MM/YYYY</span></div><a class="btn sm ghost pdf" href="#resource-detail">Download<span class="sr"> ${t}</span></a></div>`).join("")}</div>
+    <div style="min-width:0">${pin(3)}${["Heat Pump Split System, Product Specifications","Gas Furnace Installation Manual","Air Handler Wiring Diagram","R-32 (A2L) Transition Service Bulletin","Residential Limited Warranty","Mini-Split Commissioning Guide"].map((t,i)=>`<div class="doc"><div class="stack" style="gap:2px"><a class="link" href="#resource-detail">${t}</a><span class="small muted">${BRANDS[i%3]} · ${["Spec sheet","Installation manual","Wiring diagram","Service bulletin","Warranty"][i%5]} · Updated MM/YYYY</span></div><a class="btn sm ghost pdf" href="#resource-detail">Download<span class="sr"> ${t}</span></a></div>`).join("")}</div>
   </div></section>`;
 N.resources = [["Renamed from Support Center","\"Resources\" now holds Technical Resources and Contact Us. Promos moved to Products.","#12"],["Filters","Collapse behind a button on mobile.",""],["PDF rows","Each opens an indexable detail page with the PDF download.",""]];
 EV.resources = ["doc_search","doc_download"];
-P["resource-detail"] = () => `${crumbs("Resources",["Technical Resources","resources"],"R-454B Transition Service Bulletin")}
+P["resource-detail"] = () => `${crumbs("Resources",["Technical Resources","resources"],"R-32 (A2L) Transition Service Bulletin")}
   <section class="sec"><div class="wrap side" style="grid-template-columns:minmax(0,1fr) 320px">
-    <div class="stack-lg">${pin(1)}<div class="stack"><span class="tag" style="justify-self:start">Service bulletin</span><h1 class="h1" style="font-size:36px">R-454B Transition Service Bulletin</h1><p class="muted">Daikin · Goodman · Amana · Updated MM/YYYY</p></div>
+    <div class="stack-lg">${pin(1)}<div class="stack"><span class="tag" style="justify-self:start">Service bulletin</span><h1 class="h1" style="font-size:36px">R-32 (A2L) Transition Service Bulletin</h1><p class="muted">Daikin · Goodman · Amana · Updated MM/YYYY</p></div>
       ${ph("PDF preview: first page","ar-4x3")}<div class="article">${lines(4)}${lines(3)}</div></div>
     <div class="stack"><div class="card stack"><a class="btn primary block pdf" href="#resource-detail">Download PDF (2.4 MB)</a><dl class="kv"><dt>Applies to</dt><dd>Model families XX, YY</dd><dt style="margin-top:8px">Doc #</dt><dd class="mono">SB-0000</dd></dl></div>
       <div class="card stack"><h2 class="h4">Related documents</h2>${["Installation manual","Wiring diagram","Warranty"].map(t=>`<a class="link small" href="#resource-detail">${t}</a>`).join("")}</div>
@@ -1091,24 +1147,70 @@ P["resource-detail"] = () => `${crumbs("Resources",["Technical Resources","resou
 N["resource-detail"] = [["Detail template","An indexable summary around the PDF, so search engines and AI answers can cite it.",""]];
 EV["resource-detail"] = ["doc_download","call_click"];
 
+/* ---- Warranty & Returns ---- */
+P.warranty = () => {
+  const v = S.vals, found = S.sent.wlookup;
+  return `${crumbs("Resources","Warranty &amp; Returns")}${pagehead("Resources","Warranty &amp; Returns","Look up a unit's warranty by serial number, start a claim, and pick up warranty parts at your branch.","",1)}
+  <section class="sec"><div class="wrap split" style="align-items:start">
+    <div class="stack-lg">
+      <form class="card stack" data-form="wlookup" novalidate>${pin(2)}<h2 class="h3">Look up a warranty</h2><div class="form-grid">${fld("w-brand","Brand",{options:["Daikin","Goodman","Amana","Jackson Private Label"]})}${fld("w-sn","Serial number",{hint:"On the nameplate. Or tap Scan in the search bar."})}</div><button class="btn primary" type="submit" style="justify-self:start">Look Up Warranty</button></form>
+      ${found ? `<div class="card stack" role="status"><span class="tag ok" style="justify-self:start">Registered</span><h3 class="h3">${esc(v["w-brand"]||"Daikin")} heat pump · Serial ${esc(v["w-sn"]||"[serial]")}</h3>
+        <dl class="g2 small" style="margin:0"><div class="kv"><dt>Installed</dt><dd>MM/YYYY</dd></div><div class="kv"><dt>Parts warranty</dt><dd>10 years · through MM/YYYY</dd></div><div class="kv"><dt>Unit replacement</dt><dd>[Per manufacturer terms]</dd></div><div class="kv"><dt>Labor</dt><dd>Not covered</dd></div></dl>
+        <div class="row"><button type="button" class="btn sm primary" data-focus="w-part">Start a Claim</button><a class="btn sm ext" href="#" data-act="mfgreg">Manufacturer Registration</a></div></div>` : ""}
+      ${S.sent.wclaim ? `<div class="success" role="status"><p class="h3">Claim started.</p><p class="muted" style="margin-top:6px">${esc(v["w-br"]||"Your branch")} will text you when the warranty part is ready. Claim # WC-000000.</p></div>` :
+      `<form class="card form-grid" data-form="wclaim" novalidate>${pin(3)}${errSummary("wclaim")}<h2 class="h3 full">Start a warranty claim</h2><div class="full">${reqNote}</div>
+        ${fld("w-sn2","Serial number",{req:true,value:v["w-sn"]||""})}${fld("w-part","Failed part",{req:true,options:["","Compressor","Outdoor fan motor","Blower motor","Control board","Coil","Other"]})}
+        ${fld("w-date","Date of failure",{req:true,type:"date"})}${fld("w-pn","Replacement part # (if known)")}
+        ${fld("w-br","Pick up at",{req:true,options:["",...BRANCHES.map(bname)],value:myB()?bname(myB()):""})}${fld("w-job","Job name or PO")}
+        ${fld("w-photo","Nameplate photo",{type:"file",full:true,hint:"Speeds up approval"})}
+        <div class="full"><button class="btn primary" type="submit">Submit Claim</button></div></form>`}
+    </div>
+    <div class="stack">
+      <div class="card stack">${pin(4)}<h2 class="h4">Register on time</h2><p class="small muted">Many 10-year parts warranties depend on registering within a set number of days of install. [Client to confirm each brand's window.]</p><a class="btn sm ext" href="#" data-act="mfgreg">Register a Unit</a></div>
+      <div class="card stack"><h2 class="h4">Returns</h2><p class="small muted">Stock items within [30] days with your invoice. Special orders and refrigerant: [client policy].</p></div>
+      <div class="card stack"><h2 class="h4">Warranty desk</h2>${myB()?`<a class="link small" href="${telHref(myB())}">${phone(myB())} ext. 3</a><a class="link small" href="${smsHref(myB())}">Text ${myB().city}</a>`:`<a class="btn sm" href="#locations">Choose Your Branch</a>`}</div>
+    </div>
+  </div></section>`;
+};
+N.warranty = [["New: Warranty & Returns","Warranty used to be just a phone extension. Contractors spend real time here, so it gets its own page.","Audit #11"],["Serial lookup","Brand + serial returns registration status and coverage. Production pulls from manufacturer warranty data.",""],["Claim form","Validated claim with pickup branch, job/PO and an optional nameplate photo. Try submitting it empty.",""],["Registration window","Links to manufacturer registration, since missed registration drops a 10-year warranty to a shorter one.",""]];
+EV.warranty = ["warranty_lookup","warranty_claim_submit","mfg_registration_click"];
+
+/* ---- Training & CE ---- */
+const TRAINING = [
+  ["A2L refrigerant safe handling (R-32)","Tyler, TX","Tue MM/DD · 7:00–9:00a","CE: [#] hrs · breakfast provided"],
+  ["Daikin inverter heat pump training","Jackson, MS","Thu MM/DD · 7:00–11:00a","Factory trainer"],
+  ["State license continuing education","Baton Rouge, LA","Sat MM/DD · 8:00a–12:00p","CE: [#] hrs"],
+  ["EPA 608 prep and exam","Birmingham, AL","Wed MM/DD · 7:00a–12:00p","Exam fee: [$##]"],
+  ["Mini-split install and commissioning (hands-on)","Phoenix, AZ","Tue MM/DD · 6:30–9:30a","Bring your gauges"],
+  ["Warranty and registration walkthrough","Online","Any time · 25 min","On demand"]
+];
+P.training = () => `${crumbs("Resources","Training &amp; CE")}${pagehead("Resources","Training &amp; CE","A2L handling, factory training and license-renewal hours at a branch near you. Most classes start early and end before your first call.","",1)}
+  <section class="sec"><div class="wrap stack-lg">
+    <div class="row" role="group" aria-label="Filter by state" style="gap:8px">${["All states",...Object.values(STATES),"Online"].map((x,i)=>`<button type="button" class="chip" aria-pressed="${i===0}" data-act="tfilter">${x}</button>`).join("")}</div>
+    <div class="g3">${TRAINING.map((t,i)=>`<article class="card stack">${i===0?`<div class="pin-abs">${pin(2)}</div>`:""}<span class="tag" style="justify-self:start">${t[1]}</span><h2 class="h3">${t[0]}</h2><p class="small">${t[2]}</p><p class="small muted">${t[3]} · [##] seats left</p><div class="row"><button type="button" class="btn sm ${S.reg[i]?'':'primary'}" data-reg="${i}" aria-pressed="${!!S.reg[i]}">${S.reg[i]?'Registered ✓':'Register'}</button><button type="button" class="link small" data-act="cal">Add to calendar</button></div></article>`).join("")}</div>
+  </div></section>`;
+N.training = [["New: Training & CE","A2L handling, factory training and CE hours for license renewal. A real reason for contractors to come back to the site, and to the branch.","Audit #12"],["Register in one tap","Logged-in users register with their account; guests enter name and phone. Reminders by text the day before.",""]];
+EV.training = ["training_view","training_register","add_to_calendar"];
+
 /* ---- Contact ---- */
 P.contact = () => `${crumbs("Resources","Contact Us")}${pagehead("Resources","Contact Us","Tell us what you need and we'll route it to the right branch team. For the fastest help, call your branch.","",1)}
   <section class="sec"><div class="wrap split" style="align-items:start">
-    ${S.sent.contact ? `<div class="success" role="status"><p class="h3">Message sent.</p><p class="muted" style="margin-top:6px">It went to the ${esc(S.vals["ct-br"]||"selected branch")} team. Expect a reply within 1 business day.</p></div>` :
+    ${S.sent.contact ? `<div class="success" role="status">${S.vals["ct-topic"]===PULL ? `<p class="h3">Pull list sent.</p><p class="muted" style="margin-top:6px">${esc(S.vals["ct-br"]||"Your branch")} will text you when it's pulled and waiting at the counter.</p>` : `<p class="h3">Message sent.</p><p class="muted" style="margin-top:6px">It went to the ${esc(S.vals["ct-br"]||"selected branch")} team. Expect a reply within 1 business day.</p>`}</div>` :
     `<form class="form-grid" data-form="contact" novalidate>${errSummary("contact")}<div class="full">${reqNote}</div>
-      ${fld("ct-topic","How can we help?",{req:true,full:true,attrs:'data-err="Choose what you need help with"',options:["","Product or stock question","Equipment quote","Account or billing","Warranty or return","Vendor or partnership inquiry","Website feedback"]})}
+      ${fld("ct-topic","How can we help?",{req:true,full:true,attrs:'data-rerender data-err="Choose what you need help with"',options:["",PULL,"Product or stock question","Equipment quote","Account or billing","Warranty or return","Vendor or partnership inquiry","Website feedback"]})}
       ${fld("ct-br","Branch",{req:true,full:true,options:["",...BRANCHES.map(bname)],value:myB()?bname(myB()):""})}
+      ${S.vals["ct-topic"]===PULL ? fld("ct-when","Pickup time",{req:true,options:["","As soon as possible","Today after 2:00p","Tomorrow morning","Tomorrow afternoon"]}) + fld("ct-po","PO # or job name",{hint:"Shows on your invoice"}) : ""}
       ${fld("ct-n","Name",{req:true,attrs:'autocomplete="name"'})}${fld("ct-co","Company",{attrs:'autocomplete="organization"'})}
       ${fld("ct-e","Email",{req:true,type:"email",attrs:'autocomplete="email"'})}${fld("ct-p","Phone",{type:"tel",attrs:'autocomplete="tel"'})}
       ${fld("ct-m","Message",{req:true,type:"textarea",full:true})}
       <div class="full row">${pin(2)}<button class="btn primary" type="submit">Send Message</button></div></form>`}
     <div class="stack">
-      <div class="card stack"><h2 class="h3">Your branch</h2>${myB()?`<p><b>${bname(myB())}</b><br><a class="small" href="${telHref(myB())}">${phone(myB())}</a></p><a class="link small" href="#branch" data-branch="${S.my}">Branch details</a>`:`<a class="btn sm" href="#locations" style="justify-self:start">Choose Your Branch</a>`}</div>
+      <div class="card stack"><h2 class="h3">Your branch</h2>${myB()?`<p><b>${bname(myB())}</b><br><a class="small" href="${telHref(myB())}">${phone(myB())}</a> · <a class="small" href="${smsHref(myB())}">Text</a><br><span class="small muted">After hours: <a href="${afterHref(myB())}">${afterHours(myB())}</a></span></p><a class="link small" href="#branch" data-branch="${S.my}">Branch details</a>`:`<a class="btn sm" href="#locations" style="justify-self:start">Choose Your Branch</a>`}</div>
       <div class="card stack">${pin(3)}<h2 class="h3">Corporate office</h2><p class="muted small">[HQ address, city and state: client to confirm]<br>(555) 010-0000</p></div>
       <div class="card stack"><h2 class="h3">Billing questions?</h2>${portalLink("btn sm","Payment Portal")}</div>
     </div></div></section>`;
-N.contact = [["Now in the main menu","Under Resources and in the top bar. Field users can also tap-to-call their branch.","#11"],["Form with validation","Required fields are marked, with inline errors and an error summary at the top. Try sending it empty.","#21"],["HQ is an assumption","v1 assumed Jackson, MS. Now flagged for the client to confirm.","#34"]];
-EV.contact = ["contact_submit","call_click","portal_click"];
+N.contact = [["Pull for Pickup","New first topic: send a pull list with a pickup time and PO, and the branch texts when it's ready. It's a message, not an order, so it works without online checkout.","Audit #6"],["Now in the main menu","Under Resources and in the top bar. Field users can also tap-to-call their branch.","#11"],["Form with validation","Required fields are marked, with inline errors and an error summary at the top. Try sending it empty.","#21"],["HQ is an assumption","v1 assumed Jackson, MS. Now flagged for the client to confirm.","#34"]];
+EV.contact = ["contact_submit","pickup_request","call_click","text_branch_click","portal_click"];
 
 /* ---- Company ---- */
 P.news = () => {
@@ -1177,13 +1279,14 @@ P.register = () => {
 N.register = [["One clear entry point","\"Register\", \"Open an Account\" and \"Apply for Credit\" were confusing in v1. Now it's one \"Become a Customer\" page that asks one question, then branches.","#1"],["Choice cards","A proper radio group with a legend. Only the chosen path's content shows.","#22"],["Two paths","Existing customers get the online-access form (with validation). New customers get a checklist and the credit application.","#1 #21"]];
 EV.register = ["begin_registration","registration_path_select","sign_up"];
 
-const CA = ["Business","Owners &amp; Guarantor","References","Review &amp; Sign"];
+const CA = ["Business","Owners &amp; Buyers","References","Review &amp; Sign"];
 P["credit-app"] = () => {
   const st = S.ca.step, done = S.ca.sent, v = S.vals;
   const steps = `<ol class="steps">${CA.map((s,i)=>`<li class="${done?'done':i===st?'on':i<st?'done':''}" ${i===st&&!done?'aria-current="step"':''}><b>STEP ${i+1} OF ${CA.length}</b>${s}</li>`).join("")}</ol>`;
   const panels = [
     () => `${fld("c-legal","Legal business name",{req:true,full:true,attrs:'autocomplete="organization"'})}${fld("c-dba","DBA (if different)")}${fld("c-type","Business type",{req:true,options:["","LLC","Corporation","Sole proprietor","Partnership"]})}
       ${fld("c-ein","Federal tax ID (EIN)",{req:true,hint:"Format XX-XXXXXXX",attrs:'inputmode="numeric"'})}${fld("c-lic","State HVAC license #",{req:true})}
+      ${fld("c-epa","EPA 608 certification #",{full:true,hint:"Needed to buy refrigerant. Add it once and the counter won't ask again."})}
       ${fld("c-addr","Business street address",{req:true,full:true,attrs:'autocomplete="street-address"'})}${fld("c-city","City",{req:true})}${fld("c-zip","ZIP",{req:true,attrs:'inputmode="numeric" autocomplete="postal-code"'})}
       ${fld("c-yrs","Years in business",{req:true,attrs:'inputmode="numeric"'})}${fld("c-cr","Requested credit limit",{hint:"Your branch will confirm",attrs:'inputmode="numeric"'})}
       ${chk("c-tax","This business is tax exempt",{rerender:true})}${v["c-tax"]?fld("c-cert","Resale or exemption certificate",{type:"file",req:true,full:true}):""}`,
@@ -1192,11 +1295,15 @@ P["credit-app"] = () => {
       <div class="form-grid">${fld("g-n","Guarantor full name",{req:true})}${fld("g-ssn","Social Security number",{req:true,type:"password",hint:"Encrypted · used only for the credit check",attrs:'inputmode="numeric" autocomplete="off"'})}
       ${fld("g-addr","Home street address",{req:true,full:true})}${fld("g-city","City",{req:true})}${fld("g-zip","ZIP",{req:true,attrs:'inputmode="numeric"'})}
       ${chk("g-consent","I authorize Jackson Supply to get a personal credit report for this application.",{req:true})}</div></div>
-      <button class="btn sm ghost full" type="button" style="justify-self:start" data-act="addowner">+ Add Another Owner</button>`,
+      <button class="btn sm ghost full" type="button" style="justify-self:start" data-act="addowner">+ Add Another Owner</button>
+      <div class="full card flat stack"><h2 class="h4">Authorized purchasers</h2><p class="small muted">Only these people can charge to your account at the counter. You can add or remove people any time in My Account.</p>
+      <div class="form-grid">${fld("ap1-n","Purchaser name",{req:true})}${fld("ap1-r","Role",{req:true,options:["","Owner","Service manager","Technician","Installer"]})}${fld("ap2-n","Second purchaser (optional)")}${fld("ap2-r","Second purchaser's role",{options:["","Owner","Service manager","Technician","Installer"]})}</div>
+      <button class="btn sm ghost" type="button" style="justify-self:start" data-act="addpurchaser">+ Add Another Purchaser</button>
+      ${chk("ap-po","Require a PO # or job name on every purchase")}</div>`,
     () => `<h2 class="h4 full">Bank reference</h2>${fld("b-n","Bank name",{req:true})}${fld("b-p","Bank phone",{req:true,type:"tel"})}
       ${[1,2,3].map(n=>`<h2 class="h4 full" style="margin-top:8px">Trade reference ${n}${n>1?" (optional)":""}</h2>${fld(`t${n}-n`,"Supplier name",{req:n===1})}${fld(`t${n}-p`,"Phone or email",{req:n===1})}`).join("")}`,
     () => `<div class="full card flat stack"><h2 class="h4">Review</h2>
-        <dl class="g2 small" style="margin:0">${[["Business",v["c-legal"]||"Not entered",0],["Tax ID",v["c-ein"]||"Not entered",0],["Owner",v["o1-n"]||"Not entered",1],["Guarantor",v["g-n"]||"Not entered",1],["Bank",v["b-n"]||"Not entered",2],["Trade references",[1,2,3].filter(n=>v[`t${n}-n`]).length+" provided",2]].map(([k,val,s])=>`<div class="kv"><dt>${k}</dt><dd>${esc(val)} <button type="button" class="link small" data-castep="${s}">Edit<span class="sr"> ${k}</span></button></dd></div>`).join("")}</dl></div>
+        <dl class="g2 small" style="margin:0">${[["Business",v["c-legal"]||"Not entered",0],["Tax ID",v["c-ein"]||"Not entered",0],["Owner",v["o1-n"]||"Not entered",1],["Guarantor",v["g-n"]||"Not entered",1],["Authorized purchasers",[v["ap1-n"],v["ap2-n"]].filter(Boolean).length+" listed"+(v["ap-po"]?" · PO required":""),1],["Bank",v["b-n"]||"Not entered",2],["Trade references",[1,2,3].filter(n=>v[`t${n}-n`]).length+" provided",2]].map(([k,val,s])=>`<div class="kv"><dt>${k}</dt><dd>${esc(val)} <button type="button" class="link small" data-castep="${s}">Edit<span class="sr"> ${k}</span></button></dd></div>`).join("")}</dl></div>
       <div class="full card flat" style="max-height:160px;overflow:auto"><h2 class="h4">Terms of credit</h2>${lines(6)}</div>
       ${chk("s-terms","I've read and agree to the terms of credit, and I authorize Jackson Supply to verify this information.",{req:true})}
       ${fld("s-n","Signer full name",{req:true})}${fld("s-t","Title",{req:true})}
@@ -1211,7 +1318,7 @@ P["credit-app"] = () => {
   return `${crumbs(["Become a Customer","register"],"Credit Application")}${pagehead("Account","Credit Application","About 10 minutes. Save and come back any time, and sign right on your phone.","",1)}
   <section class="sec"><div class="wrap" style="max-width:900px">${pin(2)}<div style="margin-top:12px">${steps}${body}</div></div></section>`;
 };
-N["credit-app"] = [["Digital credit application","Brief: web credit app with e-signature. Replaces the PDF/fax process.",""],["Validation and save to resume","Each step checks required fields before continuing, with an error summary. \"Save & Finish Later\" emails a secure link to resume.","#19 #21"],["Guarantor details","Adds guarantor home address, SSN (encrypted) and credit-check consent. The tax-exempt upload only appears when needed. Needs legal and credit review by the client.","#19"],["Typed or drawn signature","Typing is the default and works by keyboard; drawing is optional. Production: an e-sign service sends the signed PDF to the branch credit team.","#20"]];
+N["credit-app"] = [["Digital credit application","Brief: web credit app with e-signature. Replaces the PDF/fax process.",""],["Authorized purchasers and EPA 608","Owners choose who can charge to the account and can require a PO or job name on every purchase. The EPA 608 number is captured once for refrigerant sales.","Audit #3 #19"],["Validation and save to resume","Each step checks required fields before continuing, with an error summary. \"Save & Finish Later\" emails a secure link to resume.","#19 #21"],["Guarantor details","Adds guarantor home address, SSN (encrypted) and credit-check consent. The tax-exempt upload only appears when needed. Needs legal and credit review by the client.","#19"],["Typed or drawn signature","Typing is the default and works by keyboard; drawing is optional. Production: an e-sign service sends the signed PDF to the branch credit team.","#20"]];
 EV["credit-app"] = ["credit_app_start","credit_app_step","credit_app_save_resume","credit_app_submit"];
 
 P.login = () => `${crumbs("Log In")}
@@ -1227,24 +1334,31 @@ N.login = [["Return to where you were","Logging in from a \"Log in for your pric
 EV.login = ["login","portal_click"];
 
 P.account = () => {
-  if (!S.loggedIn) return `${crumbs("My Account")}<section class="sec"><div class="wrap stack" style="max-width:560px">${pin(1)}<h1 class="h2">Log in to see your account</h1><p class="muted">Your quote requests, invoices and saved systems live here.</p><div class="row"><a class="btn primary" href="#login">Log In</a><a class="btn" href="#register">Become a Customer</a></div></div></section>`;
+  if (!S.loggedIn) return `${crumbs("My Account")}<section class="sec"><div class="wrap stack" style="max-width:560px">${pin(1)}<h1 class="h2">Log in to see your account</h1><p class="muted">Your requests, invoices, purchasers and saved systems live here.</p><div class="row"><a class="btn primary" href="#login">Log In</a><a class="btn" href="#register">Become a Customer</a></div></div></section>`;
   const b = myB();
+  const reqRows = [["Pickup","Truck restock (14 items) · PO 4471","Ready at the counter","ok"],["Quote","Smith job: 3 ton heat pump system","Waiting on branch","warn"],["Quote","Daikin 12k mini-split ×4","Quoted · call to order","ok"],["Pickup","Capacitors + contactors · Smith job","Picked up",""]];
+  const people = [["Alex Morgan","Owner","Yes"],["Jamie Reyes","Service manager","Yes"],["Chris Lee","Technician","No"]];
   return `${crumbs("My Account")}
   ${pagehead("My Account","Hi, ABC Mechanical","Account #10482 · Net 30 terms","",1)}
   <section class="sec tight"><div class="wrap g4">
-    <div class="card stack"><span class="small muted">My branch</span><b>${b?bname(b):"Not set"}</b>${b?`<a class="link small" href="${telHref(b)}">${phone(b)}</a>`:`<a class="link small" href="#locations">Choose branch</a>`}</div>
+    <div class="card stack"><span class="small muted">My branch</span><b>${b?bname(b):"Not set"}</b>${b?`<span class="small"><a class="link" href="${telHref(b)}">Call</a> · <a class="link" href="${smsHref(b)}">Text</a></span>`:`<a class="link small" href="#locations">Choose branch</a>`}</div>
     <div class="card stack"><span class="small muted">Open balance</span><b class="amt" style="font-size:22px">$[#,###].00</b>${portalLink("link small","Pay in portal")}</div>
-    <div class="card stack"><span class="small muted">Open quote requests</span><b class="amt" style="font-size:22px">2</b><button type="button" class="link small" style="justify-self:start" data-focus="quotes">View requests</button></div>
-    <div class="card stack"><span class="small muted">Saved systems</span><b class="amt" style="font-size:22px">2</b><a class="link small" href="#system-builder">Build another</a></div>
+    <div class="card stack"><span class="small muted">Open requests</span><b class="amt" style="font-size:22px">2</b><button type="button" class="link small" style="justify-self:start" data-focus="quotes">View requests</button></div>
+    <div class="card stack"><span class="small muted">EPA 608</span><b>On file ✓</b><button type="button" class="link small" style="justify-self:start" data-act="epa">Update</button></div>
   </div></section>
-  <section class="sec tight"><div class="wrap stack">${pin(2)}<h2 class="h3" id="quotes" tabindex="-1">Quote requests</h2><div class="tbl-wrap"><table class="data"><thead><tr><th scope="col">Request</th><th scope="col">Branch</th><th scope="col">Sent</th><th scope="col">Status</th></tr></thead><tbody>
-    ${[["Smith job: 3 ton heat pump system","Waiting on branch","warn"],["Daikin 12k mini-split ×4","Quoted · call to order","ok"],["Commercial RTU replacement","Closed",""]].map(([n,s,c])=>`<tr><td><b>${n}</b></td><td>${b?b.city:"Not set"}</td><td class="num">MM/DD</td><td><span class="tag ${c}">${s}</span></td></tr>`).join("")}</tbody></table></div><p class="small muted">Quotes come back from your branch by email or phone. To order, call your branch or stop by the counter.</p></div></section>
-  <section class="sec tight"><div class="wrap stack">${pin(3)}<h2 class="h3">Recent invoices</h2><div class="tbl-wrap"><table class="data"><thead><tr><th scope="col">Invoice</th><th scope="col">Date</th><th scope="col">Amount</th><th scope="col">Status</th></tr></thead><tbody>
-    ${[["INV-00481","Paid","ok"],["INV-00476","Due MM/DD","warn"],["INV-00470","Paid","ok"]].map(([n,s,c],i)=>`<tr><td class="mono">${n}</td><td class="num">MM/DD</td><td class="num">$${(1240+i*311).toLocaleString()}.00</td><td><span class="tag ${c}">${s}</span></td></tr>`).join("")}</tbody></table></div><div>${portalLink("btn sm","Pay or View All in Payment Portal")}</div></div></section>
-  <section class="sec tight"><div class="wrap g2"><div class="card stack"><h2 class="h3">Company users</h2><p class="small muted">Admins can invite techs and choose who sees pricing.</p><button type="button" class="btn sm" style="justify-self:start" data-act="invite">Invite a User</button></div><div class="card stack"><h2 class="h3">Profile &amp; security</h2><p class="small muted">Email, password and notification settings.</p><button type="button" class="btn sm" style="justify-self:start" data-act="logout">Log Out</button></div></div></section>`;
+  <section class="sec tight"><div class="wrap stack">${pin(2)}<h2 class="h3" id="quotes" tabindex="-1">Pickup and quote requests</h2><div class="tbl-wrap"><table class="data"><thead><tr><th scope="col">Type</th><th scope="col">Request</th><th scope="col">Branch</th><th scope="col">Sent</th><th scope="col">Status</th></tr></thead><tbody>
+    ${reqRows.map(([t,n,s,c])=>`<tr><td><span class="tag">${t}</span></td><td><b>${n}</b></td><td>${b?b.city:"Not set"}</td><td class="num">MM/DD</td><td><span class="tag ${c}">${s}</span></td></tr>`).join("")}</tbody></table></div><p class="small muted">Your branch texts you when a pull list is ready or a quote comes back. To order, call or text your branch, or stop by the counter.</p></div></section>
+  <section class="sec tight"><div class="wrap stack">${pin(3)}<div class="row between"><h2 class="h3">Invoices</h2><label class="small row" style="gap:8px" for="invq">Find by job or PO <input class="input" id="invq" placeholder="e.g. Smith job" style="width:200px;min-height:40px"></label></div><div class="tbl-wrap"><table class="data"><thead><tr><th scope="col">Invoice</th><th scope="col">Date</th><th scope="col">Job / PO</th><th scope="col">Amount</th><th scope="col">Status</th><th scope="col">Delivery ticket</th></tr></thead><tbody>
+    ${[["INV-00481","Smith job · PO 4471","Paid","ok"],["INV-00476","Truck restock","Due MM/DD","warn"],["INV-00470","Oak St. changeout · PO 4459","Paid","ok"]].map(([n,j,s,c],i)=>`<tr><td class="mono">${n}</td><td class="num">MM/DD</td><td>${j}</td><td class="num">$${(1240+i*311).toLocaleString()}.00</td><td><span class="tag ${c}">${s}</span></td><td><button type="button" class="link small pdf" data-act="ticket">Signed ticket</button></td></tr>`).join("")}</tbody></table></div><div>${portalLink("btn sm","Pay or View All in Payment Portal")}</div></div></section>
+  <section class="sec tight"><div class="wrap stack">${pin(4)}<div class="row between"><h2 class="h3">Authorized purchasers</h2><button type="button" class="btn sm" data-act="addpurchaser">Add Purchaser</button></div>
+    <p class="small muted">Only these people can charge to your account at the counter. Remove someone and the branch is notified right away.</p>
+    <div class="tbl-wrap"><table class="data"><thead><tr><th scope="col">Name</th><th scope="col">Role</th><th scope="col">Sees pricing online</th><th scope="col"><span class="sr">Actions</span></th></tr></thead><tbody>
+    ${people.map(([n,r,pr])=>`<tr><td><b>${n}</b></td><td>${r}</td><td>${pr}</td><td><button type="button" class="link small" data-act="rmpurchaser">Remove<span class="sr"> ${n}</span></button></td></tr>`).join("")}</tbody></table></div>
+    <label class="check"><input type="checkbox" id="acct-po" ${S.vals["acct-po"]!==false?"checked":""}> Require a PO # or job name on every purchase</label></div></section>
+  <section class="sec tight"><div class="wrap g3"><div class="card stack"><h2 class="h3">Company users</h2><p class="small muted">Online logins for your team. Admins choose who sees pricing.</p><button type="button" class="btn sm" style="justify-self:start" data-act="invite">Invite a User</button></div><div class="card stack"><h2 class="h3">Saved systems</h2><p class="small muted">2 systems from the System Builder, with AHRI certificates.</p><a class="btn sm" style="justify-self:start" href="#system-builder">Build Another</a></div><div class="card stack"><h2 class="h3">Profile &amp; security</h2><p class="small muted">Email, password, language and text alerts.</p><button type="button" class="btn sm" style="justify-self:start" data-act="logout">Log Out</button></div></div></section>`;
 };
-N.account = [["New: My Account","WordPress member area. No online ordering (client decision, 11/17), so there's no cart or order history. Guests see a log-in prompt here.","#2"],["Quote requests","Read-only list of quotes sent from product pages, the System Builder and the contact form. Branches reply by email or phone.","#2"],["Invoices","A read-only summary; payments still happen in the external portal.",""]];
-EV.account = ["portal_click","user_invite","call_to_order_click"];
+N.account = [["Authorized purchasers","Owners control who can charge to the account and can require a PO or job name on every purchase. Removing someone notifies the branch.","Audit #3"],["Invoices for job costing","Find by job or PO, with signed delivery tickets.","Audit #16"],["Pickup and quote requests","Pull lists and quotes in one list, with branch status. EPA 608 on file for refrigerant.","Audit #6 #19"],["New: My Account","WordPress member area. No online ordering (client decision, 11/17), so there's no cart or order history. Guests see a log-in prompt here.","#2"],["Quote requests","Read-only list of quotes sent from product pages, the System Builder and the contact form. Branches reply by email or phone.","#2"],["Invoices","A read-only summary; payments still happen in the external portal.",""]];
+EV.account = ["portal_click","user_invite","purchaser_add","purchaser_remove","ticket_download","call_to_order_click"];
 
 P.legal = () => `${crumbs("Legal")}${pagehead("Legal","Privacy Policy","Template for the Privacy Policy, Terms of Sale and Accessibility Statement.","",1)}<section class="sec"><div class="wrap article">${lines(6)}<h2 class="h3">Section heading</h2>${lines(5)}<h2 class="h3">Accessibility</h2><p class="muted">Statement of WCAG 2.2 AA conformance and a way to report barriers.</p></div></section>`;
 N.legal = [["New: Legal template","Footer legal links went to the homepage in v1.","#15"]];
@@ -1297,7 +1411,7 @@ document.addEventListener("click", e => {
   const m = e.target.closest("[data-menu]");
   if (m) { const li = m.parentElement, open = !li.classList.contains("open"); closeMenus(li); li.classList.toggle("open", open); m.setAttribute("aria-expanded", String(open)); return; }
   if (!e.target.closest(".nav .menu")) closeMenus();
-  const t = e.target.closest("[data-act],[data-branch],[data-pick],[data-state],[data-stfilter],[data-sb],[data-sbgo],[data-brand],[data-brandfilter],[data-product],[data-q],[data-focus],[data-unfilter],[data-promocat],[data-newscat],[data-castep],[data-sig],[data-job],button[data-filter]");
+  const t = e.target.closest("[data-act],[data-branch],[data-pick],[data-state],[data-stfilter],[data-sb],[data-sbgo],[data-brand],[data-brandfilter],[data-product],[data-q],[data-focus],[data-unfilter],[data-promocat],[data-newscat],[data-castep],[data-sig],[data-job],[data-lang],[data-spec],[data-sbx],[data-reg],button[data-filter]");
   if (!t) return;
   const d = t.dataset;
   if (d.focus) { e.preventDefault(); const el = document.getElementById(d.focus) || document.getElementById(d.focus + "-0"); if (el) { if (!el.hasAttribute("tabindex") && !/^(INPUT|SELECT|TEXTAREA|BUTTON|A)$/.test(el.tagName)) el.setAttribute("tabindex","-1"); el.focus(); el.scrollIntoView({ block:"center" }); } return; }
@@ -1319,12 +1433,26 @@ document.addEventListener("click", e => {
   if (d.newscat) { S.newsCat = d.newscat; render(); return; }
   if (d.castep != null) { S.ca.step = +d.castep; clearErr(); render(); return; }
   if (d.sig) { S.sigMode = d.sig; render(); return; }
+  if (d.lang) { S.lang = d.lang; render(); return; }
+  if (d.spec) { S.spec = S.spec.includes(d.spec) ? S.spec.filter(x=>x!==d.spec) : [...S.spec, d.spec]; render(); return; }
+  if (d.sbx) { S.sb.x[d.sbx] = +d.sbi; render(); return; }
+  if (d.reg != null) { S.reg[d.reg] = !S.reg[d.reg]; toast(S.reg[d.reg] ? "You're registered. We'll text a reminder the day before (prototype)" : "Registration cancelled"); render(); return; }
   const a = d.act; if (!a) return;
   if (t.tagName === "A" && (a === "portal" || a === "gate" || t.getAttribute("href") === "#")) e.preventDefault();
   if (a === "menu") { S.nav = !S.nav; site.classList.toggle("menu-open", S.nav); t.setAttribute("aria-expanded", String(S.nav)); }
   else if (a === "logout") { e.preventDefault(); setLogged(false); nav("home"); }
   else if (a === "portal") toast("External link: the payment portal opens in a new tab");
   else if (a === "gate") { S.returnTo = S.route; nav("login"); }
+  else if (a === "pull") { const it = ITEMS[+d.id]; S.vals["ct-topic"] = PULL; S.vals["ct-m"] = `Please pull: ${it.title} (${it.brand} ${it.model}). Qty: ${$("#qty")?.value || 1}.`; S.sent.contact = false; nav("contact"); }
+  else if (a === "scan") toast("Opens the camera to read a nameplate's model or serial number, or a part barcode (prototype)");
+  else if (a === "ahri") toast("Downloads the AHRI certificate PDF for rebate paperwork (prototype)");
+  else if (a === "ticket") toast("Opens the signed delivery ticket PDF (prototype)");
+  else if (a === "addpurchaser") toast("Adds a purchaser: name, role, phone (prototype)");
+  else if (a === "rmpurchaser") toast("Purchaser removed. The branch has been notified (prototype)");
+  else if (a === "epa") toast("Update the EPA 608 certification on file (prototype)");
+  else if (a === "mfgreg") toast("External link: the manufacturer's warranty registration site opens in a new tab");
+  else if (a === "cal") toast("Adds the class to your calendar (prototype)");
+  else if (a === "tfilter") toast("Filters classes by state (prototype)");
   else if (a === "quotereq") { const it = ITEMS[+d.id]; S.vals["ct-topic"] = "Equipment quote"; S.vals["ct-m"] = `Please quote: ${it.title} (${it.brand} ${it.model}). Qty: ${$("#qty")?.value || 1}.`; S.sent.contact = false; nav("contact"); }
   else if (a === "geo") { S.loc = { q:"", st:"All", geo:true }; toast("Simulated location: Jackson, MS area"); if (S.route !== "locations") nav("locations"); else render(); }
   else if (a === "demozip") { S.loc = { q:"75701", st:"All", geo:false }; render(); }
@@ -1336,12 +1464,12 @@ document.addEventListener("click", e => {
   else if (a === "morebrands") toast("Expands to the full brand list, with a brand search box when it's long (prototype)");
   else if (a === "sb-next") { S.sb.step++; render(); }
   else if (a === "sb-back") { S.sb.step = Math.max(0, S.sb.step - 1); render(); }
-  else if (a === "sb-reset") { S.sb = { step:0, a:{} }; render(); }
+  else if (a === "sb-reset") { S.sb = { step:0, a:{}, x:{} }; render(); }
   else if (a === "sbquote") { e.preventDefault(); S.vals["ct-topic"] = "Equipment quote"; S.vals["ct-m"] = "Please quote the system I built in the System Builder: [system summary]."; S.sent.contact = false; nav("contact"); }
   else if (a === "sb-save") toast("System saved to My Account (prototype)");
   else if (a === "ca-back") { S.ca.step = Math.max(0, S.ca.step - 1); clearErr(); render(); }
   else if (a === "ca-save") toast("We emailed you a secure link to finish later (prototype)");
-  else if (a === "ca-fill") { Object.assign(S.vals, { "c-legal":"ABC Mechanical LLC","c-type":"LLC","c-ein":"12-3456789","c-lic":"HVAC-000000","c-addr":"100 Main St","c-city":"Tyler","c-zip":"75701","c-yrs":"12","o1-n":"Alex Morgan","o1-t":"Owner","o1-e":"alex@abcmechanical.com","o1-p":"555-010-0199","g-n":"Alex Morgan","g-ssn":"000000000","g-addr":"200 Oak St","g-city":"Tyler","g-zip":"75703","g-consent":true,"b-n":"[Bank name]","b-p":"555-010-0198","t1-n":"[Supplier]","t1-p":"555-010-0197","s-n":"Alex Morgan","s-t":"Owner","s-terms":true }); clearErr(); render(); }
+  else if (a === "ca-fill") { Object.assign(S.vals, { "c-legal":"ABC Mechanical LLC","c-type":"LLC","c-ein":"12-3456789","c-lic":"HVAC-000000","c-addr":"100 Main St","c-city":"Tyler","c-zip":"75701","c-yrs":"12","c-epa":"[EPA 608 #]","ap1-n":"Alex Morgan","ap1-r":"Owner","ap2-n":"Jamie Reyes","ap2-r":"Service manager","ap-po":true,"o1-n":"Alex Morgan","o1-t":"Owner","o1-e":"alex@abcmechanical.com","o1-p":"555-010-0199","g-n":"Alex Morgan","g-ssn":"000000000","g-addr":"200 Oak St","g-city":"Tyler","g-zip":"75703","g-consent":true,"b-n":"[Bank name]","b-p":"555-010-0198","t1-n":"[Supplier]","t1-p":"555-010-0197","s-n":"Alex Morgan","s-t":"Owner","s-terms":true }); clearErr(); render(); }
   else if (a === "sig-clear") { const c = $("#sig"); c.getContext("2d").clearRect(0,0,c.width,c.height); }
   else if (a === "promolocal") { S.promoLocal = !S.promoLocal; render(); }
   else if (a === "copylink") toast("Link copied (prototype)");
