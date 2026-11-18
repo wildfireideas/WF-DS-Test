@@ -831,6 +831,8 @@ N.brand = [["Brand template (×3)","Each brand gets its own URL (/brands/daikin)
 EV.brand = ["brand_view","cta_click","doc_download"];
 
 /* ---- Listings ---- */
+// Placeholder rows: the real brand list comes from the catalog and can be long.
+const moreBrands = () => `${[1,2].map(()=>`<label class="check muted"><input type="checkbox" disabled> [Additional brand]</label>`).join("")}<button type="button" class="link small" style="justify-self:start;margin-top:4px" data-act="morebrands">Show all brands ([##])</button>`;
 function listing(kind) {
   if (S.fKind !== kind) { S.fKind = kind; S.f = { brands:[], stock:false, tons:[] }; }
   const isEq = kind === "equipment";
@@ -846,7 +848,7 @@ function listing(kind) {
       <div><button class="btn sm ghost mfilter" type="button" data-act="filters" aria-expanded="${S.filterOpen}" aria-controls="filters">Filters${applied.length?` (${applied.length})`:""}</button>
       <div class="filters ${S.filterOpen?'open':''}" id="filters">${pin(2)}
         <fieldset><legend>Availability</legend>${b ? `<label class="check"><input type="checkbox" data-filter="stock" ${S.f.stock?'checked':''}> In stock at ${b.city}</label>` : `<a class="link small" href="#locations">Choose your branch</a>`}</fieldset>
-        <fieldset><legend>Brand</legend>${brands.map(x=>`<label class="check"><input type="checkbox" data-filter="brand" value="${esc(x)}" ${S.f.brands.includes(x)?'checked':''}> ${x}</label>`).join("")}</fieldset>
+        <fieldset><legend>Brand</legend>${brands.map(x=>`<label class="check"><input type="checkbox" data-filter="brand" value="${esc(x)}" ${S.f.brands.includes(x)?'checked':''}> ${x}</label>`).join("")}${moreBrands()}</fieldset>
         ${isEq?`<fieldset><legend>Tonnage</legend><div class="row" style="gap:8px">${["1","2.5","3","4"].map(t=>`<button type="button" class="chip" data-filter="tons" value="${t}" aria-pressed="${S.f.tons.includes(t)}">${t} ton</button>`).join("")}</div></fieldset>
           <fieldset><legend>Efficiency (SEER2)</legend><label class="check"><input type="checkbox"> 14.3–15.1</label><label class="check"><input type="checkbox"> 15.2–16.9</label><label class="check"><input type="checkbox"> 17+</label><span class="small muted">Only models that meet the 2023 Southeast/Southwest minimums are listed.</span></fieldset>`:`<fieldset><legend>Voltage</legend><label class="check"><input type="checkbox"> 24V</label><label class="check"><input type="checkbox"> 120V</label><label class="check"><input type="checkbox"> 208/230V</label></fieldset>`}
       </div></div>
@@ -1073,7 +1075,7 @@ EV.branch = ["call_click","directions_click","set_my_branch","contact_click"];
 /* ---- Resources ---- */
 P.resources = () => `${crumbs("Resources","Technical Resources")}${pagehead("Resources","Technical Resources","Spec sheets, install manuals, wiring diagrams and service bulletins in one place.",`<div class="row" style="margin-top:20px"><form class="searchbar" data-form="docsearch" role="search" style="flex:1;max-width:620px"><label class="sr" for="dq">Search documents</label><input id="dq" placeholder="Model #, brand or document type"><button type="submit">Search</button></form></div>`,1)}
   <section class="sec tight"><div class="wrap side">
-    <div><button class="btn sm ghost mfilter" type="button" data-act="filters" aria-expanded="${S.filterOpen}" aria-controls="dfilters">Filters</button><div class="filters ${S.filterOpen?'open':''}" id="dfilters">${pin(2)}<fieldset><legend>Brand</legend>${["Daikin","Goodman","Amana","Private label"].map(c=>`<label class="check"><input type="checkbox"> ${c}</label>`).join("")}</fieldset><fieldset><legend>Document type</legend>${["Spec sheet","Installation manual","Wiring diagram","Service bulletin","Warranty","Training video"].map(c=>`<label class="check"><input type="checkbox"> ${c}</label>`).join("")}</fieldset></div></div>
+    <div><button class="btn sm ghost mfilter" type="button" data-act="filters" aria-expanded="${S.filterOpen}" aria-controls="dfilters">Filters</button><div class="filters ${S.filterOpen?'open':''}" id="dfilters">${pin(2)}<fieldset><legend>Brand</legend>${["Daikin","Goodman","Amana","Private label"].map(c=>`<label class="check"><input type="checkbox"> ${c}</label>`).join("")}${moreBrands()}</fieldset><fieldset><legend>Document type</legend>${["Spec sheet","Installation manual","Wiring diagram","Service bulletin","Warranty","Training video"].map(c=>`<label class="check"><input type="checkbox"> ${c}</label>`).join("")}</fieldset></div></div>
     <div style="min-width:0">${pin(3)}${["Heat Pump Split System, Product Specifications","Gas Furnace Installation Manual","Air Handler Wiring Diagram","R-454B Transition Service Bulletin","Residential Limited Warranty","Mini-Split Commissioning Guide"].map((t,i)=>`<div class="doc"><div class="stack" style="gap:2px"><a class="link" href="#resource-detail">${t}</a><span class="small muted">${BRANDS[i%3]} · ${["Spec sheet","Installation manual","Wiring diagram","Service bulletin","Warranty"][i%5]} · Updated MM/YYYY</span></div><a class="btn sm ghost pdf" href="#resource-detail">Download<span class="sr"> ${t}</span></a></div>`).join("")}</div>
   </div></section>`;
 N.resources = [["Renamed from Support Center","\"Resources\" now holds Technical Resources and Contact Us. Promos moved to Products.","#12"],["Filters","Collapse behind a button on mobile.",""],["PDF rows","Each opens an indexable detail page with the PDF download.",""]];
@@ -1331,6 +1333,7 @@ document.addEventListener("click", e => {
   else if (a === "filters") { S.filterOpen = !S.filterOpen; render(); }
   else if (a === "clearf") { S.f = { brands:[], stock:false, tons:[] }; render(); }
   else if (a === "more") toast("Loads the next 24 results (prototype)");
+  else if (a === "morebrands") toast("Expands to the full brand list, with a brand search box when it's long (prototype)");
   else if (a === "sb-next") { S.sb.step++; render(); }
   else if (a === "sb-back") { S.sb.step = Math.max(0, S.sb.step - 1); render(); }
   else if (a === "sb-reset") { S.sb = { step:0, a:{} }; render(); }
