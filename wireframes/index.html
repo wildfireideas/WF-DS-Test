@@ -69,6 +69,18 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .rail li > div > span.refs { font-family: var(--mono); font-size: 11px; color: var(--note); margin-top: 4px; }
 .rail .ev { display: flex; flex-wrap: wrap; gap: 6px; }
 .rail .ev code { font-family: var(--mono); font-size: 11.5px; background: var(--paper); border: 1px solid var(--g2); border-radius: 3px; padding: 2px 6px; }
+.rail-tabs { display: inline-flex; border: 1px solid var(--g3); border-radius: 4px; overflow: hidden; margin-bottom: 14px; background: var(--paper); }
+.rail-tabs button { border: 0; background: none; padding: 7px 14px; font: 600 12px var(--mono); text-transform: uppercase; letter-spacing: .06em; cursor: pointer; color: var(--g5); }
+.rail-tabs button[aria-selected="true"] { background: var(--ink); color: #fff; }
+.rail .dev li { grid-template-columns: minmax(0,1fr); border-left: 3px solid var(--ink); }
+.rail .dtag { display: inline-block; font: 600 10.5px var(--mono); text-transform: uppercase; letter-spacing: .06em; background: var(--g1); border: 1px solid var(--g3); border-radius: 2px; padding: 1px 6px; margin-bottom: 4px; color: var(--ink); }
+.rail details { margin-top: 16px; }
+.rail details summary { cursor: pointer; font: 600 11.5px var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--g5); margin-bottom: 8px; }
+.rail .evp { display: grid; gap: 6px; }
+.rail .evp div { background: var(--paper); border: 1px solid var(--g2); border-radius: 4px; padding: 6px 8px; }
+.rail .evp code { font: 600 11.5px var(--mono); }
+.rail .evp span { display: block; font: 11px var(--mono); color: var(--g5); overflow-wrap: anywhere; }
+.dev-mode .site .pin { display: none; }
 .rail .legend { margin-top: 16px; font-family: var(--mono); font-size: 11.5px; color: var(--g5); line-height: 1.6; }
 
 .pin { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--note); color: #fff;
@@ -396,7 +408,7 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 </style>
 
 <header class="proto-bar">
-  <span class="name">JSC · Wireframe Prototype <small>v2.2 · mid-fi · Nov 2026</small></span>
+  <span class="name">JSC · Wireframe Prototype <small>v2.3 · mid-fi · Nov 2026</small></span>
   <label for="pagePick">Page
     <select id="pagePick"></select>
   </label>
@@ -409,7 +421,7 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
     <button type="button" id="sIn" aria-pressed="false">Logged in</button>
   </span>
   <span class="spacer"></span>
-  <label><input type="checkbox" id="notesTog" checked> Annotations</label>
+  <label><input type="checkbox" id="notesTog" checked> Notes panel</label>
 </header>
 
 <div class="proto" id="proto">
@@ -476,6 +488,7 @@ const PAGES = [
   ["Utility", [["legal","Legal page (template)"]]]
 ];
 const LABEL = Object.fromEntries(PAGES.flatMap(g => g[1]));
+const EV_PARAMS = { branch_search:"query_type, results_count", branch_select:"branch_id", set_my_branch:"branch_id", call_click:"branch_id, line", text_branch_click:"branch_id", after_hours_call:"branch_id", directions_click:"branch_id", search:"search_term, results_count", search_no_results:"search_term", view_item:"item_id, item_category, brand", select_item:"item_id, list_name", view_item_list:"item_list_name", filter_apply:"filter_name, filter_value", gated_price_prompt_click:"item_id", call_to_order_click:"item_id, branch_id", pickup_request:"branch_id, item_count", quote_request:"branch_id, source", ahri_cert_download:"ahri_ref", builder_step:"step_number, step_name", builder_complete:"system_type, tonnage, brand", credit_app_step:"step_number", credit_app_submit:"branch_id", sign_up:"path", login:"method", job_apply_submit:"position, branch_id", contact_submit:"topic, branch_id", warranty_lookup:"brand, found", warranty_claim_submit:"branch_id, part", training_register:"event_id, branch_id", portal_click:"location", doc_download:"doc_id, doc_type", purchaser_add:"role", purchaser_remove:"role" };
 const SECTION = { equipment:"products", supplies:"products", "private-label":"products", brand:"products", vendors:"products", "system-builder":"products", promos:"products", "promo-detail":"products", product:"products", search:"products",
   locations:"locations", state:"locations", branch:"locations", resources:"resources", "resource-detail":"resources", warranty:"resources", training:"resources", contact:"resources", about:"company", careers:"company", apply:"company", news:"company", "news-detail":"company" };
 
@@ -485,7 +498,7 @@ const S = {
   loc:{ q:"", st:"All", geo:false, origin:null, msg:"" },
   f:{ brands:[], stock:false, tons:[] }, fKind:null, filterOpen:false,
   sb:{ step:0, a:{}, x:{} }, ca:{ step:0, sent:false }, sigMode:"type",
-  vals:{}, err:{}, errFor:null, sent:{}, promoCat:"All", promoLocal:false, newsCat:"All", returnTo:null, nav:false, lang:"en", spec:[], reg:{}
+  vals:{}, err:{}, errFor:null, sent:{}, promoCat:"All", promoLocal:false, newsCat:"All", returnTo:null, nav:false, notesTab:(()=>{ try { return localStorage.getItem("jsc-notes") || "design"; } catch(e) { return "design"; } })(), lang:"en", spec:[], reg:{}
 };
 const store = { get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch(e){} } };
 
@@ -1364,6 +1377,54 @@ P.legal = () => `${crumbs("Legal")}${pagehead("Legal","Privacy Policy","Template
 N.legal = [["New: Legal template","Footer legal links went to the homepage in v1.","#15"]];
 EV.legal = [];
 
+/* ================= Developer notes ================= */
+// Tags: WP = WordPress build · INT = integration · SEC = security/privacy · PERF = caching/performance · A11Y · SEO · GA4 · CONTENT
+const DEV = {};
+const DEV_GLOBAL = [
+  ["WP","Stack","Custom WordPress theme on Pantheon (Dev / Test / Live). Block theme or classic + ACF Pro blocks. Every module in this wireframe maps to a reusable block or template part; avoid one-off page builders."],
+  ["WP","Content model","Custom post types: Branch, State, Product (or synced catalog), Brand, Promo, Document, Training Event, Job Opening, News. Taxonomies: product category, brand, state, document type. Branch is the hub: products' stock, promos, jobs and events relate to it by Branch ID."],
+  ["INT","Inventory, pricing and accounts","Stock, account pricing, invoices and customer accounts live in the client's inventory/ERP system (TBD). Build a thin integration layer (WP REST endpoints + server-side API client) so the theme never calls the ERP directly. Agree on sync vs. live lookups per data type before build."],
+  ["PERF","Caching","Pantheon's edge cache serves anonymous pages. Never bake stock or prices into cached HTML: load availability client-side from a short-TTL endpoint (60–300 s) and show the 'Updated' time from the response. Logged-in users bypass the page cache; use Redis object cache for API responses."],
+  ["SEC","Gated pricing","Prices are only returned by authenticated endpoints scoped to the user's ERP account. Never ship guest-visible price data in markup, JSON or the dataLayer. Map WP users to ERP account IDs; company admins manage users and the 'sees pricing' permission."],
+  ["SEC","Sensitive data","SSN, EIN and bank details from the credit application must not be stored in the WordPress database or form-entry tables. Pass them straight to the credit/e-sign provider or an encrypted store the client approves. Mask in logs and emails."],
+  ["A11Y","WCAG 2.2 AA","Contract requirement. Keep: skip link, focus moved to the H1 on route change, visible focus, 44 px targets, fieldset/legend for groups, error summary linked to fields, no color-only status. Test with axe + keyboard + VoiceOver/TalkBack before each release."],
+  ["GA4","Analytics","GA4 via Google Tag Manager. Push every event in the GA4 list on each page to the dataLayer with consistent params (branch_id, page_type, item_id, user_type: guest|account). Never push prices, SSN/EIN, emails or phone numbers."],
+  ["SEO","Redirects and schema","301 map from every current jacksonsupplycompany.com URL to the new structure in the revised sitemap. Organization schema sitewide; LocalBusiness on branch pages; Product on product pages (no price for guests); BreadcrumbList everywhere."],
+  ["INT","Tap-to-call and text","tel: and sms: links use E.164 numbers from the Branch record. Track call_click / text_branch_click on click. Desktop users get the number as visible, selectable text."],
+  ["WP","Language","English / Español toggle: use WPML or Polylang with human translation. Phase 1 (per audit): stock, branch pages, credit application. Set lang attributes and hreflang."],
+  ["CONTENT","Sample data","Branch cities, 555-01xx phone numbers, product data, prices and stock in this prototype are placeholders. Do not seed production from them."]
+];
+DEV.sitemap = [["SEO","URL structure","Use the slugs on each node. Branch pages nest under state: /locations/[state]/[city]. Product URLs: /products/[category]/[item]. Keep slugs stable; changing them later costs local rankings."],["WP","Templates","Count of templates to build is roughly the number of boxes here, not pages: 27 branch pages and 7 state pages share one template each."]];
+DEV.home = [["WP","Homepage blocks","Each section is a block: hero, quick tasks, category grid, brand cards, branch finder, System Builder teaser, promos, account band, careers/news. Editors can reorder without code."],["INT","Branch-aware modules","Branch finder and hero CTA read 'my branch' from a first-party cookie (set when the user picks a branch, or from their account). Render the default state server-side and swap client-side, so cached pages stay shared."],["PERF","Hero image","Use a responsive <picture> with AVIF/WebP, explicit width/height and fetchpriority=high. The motion gradients from the concept must respect prefers-reduced-motion."]];
+DEV.equipment = [["INT","Listing data","Product list, availability and (logged-in) price come from the integration layer. Paginate server-side (24 per page) with 'Load more' via REST; keep filter state in the URL query string so links are shareable and crawlable."],["WP","Filters","Brand, tonnage, efficiency and in-stock are facets. Only show EER2 'Meets Southwest' when the catalog has EER2 data. Brand list comes from the catalog; 'Show all brands' expands with a search box above ~10 brands."],["SEO","Indexing","Index category pages; noindex filtered combinations (anything with 2+ facets) and add rel=canonical to the unfiltered category."]];
+DEV.supplies = [["INT","Spec facets","Capacitor MFD/voltage/shape, motor HP/RPM/rotation/voltage and contactor poles/amps/coil must be structured attributes in the catalog feed, not text in titles. Confirm the ERP has them; otherwise plan a data clean-up task."],["INT","Stock status","Tag rules: In stock ≥ 4, Limited 1–3, Out 0 (confirm thresholds with client). Logged-in users also see quantities. Show the sync time from the API response."],["SEC","Refrigerant","Refrigerant SKUs carry an 'EPA 608 required' flag from the catalog. The flag is informational on the site; the counter enforces it."]];
+DEV["private-label"] = [["WP","Content","Brand CPT entry with is_private_label = true. Lineup cards link to the equipment listing pre-filtered by brand via query string."]];
+DEV.brand = [["WP","Brand template","Brand CPT drives /brands/[brand]. Featured products are a relationship field or a query by brand. Copy must be original (not manufacturer boilerplate) for SEO."],["SEO","Schema","Brand pages: CollectionPage + BreadcrumbList. Link out to manufacturer sites with rel=noopener only where needed (registration, warranty)."]];
+DEV.vendors = [["WP","Vendor logos","Logos are an options-page repeater or Brand CPT with a 'supply vendor' flag. Require alt text = vendor name."]];
+DEV["system-builder"] = [["INT","Matching engine","Results come from AHRI matched-system data filtered by the six answers (type, tonnage, cabinet width, airflow, gas, heat strips, voltage, efficiency, brand) and by what the user's branch can supply. Decide: licensed AHRI data feed vs. curated matches from the client. Could be the plug-in the brief mentions."],["INT","Regional rules","Apply DOE regional minimums from the user's branch state: SEER2 everywhere, plus EER2 for split ACs in Arizona (Southwest). Keep the thresholds in config, not code."],["WP","State","Keep answers in the URL (?step=4&type=hp&tons=3…) so a system can be shared, saved to the account, or sent with a quote request. 'AHRI certificate' links to the PDF for the AHRI reference number."],["GA4","Funnel","builder_step fires with step_number and step_name; builder_complete with system_type, tonnage and brand. Do not send prices."]];
+DEV.promos = [["WP","Promo CPT","Fields: start/end date, category, branches (relationship; empty = all), terms, CTA. Auto-unpublish after end date via scheduled action."],["CONTENT","Rebates table","Utility rebate rows are an options-page repeater (state, utilities, amount, paperwork, link, last reviewed). Show 'last reviewed' so stale rows get noticed."]];
+DEV["promo-detail"] = [["WP","Redeem CTA","Guests go to login with return URL; logged-in users go to the bundle's listing or a pre-filled quote request."]];
+DEV.search = [["INT","Search engine","Use a real search index (Pantheon Search/Solr or ElasticPress) over products, documents and branches. Index part #, model #, serial patterns and cross-reference numbers with exact-match boosting so a pasted part # always ranks first."],["INT","Scan","Scan opens the camera via a barcode/OCR library (e.g. a ZXing-based reader) on HTTPS only; fall back to manual entry if camera permission is denied. Map recognized nameplate model/serial formats per brand to a search query."],["GA4","Search events","search (search_term, results_count), search_no_results, scan_start / scan_success."]];
+DEV.product = [["INT","Availability","Fetch my branch + 3 nearest branches' stock from the integration layer after page load; nearest branches by distance from branch coordinates. Show response timestamp as 'Updated'."],["SEC","Price","Price and quantities only in the authenticated response. Guests get status only. Never cache the logged-in buy box at the edge."],["WP","Call / Text / Pull / Quote","No cart or checkout. 'Pull for Pickup' and 'Request a Quote' prefill the Contact form (topic, product, model, qty) and submit to the branch inbox and, if available, the ERP as a pending pick ticket. Call/Text use the branch's numbers."],["SEO","Product schema","Product + Offer schema without price for guests (availability only). Images need meaningful alt text."]];
+DEV.locations = [["INT","Geocoding","ZIP/city search via a geocoding API (Google, Mapbox or similar), cached server-side. 'Use my location' uses the Geolocation API with a clear permission prompt; never store raw coordinates."],["INT","Map","Interactive map (Google Maps or Mapbox) with clustered pins; Arizona can use a separate view or fit-bounds. The branch list is the accessible equivalent; map pins are not the only way to reach a branch."],["WP","My branch","'Set as My Branch' writes a first-party cookie and, for logged-in users, the account profile. Everything branch-aware reads from the same helper."]];
+DEV.state = [["WP","State template","State CPT (or taxonomy archive) listing its branches; unique intro copy field per state."],["SEO","Schema","ItemList of LocalBusiness entries; BreadcrumbList Locations › State."]];
+DEV.branch = [["WP","Branch record","Fields: name, address, geo, phone, text number, after-hours number (or 'none'), department lines, hours per day + holiday overrides, time zone, services (checkboxes incl. delivery cutoff, tool loaners, duct shop), local copy, FAQs, photos. No staff names."],["INT","Open now","Compute open/closed in the branch's time zone (America/Chicago or America/Phoenix, which has no DST), client-side so cached pages stay correct."],["SEO","Local SEO","LocalBusiness schema with openingHoursSpecification and geo. Keep name/address/phone identical to the Google Business Profile. Unique copy per branch."]];
+DEV.resources = [["WP","Document CPT","Fields: PDF file, brand, document type, models it applies to, doc #, updated date. Search the PDF text if the search engine supports it."],["PERF","PDFs","Serve PDFs from the CDN with long cache lifetimes; version filenames on update. Show file size before download."]];
+DEV["resource-detail"] = [["SEO","Detail page","Indexable summary page wraps each PDF (title, models, summary) so search engines and AI answers can cite it; the PDF itself can be noindex."]];
+DEV.warranty = [["INT","Serial lookup","Warranty status comes from manufacturer warranty data (portals/APIs vary by brand) or the client's records. If no API exists, phase 1 can deep-link to the manufacturer's lookup with the serial prefilled."],["WP","Claim form","Form with validation; file upload for the nameplate photo (image types, size limit, virus scan). Routes to the selected branch's warranty desk and texts the customer when the part is ready."],["SEC","Uploads","Store uploads outside the public uploads folder or with unguessable URLs; strip EXIF location data from photos."]];
+DEV.training = [["WP","Events","Use an events plugin (e.g. The Events Calendar) or a Training Event CPT: date/time with time zone, branch, CE hours, seats, cost. Registration capped by seats with a waitlist."],["INT","Reminders","Day-before SMS reminders need an SMS provider (e.g. Twilio) and recorded consent (TCPA). 'Add to calendar' generates an .ics file."],["SEO","Schema","Event schema per class (location or online)."]];
+DEV.contact = [["WP","Form routing","Topic + branch decide the recipient inbox (map in an options page). 'Pull for pickup' adds pickup time and PO fields and confirms by text. Spam protection: honeypot + rate limit (avoid image CAPTCHAs for accessibility)."],["INT","Pull lists","If the ERP accepts pending pick tickets, post the request there too; otherwise the email to the branch inbox is the system of record."]];
+DEV.about = [["CONTENT","Facts","Founded 1972. Branch counts and state lists come from the Branch CPT so they never go out of date."]];
+DEV.careers = [["WP","Job openings","Job Opening CPT (title, branch, type, description, expiry). JobPosting schema for Google Jobs. Expired jobs return 410 or redirect to Careers."]];
+DEV.apply = [["SEC","Applicant data","Resumes and applicant data are personal data: restrict access to HR, set a retention period, and keep uploads out of public folders. Include the EEO statement the client provides."]];
+DEV.news = [["WP","Posts","Standard posts with categories (Company, Industry, Events, Products). Category filter is a query-string archive, not client-side only."]];
+DEV["news-detail"] = [["SEO","Article schema","Article/NewsArticle schema with author (company), date published/modified and featured image."]];
+DEV.register = [["INT","Online access","'I already have an account' verifies the account number against the ERP before creating the WP user (or queues it for branch approval). 'I'm new' goes to the credit application."],["SEC","Passwords","Use WordPress password hashing; enforce length (12+), rate-limit login and registration, and offer MFA for company admins."]];
+DEV["credit-app"] = [["INT","E-signature","Use a legally compliant e-sign provider (ESIGN/UETA) or the form vendor's signature feature only if the client's counsel approves. Email the signed PDF to the applicant and the branch credit team."],["SEC","PII handling","SSN, DOB, EIN and bank info: no storage in WordPress; encrypt in transit; mask after entry. 'Save & finish later' stores only non-sensitive fields and emails a signed, expiring link."],["WP","Authorized purchasers","Repeater (name, role, phone) + 'require PO' flag. On approval these sync to the ERP account so the counter enforces them."]];
+DEV.login = [["SEC","Auth","Rate limiting, lockout notifications and password reset by email. Return users to the page they came from via a validated return URL (same-origin only)."],["INT","Payment portal","External link to the proprietary payment portal; open in a new tab and mark with rel=noopener. SSO between the site and portal is a phase-2 question for the client."]];
+DEV.account = [["INT","Account data","Requests, invoices, delivery tickets and purchasers come from the ERP via authenticated endpoints. Invoice search by job/PO runs server-side."],["SEC","Purchaser changes","Adding/removing purchasers or toggling 'require PO' writes back to the ERP (or notifies the branch if write-back isn't available) and is logged with who changed it and when."],["SEC","Roles","Company admin vs. user roles. Only admins manage users and purchasers; 'sees pricing' controls whether prices are returned for that user."]];
+DEV.legal = [["CONTENT","Policies","Privacy (incl. SMS consent and analytics), Terms of Sale and an Accessibility Statement with a contact method. Link from the footer on every page."]];
+
 /* ================= Render ================= */
 const site = $("#site"), rail = $("#rail");
 function render() {
@@ -1371,10 +1432,20 @@ function render() {
   site.classList.toggle("menu-open", S.nav);
   site.innerHTML = header() + `<main id="main" tabindex="-1">${P[r]()}</main>` + footer() + dock();
   const notes = N[r] || [];
-  rail.innerHTML = `<h2>Annotations</h2><p class="pg">${LABEL[r]}</p><p class="tpl">#${r} · ${S.loggedIn?"logged in":"guest"} · branch: ${myB()?bname(myB()):"not set"}</p>
-    <ol>${notes.map((n,i)=>`<li><span class="pin">${i+1}</span><div><b>${n[0]}</b><span>${n[1]}</span>${n[2]?`<span class="refs">Review ${n[2]}</span>`:""}</div></li>`).join("")}</ol>
-    ${(EV[r]||[]).length?`<h3>GA4 events</h3><div class="ev">${EV[r].map(e=>`<code>${e}</code>`).join("")}</div>`:""}
-    <div class="legend">Wireframe only, grayscale on purpose. [Brackets] = client to supply. Branch cities and 555-01xx phone numbers are sample data. "Review #" refers to the UX review.</div>`;
+  const dev = S.notesTab === "dev";
+  $("#proto").classList.toggle("dev-mode", dev);
+  const devItem = n => `<li><div><span class="dtag">${n[0]}</span><b>${n[1]}</b><span>${n[2]}</span></div></li>`;
+  const tabs = `<div class="rail-tabs" role="tablist" aria-label="Annotation type"><button type="button" role="tab" aria-selected="${!dev}" data-notes="design">Design</button><button type="button" role="tab" aria-selected="${dev}" data-notes="dev">Developer</button></div>`;
+  const head = `<p class="pg">${LABEL[r]}</p><p class="tpl">#${r} · ${S.loggedIn?"logged in":"guest"} · branch: ${myB()?bname(myB()):"not set"}</p>`;
+  rail.innerHTML = dev
+    ? `${tabs}<h2>Developer notes</h2>${head}
+      ${(DEV[r]||[]).length ? `<ol class="dev">${DEV[r].map(devItem).join("")}</ol>` : `<p class="small muted">No page-specific notes. See sitewide notes below.</p>`}
+      ${(EV[r]||[]).length?`<h3>GA4 events · dataLayer params</h3><div class="evp">${EV[r].map(e=>`<div><code>${e}</code>${EV_PARAMS[e]?`<span>${EV_PARAMS[e]}</span>`:""}</div>`).join("")}</div>`:""}
+      <details ${r==="sitemap"?"open":""}><summary>Sitewide developer notes (${DEV_GLOBAL.length})</summary><ol class="dev">${DEV_GLOBAL.map(devItem).join("")}</ol></details>
+      <div class="legend">Tags: WP build · INT integration · SEC security/privacy · PERF caching · A11Y · SEO · GA4 · CONTENT. Tech scope per brief: custom WordPress on Pantheon, WCAG 2.2 AA, GA4.</div>`
+    : `${tabs}<h2>Annotations</h2>${head}
+      <ol>${notes.map((n,i)=>`<li><span class="pin">${i+1}</span><div><b>${n[0]}</b><span>${n[1]}</span>${n[2]?`<span class="refs">${/^#/.test(n[2])?"Review ":""}${n[2]}</span>`:""}</div></li>`).join("")}</ol>
+      <div class="legend">Wireframe only, grayscale on purpose. [Brackets] = client to supply. Branch cities and 555-01xx phone numbers are sample data. "Review #" refers to the UX review; "Audit #" to the contractor audit. GA4 events are under Developer.</div>`;
   $("#devRoute").textContent = "#" + r;
   $("#pagePick").value = r;
   if (r === "credit-app" && S.sigMode === "draw" && !S.ca.sent) initSig();
@@ -1543,6 +1614,7 @@ $("#vDesk").onclick = () => setDevice(false);
 $("#vMob").onclick = () => setDevice(true);
 $("#sIn").onclick = () => setLogged(true);
 $("#sOut").onclick = () => setLogged(false);
+rail.addEventListener("click", e => { const t = e.target.closest("[data-notes]"); if (!t) return; S.notesTab = t.dataset.notes; store.set("jsc-notes", S.notesTab); render(); });
 $("#notesTog").addEventListener("change", e => { $("#proto").classList.toggle("no-notes", !e.target.checked); $("#proto").classList.toggle("no-pins", !e.target.checked); });
 
 const my = store.get("jsc-my"); if (my && BRANCHES[+my]) { S.my = +my; S.view = +my; }
