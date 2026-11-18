@@ -276,6 +276,8 @@ fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 /* ---------- Page-specific ---------- */
 .hero { padding-block: 56px; border-bottom: 1px solid var(--g2); position: relative; }
 .hero .split { gap: 48px; }
+.signoff { font-size: 24px; font-weight: 700; letter-spacing: -.01em; color: var(--g5); margin: 0; }
+@container site (max-width: 760px) { .signoff { font-size: 19px; } }
 .proof { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 14px; color: var(--g5); }
 .proof b { color: var(--ink); }
 .quick { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); border: 1px solid var(--g3); background: var(--paper); }
@@ -732,10 +734,11 @@ P.home = () => {
   <section class="hero"><div class="wrap split">
     <div class="stack-lg">
       <div class="stack"><p class="eyebrow">HVAC wholesale since [year] ${pin(1)}</p>
-      <h1 class="h1">Parts on the shelf. Folks who know your name.</h1>
-      <p class="lede">27 counters across the South, stocked deep with the parts you go through every week, and run by people who've been in the trade 15 to 40 years.</p></div>
+      <h1 class="h1">Stocked deep, so you can keep moving.</h1>
+      <p class="signoff">Jackson’s got it.</p>
+      <p class="lede">27 branches across seven states, staffed by people who know the trade.</p></div>
       <div class="row"><a class="btn primary" href="${b?'#branch':'#locations'}" ${b?`data-branch="${b.i}"`:''}>${b?`Go to ${b.city} Branch`:'Find Your Branch'}</a><a class="btn" href="#register">Become a Customer</a></div>
-      <p class="proof"><span><b>27</b> branches</span><span><b>7</b> states</span><span><b>[#,###]</b> parts stocked</span><span><b>Daikin · Goodman · Amana</b></span></p>
+      <p class="proof"><span><b>[#,###]</b> parts stocked</span><span><b>Daikin · Goodman · Amana</b></span></p>
     </div>
     ${ph("Hero photo: real branch counter or contractor on the job (client-supplied)","ar-4x3")}
   </div></section>
@@ -771,7 +774,7 @@ P.home = () => {
   </div></section>`;
 };
 N.home = [
-  ["Hero","States the single-minded idea in the brief's down-to-earth tone. The hero search was removed because the site-wide search bar sits right above it.","#18 #32 #33"],
+  ["Hero","Approved headline: \"Stocked deep, so you can keep moving.\" with the sign-off \"Jackson’s got it.\" (the ownable brand line, reused in stock, search and confirmation messages). Subhead names the 27 branches and staff tenure. The hero search was removed because the site-wide search bar sits right above it.","#18 #32 #33"],
   ["Four quick tasks","Find a branch, shop, pay your bill, become a customer. Repeated in the mobile bottom bar.","#1"],
   ["Supply-first","Supply categories come before equipment brands, per the brief.",""],
   ["Brand cards","Each links to that brand's own page on this site (search value).","#8"],
